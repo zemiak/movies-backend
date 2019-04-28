@@ -5,7 +5,7 @@ import com.zemiak.movies.domain.Genre;
 import com.zemiak.movies.domain.Movie;
 import java.util.ArrayList;
 import java.util.List;
-import javax.ejb.Stateless;
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Observes;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -15,7 +15,7 @@ import javax.validation.Valid;
 import javax.validation.ValidationException;
 import javax.validation.constraints.NotNull;
 
-@Stateless
+@RequestScoped
 public class GenreService {
     @PersistenceContext EntityManager em;
 

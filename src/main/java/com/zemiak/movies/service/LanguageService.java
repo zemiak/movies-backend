@@ -4,14 +4,14 @@ import com.zemiak.movies.domain.CacheClearEvent;
 import com.zemiak.movies.domain.Language;
 import java.util.ArrayList;
 import java.util.List;
-import javax.ejb.Stateless;
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Observes;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.validation.ValidationException;
 
-@Stateless
+@RequestScoped
 public class LanguageService {
     @PersistenceContext
     private EntityManager em;
