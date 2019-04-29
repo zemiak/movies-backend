@@ -14,7 +14,8 @@ import javax.inject.Inject;
 public class WebPageScraper {
     private static final BatchLogger LOG = BatchLogger.getLogger("YearUpdater");
 
-    @Inject private MovieService service;
+    @Inject
+    MovieService service;
 
     public void process(final List<String> files) {
         WebMetadataReader reader = new WebMetadataReader(null, null, null, true);

@@ -14,8 +14,10 @@ public class DescriptionsUpdater {
     private static final BatchLogger LOG = BatchLogger.getLogger(DescriptionsUpdater.class.getName());
 
     private final WebMetadataReader reader = new WebMetadataReader(null, null, null, true);
-    @Inject private MovieService service;
     private final String path = ConfigurationProvider.getPath();
+
+    @Inject
+    MovieService service;
 
     public void process(final List<String> files) {
         files.stream()

@@ -14,7 +14,7 @@ import javax.validation.ValidationException;
 @RequestScoped
 public class LanguageService {
     @PersistenceContext
-    private EntityManager em;
+    EntityManager em;
 
     public List<Language> all() {
         TypedQuery<Language> query = em.createQuery("SELECT l FROM Language l ORDER by l.displayOrder", Language.class);

@@ -13,7 +13,7 @@ import javax.transaction.Transactional;
 @Transactional
 public class MovieService {
     @PersistenceContext
-    private EntityManager em;
+    EntityManager em;
 
     public List<Movie> all() {
         TypedQuery<Movie> query = em.createQuery("SELECT l FROM Movie l ORDER BY l.genre, l.serie, l.displayOrder", Movie.class);

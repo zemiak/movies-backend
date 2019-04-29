@@ -16,7 +16,7 @@ import javax.validation.ValidationException;
 @RequestScoped
 public class SerieService {
     @PersistenceContext
-    private EntityManager em;
+    EntityManager em;
 
     public List<Serie> all() {
         TypedQuery<Serie> query = em.createQuery("SELECT l FROM Serie l ORDER by l.displayOrder", Serie.class);
