@@ -100,7 +100,7 @@ public class InfuseMovieWriter {
             return String.format("%03d", (2500 - movie.getYear())) + "-";
         }
 
-        if (null == movie.getDisplayOrder() || movie.getDisplayOrder().equals(0L) || movie.getDisplayOrder() > 999) {
+        if (null == movie.getDisplayOrder() || movie.getDisplayOrder().equals(0) || movie.getDisplayOrder() > 999) {
             return "";
         }
 

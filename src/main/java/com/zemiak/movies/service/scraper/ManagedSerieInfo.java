@@ -59,6 +59,6 @@ public class ManagedSerieInfo {
     }
 
     public void setRange(Set<Integer> range) {
-        this.range = new HashSet(range);
+        this.range = new HashSet<>(range);
     }
 }

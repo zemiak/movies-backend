@@ -2,12 +2,10 @@ package com.zemiak.movies.batch.metadata;
 
 import com.zemiak.movies.batch.service.logs.BatchLogger;
 import com.zemiak.movies.domain.Movie;
-import com.zemiak.movies.service.scraper.WebMetadataReader;
 import java.util.logging.Level;
 
 public class MovieMetadata {
     private static final BatchLogger LOG = BatchLogger.getLogger(MovieMetadata.class.getName());
-    private static final WebMetadataReader DESCRIPTIONS = new WebMetadataReader(null, null, null, true);
 
     private String encoder;
     private String name;

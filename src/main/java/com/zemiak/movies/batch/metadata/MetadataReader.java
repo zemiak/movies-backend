@@ -50,11 +50,23 @@ public class MetadataReader {
             moov = isoFile.getMovieBox();
         } catch (java.lang.RuntimeException ex) {
             LOG.log(Level.SEVERE, "Cannot read file metadata/1 " + fileName, ex);
+            try {
+                isoFile.close();
+            } catch (IOException e) {
+                LOG.log(Level.SEVERE, "Cannot close file " + fileName, e);
+            }
+
             return;
         }
 
         if (null == moov) {
             LOG.log(Level.SEVERE, "Cannot read file metadata/2 " + fileName, null);
+            try {
+                isoFile.close();
+            } catch (IOException e) {
+                LOG.log(Level.SEVERE, "Cannot close file " + fileName, e);
+            }
+
             return;
         }
 

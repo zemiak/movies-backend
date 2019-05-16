@@ -110,7 +110,6 @@ public class InfuseCoversAndLinks {
         String filePath = linkAbsoluteName.substring(0, pos);
         pos = fileNameWithExt.lastIndexOf(".");
         String fileNameWithoutExt = fileNameWithExt.substring(0, pos);
-        String ext = getFileExt(fileNameWithExt);
 
         Path link = Paths.get(filePath, fileNameWithoutExt + "." + getFileExt(movie.getPictureFileName()));
         Path existing = Paths.get(imgPath, "movie", movie.getPictureFileName());
