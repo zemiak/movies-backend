@@ -32,7 +32,7 @@ public class GeneralMetadataReader implements IWebMetadataReader {
 
     @Override
     public List<UrlDTO> getUrlCandidates(String movieName) {
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
     }
 
     @Override
