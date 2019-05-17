@@ -7,25 +7,36 @@ import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Observes;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.validation.Valid;
 import javax.validation.ValidationException;
 import javax.validation.constraints.NotNull;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
 import com.zemiak.movies.batch.CacheClearEvent;
-import com.zemiak.movies.movie.Movie;
 
 @RequestScoped
+@Path("genre")
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
 public class GenreService {
     @PersistenceContext EntityManager em;
 
+    @GET
     public List<Genre> all() {
         TypedQuery<Genre> query = em.createQuery("SELECT l FROM Genre l ORDER by l.displayOrder", Genre.class);
 
         return query.getResultList();
     }
 
+    @POST
     public void save(@Valid @NotNull Genre entity) {
         Genre target = null;
 
@@ -40,11 +51,15 @@ public class GenreService {
         }
     }
 
-    public Genre find(Integer id) {
+    @GET
+    @Path("{id}")
+    public Genre find(@PathParam("id") Integer id) {
         return em.find(Genre.class, id);
     }
 
-    public void remove(Integer entityId) {
+    @DELETE
+    @Path("{id}")
+    public void remove(@PathParam("id") Integer entityId) {
         Genre bean = em.find(Genre.class, entityId);
 
         if (! bean.getSerieList().isEmpty()) {
@@ -62,7 +77,9 @@ public class GenreService {
         em.getEntityManagerFactory().getCache().evictAll();
     }
 
-    public List<Genre> getByExpression(final String text) {
+    @GET
+    @Path("search/{pattern}")
+    public List<Genre> getByExpression(@PathParam("pattern") final String text) {
         List<Genre> res = new ArrayList<>();
 
         all().stream().filter(entry -> entry.getName().toLowerCase().contains(text.toLowerCase())).forEach(entry -> {
@@ -70,12 +87,5 @@ public class GenreService {
         });
 
         return res;
-    }
-
-    public List<Movie> getMoviesWithoutSerie(Genre genre) {
-        Query query = em.createNamedQuery("Movie.findByGenreWithoutSerie");
-        query.setParameter("genre", genre);
-
-        return query.getResultList();
     }
 }

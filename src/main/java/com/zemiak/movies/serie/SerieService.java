@@ -9,12 +9,19 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.validation.ValidationException;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
 import com.zemiak.movies.batch.CacheClearEvent;
 import com.zemiak.movies.genre.Genre;
 import com.zemiak.movies.strings.Encodings;
 
 @RequestScoped
+@Path("language")
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
 public class SerieService {
     @PersistenceContext
     EntityManager em;
