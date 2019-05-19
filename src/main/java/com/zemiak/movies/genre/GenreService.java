@@ -8,6 +8,7 @@ import javax.enterprise.event.Observes;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.validation.ValidationException;
 import javax.validation.constraints.NotNull;
@@ -26,6 +27,7 @@ import com.zemiak.movies.batch.CacheClearEvent;
 @Path("genre")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
+@Transactional
 public class GenreService {
     @PersistenceContext EntityManager em;
 
