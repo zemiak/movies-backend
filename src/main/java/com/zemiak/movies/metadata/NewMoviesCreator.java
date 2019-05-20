@@ -15,11 +15,8 @@ import com.zemiak.movies.movie.MovieService;
 public class NewMoviesCreator {
     private final String path = ConfigurationProvider.getPath();
 
-    @Inject
-    MovieService service;
-
-    @Inject
-    RefreshStatistics stats;
+    @Inject MovieService service;
+    @Inject RefreshStatistics stats;
 
     private static final BatchLogger LOG = BatchLogger.getLogger(NewMoviesCreator.class.getName());
 

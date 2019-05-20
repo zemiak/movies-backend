@@ -18,8 +18,7 @@ public class DescriptionsUpdater {
     private final WebMetadataReader reader = new WebMetadataReader(null, null, null, true);
     private final String path = ConfigurationProvider.getPath();
 
-    @Inject
-    MovieService service;
+    @Inject MovieService service;
 
     public void process(final List<String> files) {
         files.stream()

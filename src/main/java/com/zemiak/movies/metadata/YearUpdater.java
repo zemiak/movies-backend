@@ -16,8 +16,7 @@ import com.zemiak.movies.scraper.WebMetadataReader;
 public class YearUpdater {
     private static final BatchLogger LOG = BatchLogger.getLogger("YearUpdater");
 
-    @Inject
-    MovieService service;
+    @Inject MovieService service;
 
     public void process(final List<String> files) {
         WebMetadataReader reader = new WebMetadataReader(null, null, null, true);

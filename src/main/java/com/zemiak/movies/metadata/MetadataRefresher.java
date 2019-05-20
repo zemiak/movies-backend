@@ -25,11 +25,8 @@ public class MetadataRefresher {
 
     private WebMetadataReader descriptions;
 
-    @Inject
-    MovieService service;
-
-    @Inject
-    RefreshStatistics stats;
+    @Inject MovieService service;
+    @Inject RefreshStatistics stats;
 
     private final String mp4tags = ConfigurationProvider.getMp4Tags();
     private final String path = ConfigurationProvider.getPath();
