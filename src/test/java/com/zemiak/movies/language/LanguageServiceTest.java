@@ -6,9 +6,6 @@ import javax.ws.rs.WebApplicationException;
 
 import org.junit.jupiter.api.Test;
 
-import io.quarkus.test.junit.QuarkusTest;
-
-@QuarkusTest
 public class LanguageServiceTest {
     @Test
     public void saveMustThrowWhenIdNull() {
