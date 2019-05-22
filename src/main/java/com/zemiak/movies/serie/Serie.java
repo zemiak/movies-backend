@@ -1,15 +1,12 @@
 package com.zemiak.movies.serie;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -17,7 +14,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -27,10 +23,8 @@ import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 import com.zemiak.movies.genre.Genre;
-import com.zemiak.movies.movie.Movie;
 
 @Entity
 @Table(name = "serie", schema="data")
@@ -71,10 +65,6 @@ public class Serie implements Serializable, Comparable<Serie> {
     @ManyToOne(optional = false)
     @NotNull
     private Genre genre;
-
-    @OneToMany(mappedBy = "serie", fetch = FetchType.LAZY)
-    @XmlTransient
-    private List<Movie> movieList;
 
     @Column(name = "created")
     @Temporal(TemporalType.TIMESTAMP)
@@ -142,15 +132,6 @@ public class Serie implements Serializable, Comparable<Serie> {
         this.genre = genre;
     }
 
-    @XmlTransient
-    public List<Movie> getMovieList() {
-        return movieList;
-    }
-
-    public void setMovieList(List<Movie> movieList) {
-        this.movieList = movieList;
-    }
-
     @Override
     public int hashCode() {
         int hash = 0;
@@ -203,7 +184,6 @@ public class Serie implements Serializable, Comparable<Serie> {
     public static Serie create(EntityManager em) {
         Serie serie = new Serie();
         serie.setCreated(new Date());
-        serie.setMovieList(new ArrayList<>());
         serie.setDisplayOrder(9000);
         serie.setGenre(em.find(Genre.class, 0));
 

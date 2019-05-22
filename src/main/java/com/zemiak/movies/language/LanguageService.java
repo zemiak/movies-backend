@@ -26,6 +26,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import com.zemiak.movies.batch.CacheClearEvent;
+import com.zemiak.movies.movie.Movie;
 
 @RequestScoped
 @Path("languages")
@@ -75,7 +76,8 @@ public class LanguageService {
     public void remove(@PathParam("id") @NotNull String entityId) {
         Language bean = em.find(Language.class, entityId);
 
-        if (! bean.getMovieList().isEmpty() || ! bean.getMovieList1().isEmpty() || ! bean.getMovieList2().isEmpty()) {
+
+        if (! em.createNamedQuery("Movie.findByLanguage", Movie.class).getResultList().isEmpty()) {
             throw new ValidationException("They are movies existing with this language.");
         }
 

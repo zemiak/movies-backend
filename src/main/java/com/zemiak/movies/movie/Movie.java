@@ -43,7 +43,10 @@ import com.zemiak.movies.serie.Serie;
     @NamedQuery(name = "Movie.findByUrl", query = "SELECT m FROM Movie m WHERE m.url = :url"),
     @NamedQuery(name = "Movie.findByPictureFileName", query = "SELECT m FROM Movie m WHERE m.pictureFileName = :pictureFileName"),
     @NamedQuery(name = "Movie.findByDisplayOrder", query = "SELECT m FROM Movie m WHERE m.displayOrder = :displayOrder"),
-    @NamedQuery(name = "Movie.findByDescription", query = "SELECT m FROM Movie m WHERE m.description = :description")})
+    @NamedQuery(name = "Movie.findByDescription", query = "SELECT m FROM Movie m WHERE m.description = :description"),
+    @NamedQuery(name = "Movie.findByLanguage", query = "SELECT m FROM Movie m WHERE m.language = :language OR m.originalLanguage = :language OR m.subtitles = :language"),
+    @NamedQuery(name = "Movie.findByGenre", query = "SELECT m FROM Movie m WHERE m.genre = :genre"),
+    @NamedQuery(name = "Movie.findBySerie", query = "SELECT m FROM Movie m WHERE m.serie = :serie")})
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Movie implements Serializable, Comparable<Movie> {

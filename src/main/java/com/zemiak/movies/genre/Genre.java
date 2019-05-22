@@ -1,20 +1,16 @@
 package com.zemiak.movies.genre;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -24,10 +20,6 @@ import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-
-import com.zemiak.movies.movie.Movie;
-import com.zemiak.movies.serie.Serie;
 
 @Entity
 @Table(name = "genre", schema="data")
@@ -63,14 +55,6 @@ public class Genre implements Serializable, Comparable<Genre> {
     @Column(name = "display_order")
     private Integer displayOrder;
 
-    @OneToMany(mappedBy = "genre", fetch = FetchType.LAZY)
-    @XmlTransient
-    private List<Serie> serieList;
-
-    @OneToMany(mappedBy = "genre", fetch = FetchType.LAZY)
-    @XmlTransient
-    private List<Movie> movieList;
-
     @Column(name = "created")
     @Temporal(TemporalType.TIMESTAMP)
     private Date created;
@@ -78,8 +62,6 @@ public class Genre implements Serializable, Comparable<Genre> {
     public static Genre create() {
         Genre genre = new Genre();
         genre.setCreated(new Date());
-        genre.serieList = new ArrayList<>();
-        genre.movieList = new ArrayList<>();
         genre.setDisplayOrder(9000);
 
         return genre;
@@ -118,11 +100,6 @@ public class Genre implements Serializable, Comparable<Genre> {
         return id;
     }
 
-    @XmlTransient
-    public List<Serie> getSerieList() {
-        return serieList;
-    }
-
     public void setId(Integer id) {
         this.id = id;
     }
@@ -149,15 +126,6 @@ public class Genre implements Serializable, Comparable<Genre> {
 
     public void setDisplayOrder(Integer displayOrder) {
         this.displayOrder = displayOrder;
-    }
-
-    @XmlTransient
-    public List<Movie> getMovieList() {
-        return movieList;
-    }
-
-    public void setMovieList(List<Movie> movieList) {
-        this.movieList = movieList;
     }
 
     @Override

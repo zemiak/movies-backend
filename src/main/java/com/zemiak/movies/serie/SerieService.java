@@ -26,6 +26,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import com.zemiak.movies.batch.CacheClearEvent;
+import com.zemiak.movies.movie.Movie;
 import com.zemiak.movies.strings.Encodings;
 
 @RequestScoped
@@ -37,6 +38,7 @@ public class SerieService {
     @PersistenceContext
     EntityManager em;
 
+    @GET
     public List<Serie> all() {
         TypedQuery<Serie> query = em.createQuery("SELECT l FROM Serie l ORDER by l.displayOrder", Serie.class);
 
@@ -75,7 +77,7 @@ public class SerieService {
     public void remove(@PathParam("id") @NotNull final Integer entityId) {
         Serie bean = em.find(Serie.class, entityId);
 
-        if (! bean.getMovieList().isEmpty()) {
+        if (! em.createNamedQuery("Movies.findBySerie", Movie.class).getResultList().isEmpty()) {
             throw new ValidationException("They are movies existing with this serie.");
         }
 

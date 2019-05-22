@@ -26,6 +26,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import com.zemiak.movies.batch.CacheClearEvent;
+import com.zemiak.movies.movie.Movie;
 
 @RequestScoped
 @Path("genres")
@@ -74,11 +75,11 @@ public class GenreService {
     public void remove(@PathParam("id") @NotNull Integer entityId) {
         Genre bean = em.find(Genre.class, entityId);
 
-        if (! bean.getSerieList().isEmpty()) {
+        if (! em.createNamedQuery("Serie.findByGenre", Movie.class).getResultList().isEmpty()) {
             throw new ValidationException("They are series existing with this genre.");
         }
 
-        if (! bean.getMovieList().isEmpty()) {
+        if (! em.createNamedQuery("Movie.findByGenre", Movie.class).getResultList().isEmpty()) {
             throw new ValidationException("They are movies existing with this genre.");
         }
 

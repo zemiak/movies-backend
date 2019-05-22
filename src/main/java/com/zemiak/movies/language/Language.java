@@ -2,7 +2,6 @@ package com.zemiak.movies.language;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -12,17 +11,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-
-import com.zemiak.movies.movie.Movie;
 
 @Entity
 @Table(name = "language", schema="data")
@@ -32,7 +26,6 @@ import com.zemiak.movies.movie.Movie;
     @NamedQuery(name = "Language.findByName", query = "SELECT l FROM Language l WHERE l.name = :name"),
     @NamedQuery(name = "Language.findByPictureFileName", query = "SELECT l FROM Language l WHERE l.pictureFileName = :pictureFileName"),
     @NamedQuery(name = "Language.findByDisplayOrder", query = "SELECT l FROM Language l WHERE l.displayOrder = :displayOrder")})
-@XmlRootElement
 public class Language implements Serializable {
     private static final long serialVersionUID = 2L;
 
@@ -56,15 +49,6 @@ public class Language implements Serializable {
 
     @Column(name = "display_order")
     private Integer displayOrder;
-
-    @OneToMany(mappedBy = "subtitles")
-    private List<Movie> movieList;
-
-    @OneToMany(mappedBy = "originalLanguage")
-    private List<Movie> movieList1;
-
-    @OneToMany(mappedBy = "language")
-    private List<Movie> movieList2;
 
     @Column(name = "created")
     @Temporal(TemporalType.TIMESTAMP)
@@ -129,33 +113,6 @@ public class Language implements Serializable {
 
     public void setDisplayOrder(Integer displayOrder) {
         this.displayOrder = displayOrder;
-    }
-
-    @XmlTransient
-    public List<Movie> getMovieList() {
-        return movieList;
-    }
-
-    public void setMovieList(List<Movie> movieList) {
-        this.movieList = movieList;
-    }
-
-    @XmlTransient
-    public List<Movie> getMovieList1() {
-        return movieList1;
-    }
-
-    public void setMovieList1(List<Movie> movieList1) {
-        this.movieList1 = movieList1;
-    }
-
-    @XmlTransient
-    public List<Movie> getMovieList2() {
-        return movieList2;
-    }
-
-    public void setMovieList2(List<Movie> movieList2) {
-        this.movieList2 = movieList2;
     }
 
     @Override
