@@ -7,8 +7,7 @@ import com.zemiak.movies.movie.Movie;
 
 public class WebMetadataReader {
     private final IWebMetadataReader[] readers;
-    private final String imgPath, path, ffmpeg;
-    private final boolean developmentSystem;
+    private final String imgPath;
 
     public WebMetadataReader(String imgPath, String path, String ffmpeg, boolean developmentSystem) {
         this.readers = new IWebMetadataReader[]{
@@ -18,9 +17,6 @@ public class WebMetadataReader {
         };
 
         this.imgPath = imgPath;
-        this.path = path;
-        this.ffmpeg = ffmpeg;
-        this.developmentSystem = developmentSystem;
     }
 
     public String parseDescription(final Movie movie) {

@@ -47,7 +47,7 @@ public class ItunesArtworkService {
         JsonArray entries = results.getJsonArray("results");
 
         if (results.getInt("resultCount", 0) == 0 || null == entries || entries.isEmpty()) {
-            return Collections.EMPTY_SET;
+            return Collections.emptySet();
         }
 
         return entries.stream().map(ItunesArtwork::mapFromEntry).collect(Collectors.toSet());
