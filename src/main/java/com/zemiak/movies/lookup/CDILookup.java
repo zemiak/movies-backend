@@ -13,6 +13,7 @@ import javax.naming.NamingException;
 public class CDILookup {
     private static final Logger LOG = Logger.getLogger(CDILookup.class.getName());
 
+    @SuppressWarnings("unchecked")
     public <T> T lookup(final Class<T> type) {
         try {
             final BeanManager beanManager = InitialContext.doLookup("java:comp/BeanManager");
