@@ -38,6 +38,7 @@ public class LanguageService {
     EntityManager em;
 
     @GET
+    @Path("all")
     public List<Language> all() {
         TypedQuery<Language> query = em.createQuery("SELECT l FROM Language l ORDER by l.displayOrder", Language.class);
 

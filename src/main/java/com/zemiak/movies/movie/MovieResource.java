@@ -42,6 +42,7 @@ public class MovieResource {
     @Inject MovieService service;
 
     @GET
+    @Path("all")
     public List<Movie> all() {
         return service.all();
     }

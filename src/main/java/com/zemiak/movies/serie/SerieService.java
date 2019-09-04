@@ -39,6 +39,7 @@ public class SerieService {
     EntityManager em;
 
     @GET
+    @Path("all")
     public List<Serie> all() {
         TypedQuery<Serie> query = em.createQuery("SELECT l FROM Serie l ORDER by l.displayOrder", Serie.class);
 

@@ -37,6 +37,7 @@ public class GenreService {
     @PersistenceContext EntityManager em;
 
     @GET
+    @Path("all")
     public List<Genre> all() {
         TypedQuery<Genre> query = em.createQuery("SELECT l FROM Genre l ORDER by l.displayOrder", Genre.class);
 
