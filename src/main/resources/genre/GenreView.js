@@ -1,5 +1,5 @@
-import { render, html } from "../lib/lit-html.js";
-import { GenresRestClient } from "./GenreRestClient.js";
+import { render, html } from "../../../lib/lit-html.js";
+import { GenresRestClient } from "./GenreRestClient.js.js";
 
 class GenreView extends HTMLElement {
     connectedCallback() {
