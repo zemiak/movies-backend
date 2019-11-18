@@ -1,0 +1,44 @@
+#!/bin/sh
+#
+# movies
+#
+# chk#config: - 45 24
+# description: Restarts the movies components
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+prog=movies
+
+DOPTS="--restart=always"
+CONTAINERNAME=movies
+IMAGE=movies
+QUARKUS_HTTP_PORT=8080
+QUARKUS_PROFILE=prod
+PORTMAP=${QUARKUS_HTTP_PORT}:${QUARKUS_HTTP_PORT}
+VOLUME=/mnt/media/Movies:/data
+
+# See how we were called.
+case "$1" in
+  start)
+        docker run $DOPTS --name ${CONTAINERNAME} -p ${PORTMAP} -e QUARKUS_PROFILE=${QUARKUS_PROFILE} -e QUARKUS_HTTP_PORT=${QUARKUS_HTTP_PORT} -v ${VOLUME} ${IMAGE}
+        ;;
+  stop)
+        /usr/bin/docker stop -t 10 ${CONTAINERNAME}
+        /usr/bin/docker rm -f ${CONTAINERNAME}
+        ;;
+  status)
+        docker ps | grep ${CONTAINERNAME}
+        ;;
+  restart)
+        /usr/bin/docker stop -t 10 ${CONTAINERNAME}
+        /usr/bin/docker rm -f ${CONTAINERNAME}
+        sleep 2s
+        docker run $DOPTS --name ${CONTAINERNAME} -p ${PORTMAP} -e PHOTOPATH=${PHOTOPATH} -e QUARKUS_HTTP_PORT=${QUARKUS_HTTP_PORT} -v ${VOLUME} ${IMAGE}
+        ;;
+  *)
+        echo $"Usage: $0 {start|stop|restart|status}"
+        exit 1
+esac
+
+exit 0
