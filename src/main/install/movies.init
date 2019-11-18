@@ -34,7 +34,7 @@ case "$1" in
         /usr/bin/docker stop -t 10 ${CONTAINERNAME}
         /usr/bin/docker rm -f ${CONTAINERNAME}
         sleep 2s
-        docker run $DOPTS --name ${CONTAINERNAME} -p ${PORTMAP} -e PHOTOPATH=${PHOTOPATH} -e QUARKUS_HTTP_PORT=${QUARKUS_HTTP_PORT} -v ${VOLUME} ${IMAGE}
+        docker run $DOPTS --name ${CONTAINERNAME} -p ${PORTMAP} -e QUARKUS_PROFILE=${QUARKUS_PROFILE} -e QUARKUS_HTTP_PORT=${QUARKUS_HTTP_PORT} -v ${VOLUME} ${IMAGE}
         ;;
   *)
         echo $"Usage: $0 {start|stop|restart|status}"
