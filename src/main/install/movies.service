@@ -10,7 +10,8 @@ Environment=IMAGE=movies
 Environment=QUARKUS_PROFILE=prod
 Environment=QUARKUS_HTTP_PORT=8080
 Environment=VOLUME=/mnt/media/Movies:/data
-ExecStart=/usr/bin/docker run $DOPTS --name ${CONTAINERNAME} -p ${PORTMAP} -e QUARKUS_PROFILE=${QUARKUS_PROFILE} -e QUARKUS_PROFILE=${QUARKUS_PROFILE} -e QUARKUS_HTTP_PORT=${QUARKUS_HTTP_PORT} -v ${VOLUME} ${IMAGE}
+Environment=MEMORY=256m
+ExecStart=/usr/bin/docker run $DOPTS -m ${MEMORY} --name ${CONTAINERNAME} -p ${PORTMAP} -e QUARKUS_PROFILE=${QUARKUS_PROFILE} -e QUARKUS_PROFILE=${QUARKUS_PROFILE} -e QUARKUS_HTTP_PORT=${QUARKUS_HTTP_PORT} -v ${VOLUME} ${IMAGE}
 ExecStop=/usr/bin/docker stop -t 10 ${CONTAINERNAME}
 ExecStopPost=/usr/bin/docker rm -f ${CONTAINERNAME}
 ExecReload=/usr/bin/docker exec -t ${CONTAINERNAME} kill -HUP 1
