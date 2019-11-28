@@ -22,7 +22,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @Entity
-@Table(name = "genre", schema="data")
+@Table(name = "genre")
 @NamedQueries({
     @NamedQuery(name = "Genre.findAll", query = "SELECT g FROM Genre g ORDER BY g.displayOrder"),
     @NamedQuery(name = "Genre.findById", query = "SELECT g FROM Genre g WHERE g.id = :id"),
@@ -36,7 +36,7 @@ public class Genre implements Serializable, Comparable<Genre> {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @SequenceGenerator(name="seq_global", sequenceName="seq_global", initialValue = 47000000, allocationSize = 1, schema = "data")
+    @SequenceGenerator(name="seq_global", sequenceName="seq_global", initialValue = 47000000, allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_global")
     @Basic(optional = false)
     @Column(name = "id")
@@ -47,6 +47,9 @@ public class Genre implements Serializable, Comparable<Genre> {
     @Size(min = 1, max = 128)
     @Column(name = "name")
     private String name;
+
+    @Column(name = "protected")
+    private Integer protectedGenre;
 
     @Column(name = "picture_file_name")
     @Size(max = 512)

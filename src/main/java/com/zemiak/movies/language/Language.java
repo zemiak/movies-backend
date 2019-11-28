@@ -19,7 +19,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Entity
-@Table(name = "language", schema="data")
+@Table(name = "language")
 @NamedQueries({
     @NamedQuery(name = "Language.findAll", query = "SELECT l FROM Language l ORDER BY l.name"),
     @NamedQuery(name = "Language.findById", query = "SELECT l FROM Language l WHERE l.id = :id"),
@@ -33,7 +33,7 @@ public class Language implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "id")
-    @SequenceGenerator(name="seq_global", sequenceName="seq_global", initialValue = 47000000, allocationSize = 1, schema = "data")
+    @SequenceGenerator(name="seq_global", sequenceName="seq_global", initialValue = 47000000, allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_global")
     private String id;
 

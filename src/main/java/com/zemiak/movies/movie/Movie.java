@@ -31,7 +31,7 @@ import com.zemiak.movies.scraper.Imdb;
 import com.zemiak.movies.serie.Serie;
 
 @Entity
-@Table(name = "movie", schema="data")
+@Table(name = "movie")
 @NamedQueries({
     @NamedQuery(name = "Movie.findByGenreWithoutSerie", query = "SELECT m FROM Movie m WHERE m.genre = :genre AND (m.serie IS NULL OR m.serie.id = 0) ORDER BY m.name"),
     @NamedQuery(name = "Movie.findAll", query = "SELECT m FROM Movie m ORDER BY m.id"),
@@ -53,7 +53,7 @@ public class Movie implements Serializable, Comparable<Movie> {
     private static final long serialVersionUID = 3L;
 
     @Id
-    @SequenceGenerator(name="seq_global", sequenceName="seq_global", initialValue = 47000000, allocationSize = 1, schema = "data")
+    @SequenceGenerator(name="seq_global", sequenceName="seq_global", initialValue = 47000000, allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_global")
     @Basic(optional = false)
     @Column(name = "id")
@@ -85,7 +85,7 @@ public class Movie implements Serializable, Comparable<Movie> {
     private Integer displayOrder;
 
     @Size(max = 2147483647)
-    @Column(name = "description")
+    @Column(name = "description", length = 16384)
     private String description;
 
     @JoinColumn(name = "serie_id", referencedColumnName = "id")
@@ -116,7 +116,7 @@ public class Movie implements Serializable, Comparable<Movie> {
     @Column(name = "year")
     private Integer year;
 
-    @Transient
+    @Column(name = "web_page", length = 128)
     private String webPage;
 
     public Date getCreated() {

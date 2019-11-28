@@ -27,7 +27,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import com.zemiak.movies.genre.Genre;
 
 @Entity
-@Table(name = "serie", schema="data")
+@Table(name = "serie")
 @NamedQueries({
     @NamedQuery(name = "Serie.findAll", query = "SELECT s FROM Serie s ORDER BY s.genre, s.displayOrder"),
     @NamedQuery(name = "Serie.findById", query = "SELECT s FROM Serie s WHERE s.id = :id"),
@@ -41,7 +41,7 @@ public class Serie implements Serializable, Comparable<Serie> {
     private static final long serialVersionUID = 4L;
 
     @Id
-    @SequenceGenerator(name="seq_global", sequenceName="seq_global", initialValue = 47000000, allocationSize = 1, schema = "data")
+    @SequenceGenerator(name="seq_global", sequenceName="seq_global", initialValue = 47000000, allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_global")
     @Basic(optional = false)
     @Column(name = "id")
