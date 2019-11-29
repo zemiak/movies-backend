@@ -2,42 +2,30 @@ package com.zemiak.movies.serie;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
 
 import com.zemiak.movies.genre.Genre;
 
+import io.quarkus.hibernate.orm.panache.PanacheEntity;
+
 @Entity
 @Table(name = "serie")
-@NamedQueries({
-    @NamedQuery(name = "Serie.findAll", query = "SELECT s FROM Serie s ORDER BY s.genre, s.displayOrder"),
-    @NamedQuery(name = "Serie.findById", query = "SELECT s FROM Serie s WHERE s.id = :id"),
-    @NamedQuery(name = "Serie.findByName", query = "SELECT s FROM Serie s WHERE s.name = :name"),
-    @NamedQuery(name = "Serie.findByPictureFileName", query = "SELECT s FROM Serie s WHERE s.pictureFileName = :pictureFileName"),
-    @NamedQuery(name = "Serie.findByDisplayOrder", query = "SELECT s FROM Serie s WHERE s.displayOrder = :displayOrder"),
-    @NamedQuery(name = "Serie.findByGenre", query = "SELECT s FROM Serie s WHERE s.genre = :genre")})
-@XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
-public class Serie implements Serializable, Comparable<Serie> {
+public class Serie extends PanacheEntity implements Serializable, Comparable<Serie> {
     private static final long serialVersionUID = 4L;
 
     @Id
@@ -181,11 +169,11 @@ public class Serie implements Serializable, Comparable<Serie> {
         return null == genre ? "<None>" : (genre.isEmpty() ? "<None>" : genre.getName());
     }
 
-    public static Serie create(EntityManager em) {
+    public static Serie create() {
         Serie serie = new Serie();
         serie.setCreated(new Date());
         serie.setDisplayOrder(9000);
-        serie.setGenre(em.find(Genre.class, 0));
+        serie.setGenre(Genre.findById(0));
 
         return serie;
     }
@@ -208,5 +196,9 @@ public class Serie implements Serializable, Comparable<Serie> {
 
     public void setTvShow(Boolean tvShow) {
         this.tvShow = tvShow;
+    }
+
+    public static List<Serie> findByGenre(Genre genre) {
+        return list("genre", genre);
     }
 }

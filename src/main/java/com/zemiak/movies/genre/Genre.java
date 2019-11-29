@@ -9,30 +9,18 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
+
+import io.quarkus.hibernate.orm.panache.PanacheEntity;
 
 @Entity
 @Table(name = "genre")
-@NamedQueries({
-    @NamedQuery(name = "Genre.findAll", query = "SELECT g FROM Genre g ORDER BY g.displayOrder"),
-    @NamedQuery(name = "Genre.findById", query = "SELECT g FROM Genre g WHERE g.id = :id"),
-    @NamedQuery(name = "Genre.findByName", query = "SELECT g FROM Genre g WHERE g.name = :name"),
-    @NamedQuery(name = "Genre.findByPictureFileName", query = "SELECT g FROM Genre g WHERE g.pictureFileName = :pictureFileName"),
-    @NamedQuery(name = "Genre.findByDisplayOrder", query = "SELECT g FROM Genre g WHERE g.displayOrder = :displayOrder"),
-})
-@XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
-public class Genre implements Serializable, Comparable<Genre> {
+public class Genre extends PanacheEntity implements Serializable, Comparable<Genre> {
     private static final long serialVersionUID = 1L;
 
     @Id

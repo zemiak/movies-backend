@@ -2,6 +2,7 @@ package com.zemiak.movies.movie;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -11,18 +12,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
 
 import com.zemiak.movies.genre.Genre;
 import com.zemiak.movies.language.Language;
@@ -30,26 +25,11 @@ import com.zemiak.movies.scraper.Csfd;
 import com.zemiak.movies.scraper.Imdb;
 import com.zemiak.movies.serie.Serie;
 
+import io.quarkus.hibernate.orm.panache.PanacheEntity;
+
 @Entity
 @Table(name = "movie")
-@NamedQueries({
-    @NamedQuery(name = "Movie.findByGenreWithoutSerie", query = "SELECT m FROM Movie m WHERE m.genre = :genre AND (m.serie IS NULL OR m.serie.id = 0) ORDER BY m.name"),
-    @NamedQuery(name = "Movie.findAll", query = "SELECT m FROM Movie m ORDER BY m.id"),
-    @NamedQuery(name = "Movie.findById", query = "SELECT m FROM Movie m WHERE m.id = :id"),
-    @NamedQuery(name = "Movie.findByIdDesc", query = "SELECT m FROM Movie m ORDER BY m.id DESC"),
-    @NamedQuery(name = "Movie.findByFileName", query = "SELECT m FROM Movie m WHERE m.fileName = :fileName"),
-    @NamedQuery(name = "Movie.findByName", query = "SELECT m FROM Movie m WHERE m.name = :name"),
-    @NamedQuery(name = "Movie.findByOriginalName", query = "SELECT m FROM Movie m WHERE m.originalName = :originalName"),
-    @NamedQuery(name = "Movie.findByUrl", query = "SELECT m FROM Movie m WHERE m.url = :url"),
-    @NamedQuery(name = "Movie.findByPictureFileName", query = "SELECT m FROM Movie m WHERE m.pictureFileName = :pictureFileName"),
-    @NamedQuery(name = "Movie.findByDisplayOrder", query = "SELECT m FROM Movie m WHERE m.displayOrder = :displayOrder"),
-    @NamedQuery(name = "Movie.findByDescription", query = "SELECT m FROM Movie m WHERE m.description = :description"),
-    @NamedQuery(name = "Movie.findByLanguage", query = "SELECT m FROM Movie m WHERE m.language = :language OR m.originalLanguage = :language OR m.subtitles = :language"),
-    @NamedQuery(name = "Movie.findByGenre", query = "SELECT m FROM Movie m WHERE m.genre = :genre"),
-    @NamedQuery(name = "Movie.findBySerie", query = "SELECT m FROM Movie m WHERE m.serie = :serie")})
-@XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
-public class Movie implements Serializable, Comparable<Movie> {
+public class Movie extends PanacheEntity implements Serializable, Comparable<Movie> {
     private static final long serialVersionUID = 3L;
 
     @Id
@@ -136,7 +116,7 @@ public class Movie implements Serializable, Comparable<Movie> {
         this.id = id;
     }
 
-    public void copyFrom(Movie entity) {
+    public Movie copyFrom(Movie entity) {
         this.setId(entity.getId());
         this.setName(entity.getName());
         this.setDisplayOrder(entity.getDisplayOrder());
@@ -151,6 +131,8 @@ public class Movie implements Serializable, Comparable<Movie> {
         this.setSubtitles(entity.getSubtitles());
         this.setUrl(entity.getUrl());
         this.setYear(entity.getYear());
+
+        return this;
     }
 
     public Integer getId() {
@@ -365,5 +347,21 @@ public class Movie implements Serializable, Comparable<Movie> {
 
     public void setWebPage(String webPage) {
         this.webPage = webPage;
+    }
+
+    public static List<Movie> findByGenre(Genre genre) {
+        return list("genre", genre);
+    }
+
+    public static List<Movie> findByLanguage(Language language) {
+        return list("language", language);
+    }
+
+    public static List<Movie> findBySerie(Serie serie) {
+        return list("serie", serie);
+    }
+
+    public static Movie findByFileName(String fileName) {
+        return find("fileName", fileName).singleResult();
     }
 }

@@ -4,7 +4,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.RequestScoped;
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
@@ -24,7 +23,6 @@ public class UpdateMoviesScheduler {
 
     @Inject SendLogFile logFileMailer;
     @Inject RefreshStatistics stats;
-    @Inject Event<CacheClearEvent> clearEvent;
     @Inject InfuseService infuseService;
     @Inject MetadataService metadataService;
 
@@ -55,6 +53,5 @@ public class UpdateMoviesScheduler {
         }
 
         logFileMailer.send();
-        clearEvent.fire(new CacheClearEvent());
     }
 }

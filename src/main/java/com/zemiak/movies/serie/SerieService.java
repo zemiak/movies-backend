@@ -4,10 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
-import javax.enterprise.event.Observes;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.validation.ValidationException;
@@ -25,9 +21,10 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import com.zemiak.movies.batch.CacheClearEvent;
 import com.zemiak.movies.movie.Movie;
 import com.zemiak.movies.strings.Encodings;
+
+import io.quarkus.panache.common.Sort;
 
 @RequestScoped
 @Path("series")
@@ -35,27 +32,21 @@ import com.zemiak.movies.strings.Encodings;
 @Produces(MediaType.APPLICATION_JSON)
 @Transactional
 public class SerieService {
-    @PersistenceContext
-    EntityManager em;
-
     @GET
     @Path("all")
     public List<Serie> all() {
-        TypedQuery<Serie> query = em.createQuery("SELECT l FROM Serie l ORDER by l.displayOrder", Serie.class);
-
-        return query.getResultList();
+        return Serie.findAll(Sort.ascending("displayOrder")).list();
     }
 
     @PUT
     public void save(@Valid @NotNull Serie entity) {
-        Serie target = null;
-
         if (null == entity.getId()) {
             throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("ID not specified").build());
         }
 
-        target = em.find(Serie.class, entity.getId());
+        Serie target = Serie.findById(entity.getId());
         target.copyFrom(entity);
+        target.persist();
     }
 
     @POST
@@ -64,29 +55,25 @@ public class SerieService {
             throw new WebApplicationException(Response.status(Status.NOT_ACCEPTABLE).entity("ID specified").build());
         }
 
-        em.persist(entity);
+        entity.persist();
     }
 
     @GET
     @Path("{id}")
     public Serie find(@PathParam("id") @NotNull final Integer id) {
-        return em.find(Serie.class, id);
+        return Serie.findById(id);
     }
 
     @DELETE
     @Path("{id}")
     public void remove(@PathParam("id") @NotNull final Integer entityId) {
-        Serie bean = em.find(Serie.class, entityId);
+        Serie bean = Serie.findById(entityId);
 
-        if (! em.createNamedQuery("Movies.findBySerie", Movie.class).getResultList().isEmpty()) {
+        if (! Movie.findBySerie(bean).isEmpty()) {
             throw new ValidationException("They are movies existing with this serie.");
         }
 
-        em.remove(bean);
-    }
-
-    public void clearCache(@Observes final CacheClearEvent event) {
-        em.getEntityManagerFactory().getCache().evictAll();
+        bean.delete();
     }
 
     @GET

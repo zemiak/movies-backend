@@ -4,10 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
-import javax.enterprise.event.Observes;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.validation.ValidationException;
@@ -25,8 +21,10 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import com.zemiak.movies.batch.CacheClearEvent;
 import com.zemiak.movies.movie.Movie;
+import com.zemiak.movies.serie.Serie;
+
+import io.quarkus.panache.common.Sort;
 
 @RequestScoped
 @Path("genres")
@@ -34,14 +32,10 @@ import com.zemiak.movies.movie.Movie;
 @Produces(MediaType.APPLICATION_JSON)
 @Transactional
 public class GenreService {
-    @PersistenceContext EntityManager em;
-
     @GET
     @Path("all")
     public List<Genre> all() {
-        TypedQuery<Genre> query = em.createQuery("SELECT l FROM Genre l ORDER by l.displayOrder", Genre.class);
-
-        return query.getResultList();
+        return Genre.findAll(Sort.ascending("displayOrfer")).list();
     }
 
     @POST
@@ -50,7 +44,7 @@ public class GenreService {
             throw new WebApplicationException(Response.status(Status.NOT_ACCEPTABLE).entity("ID specified").build());
         }
 
-        em.persist(entity);
+        entity.persist();
     }
 
     @PUT
@@ -61,34 +55,30 @@ public class GenreService {
             throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("ID not specified").build());
         }
 
-        target = em.find(Genre.class, entity.getId());
+        target = Genre.findById(entity.getId());
         target.copyFrom(entity);
     }
 
     @GET
     @Path("{id}")
     public Genre find(@PathParam("id") @NotNull Integer id) {
-        return em.find(Genre.class, id);
+        return Genre.findById(id);
     }
 
     @DELETE
     @Path("{id}")
     public void remove(@PathParam("id") @NotNull Integer entityId) {
-        Genre bean = em.find(Genre.class, entityId);
+        Genre genre = Genre.findById(entityId);
 
-        if (! em.createNamedQuery("Serie.findByGenre", Movie.class).getResultList().isEmpty()) {
+        if (! Serie.findByGenre(genre).isEmpty()) {
             throw new ValidationException("They are series existing with this genre.");
         }
 
-        if (! em.createNamedQuery("Movie.findByGenre", Movie.class).getResultList().isEmpty()) {
+        if (! Movie.findByGenre(genre).isEmpty()) {
             throw new ValidationException("They are movies existing with this genre.");
         }
 
-        em.remove(bean);
-    }
-
-    public void clearCache(@Observes CacheClearEvent event) {
-        em.getEntityManagerFactory().getCache().evictAll();
+        genre.delete();
     }
 
     @GET

@@ -4,11 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -25,10 +21,13 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import com.zemiak.movies.batch.CacheClearEvent;
 import com.zemiak.movies.genre.Genre;
 import com.zemiak.movies.serie.Serie;
 import com.zemiak.movies.strings.Encodings;
+
+import io.quarkus.hibernate.orm.panache.PanacheQuery;
+import io.quarkus.panache.common.Page;
+import io.quarkus.panache.common.Sort;
 
 @RequestScoped
 @Path("movies")
@@ -36,9 +35,6 @@ import com.zemiak.movies.strings.Encodings;
 @Produces(MediaType.APPLICATION_JSON)
 @Transactional
 public class MovieResource {
-    @PersistenceContext
-    EntityManager em;
-
     @Inject MovieService service;
 
     @GET
@@ -50,42 +46,30 @@ public class MovieResource {
     @GET
     @Path("new")
     public List<Movie> getNewMovies() {
-        TypedQuery<Movie> query = em.createQuery("SELECT l FROM Movie l WHERE (l.genre = :genreNew1 OR l.genre IS NULL) ORDER BY l.genre, l.serie, l.displayOrder", Movie.class);
-        query.setParameter("genreNew1", em.find(Genre.class, 0));
-
-        return query.getResultList();
+        return Movie.find("genre = ?1 OR genre IS NULL", Sort.ascending("genre", "serie", "displayOrder"), Genre.findById(0)).list();
     }
 
     @GET
     @Path("by-serie/{id}")
     public List<Movie> getSerieMovies(@PathParam("id") @NotNull Integer id) {
-        Serie serie = em.find(Serie.class, id);
-        TypedQuery<Movie> query = em.createQuery("SELECT l FROM Movie l WHERE L.SERIE IS NULL OR l.serie = :serie ORDER BY l.displayOrder", Movie.class);
-        query.setParameter("serie", serie);
-
-        return query.getResultList();
+        return Movie.find("serie = ?1 OR serie IS NULL", Sort.ascending("displayOrder"), Serie.findById(id)).list();
     }
 
     @GET
     @Path("by-genre/{id}")
     public List<Movie> getGenreMovies(@PathParam("id") @NotNull Integer id) {
-        Genre genre = em.find(Genre.class, id);
-        TypedQuery<Movie> query = em.createQuery("SELECT l FROM Movie l WHERE l.genre IS NULL OR l.genre = :genre ORDER by l.genre, l.serie, l.displayOrder", Movie.class);
-        query.setParameter("genre", genre);
-
-        return query.getResultList();
+        return Movie.find("genre = ?1 OR genre IS NULL", Sort.ascending("genre", "serie", "displayOrder"), Genre.findById(id)).list();
     }
 
     @PUT
     public void save(@Valid @NotNull Movie entity) {
-        Movie target = null;
-
         if (null == entity.getId()) {
             throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("ID not specified").build());
         }
 
-        target = em.find(Movie.class, entity.getId());
+        Movie target = Movie.findById(entity.getId());
         target.copyFrom(entity);
+        target.persist();
     }
 
     @POST
@@ -94,7 +78,7 @@ public class MovieResource {
             throw new WebApplicationException(Response.status(Status.NOT_ACCEPTABLE).entity("ID specified").build());
         }
 
-        em.persist(entity);
+        entity.persist();
     }
 
     @GET
@@ -106,11 +90,12 @@ public class MovieResource {
     @DELETE
     @Path("{id}")
     public void remove(@PathParam("id") @NotNull Integer entityId) {
-        em.remove(em.find(Movie.class, entityId));
-    }
+        Movie target = Movie.findById(entityId);
+        if (null == target) {
+            throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("ID not found" + entityId).build());
+        }
 
-    public void clearCache(@Observes CacheClearEvent event) {
-        em.getEntityManagerFactory().getCache().evictAll();
+        target.delete();
     }
 
     @GET
@@ -133,10 +118,9 @@ public class MovieResource {
     @GET
     @Path("last/{count}")
     public List<Movie> getLastMovies(@PathParam("count") @NotNull Integer count) {
-        TypedQuery<Movie> query = em.createQuery("SELECT l FROM Movie l ORDER BY l.id DESC", Movie.class);
-        query.setMaxResults(count);
-
-        return query.getResultList();
+        PanacheQuery<Movie> query = Movie.findAll(Sort.descending("id"));
+        query.page(Page.ofSize(count));
+        return query.lastPage().list();
     }
 
     @GET

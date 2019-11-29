@@ -8,8 +8,6 @@ import java.util.logging.Level;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 
 import com.zemiak.movies.batch.RefreshStatistics;
 import com.zemiak.movies.batch.logs.BatchLogger;
@@ -26,7 +24,6 @@ public class InfuseMovieWriter {
     private final String path = ConfigurationProvider.getPath();
     @Inject RefreshStatistics stats;
     @Inject InfuseCoversAndLinks metadataFiles;
-    @PersistenceContext EntityManager em;
 
     public void process(final List<String> list) {
         list.stream()
@@ -76,8 +73,9 @@ public class InfuseMovieWriter {
         genre.setId(-1);
         genre.setName("X-Recently Added");
 
-        service.getRecentlyAdded().stream().forEach(movie -> {
-            em.detach(movie);
+        service.getRecentlyAdded().stream().forEach(originalMovie -> {
+            Movie movie = Movie.create().copyFrom(originalMovie);
+
             movie.setGenre(genre);
             movie.setSerie(null);
             makeMovieLinkNoException(movie);
@@ -89,8 +87,9 @@ public class InfuseMovieWriter {
         genre.setId(-2);
         genre.setName("X-New Releases");
 
-        service.getNewReleases().stream().forEach(movie -> {
-            em.detach(movie);
+        service.getNewReleases().stream().forEach(originalMovie -> {
+            Movie movie = Movie.create().copyFrom(originalMovie);
+
             movie.setGenre(genre);
             movie.setSerie(null);
             makeMovieLinkNoException(movie);
