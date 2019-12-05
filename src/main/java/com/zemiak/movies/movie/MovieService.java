@@ -11,7 +11,6 @@ import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
-import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 
 import com.zemiak.movies.genre.Genre;
