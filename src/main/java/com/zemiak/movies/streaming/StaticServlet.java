@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.zemiak.movies.genre.GenreDTO;
+import com.zemiak.movies.genre.Genre;
 import com.zemiak.movies.genre.GenreService;
 import com.zemiak.movies.lookup.CDILookup;
 import com.zemiak.movies.lookup.ConfigurationProvider;
@@ -71,11 +71,11 @@ public class StaticServlet extends HttpServlet {
 
             try {
                 if (req.getPathInfo().startsWith("/movie/")) {
-                    imageFileName = movieFileName(Long.valueOf(req.getPathInfo().substring(7)));
+                    imageFileName = movieFileName(Integer.valueOf(req.getPathInfo().substring(7)));
                 } else if (req.getPathInfo().startsWith("/serie/")) {
                     imageFileName = serieFileName(Integer.valueOf(req.getPathInfo().substring(7)));
                 } else if (req.getPathInfo().startsWith("/genre/")) {
-                    imageFileName = genreFileName(Long.valueOf(req.getPathInfo().substring(7)));
+                    imageFileName = genreFileName(Integer.valueOf(req.getPathInfo().substring(7)));
                 } else {
                     throw new IllegalStateException("Not a valid image URL format: " + req.getPathInfo());
                 }
@@ -108,7 +108,7 @@ public class StaticServlet extends HttpServlet {
             Files.copy(path, os);
         }
 
-        private String movieFileName(Long id) {
+        private String movieFileName(Integer id) {
             Movie movie = movies.find(id);
             if (null == movie) {
                 throw new IllegalStateException("Unknown movie ID: " + id);
@@ -126,8 +126,8 @@ public class StaticServlet extends HttpServlet {
             return "/serie/" + serie.getPictureFileName();
         }
 
-        private String genreFileName(Long id) {
-            GenreDTO genre = genres.find(id);
+        private String genreFileName(Integer id) {
+            Genre genre = genres.find(id);
             if (null == genre) {
                 throw new IllegalStateException("Unknown genre ID: " + id);
             }

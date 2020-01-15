@@ -2,7 +2,6 @@ package com.zemiak.movies.movie;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -12,12 +11,18 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import com.zemiak.movies.genre.Genre;
 import com.zemiak.movies.language.Language;
@@ -25,11 +30,26 @@ import com.zemiak.movies.scraper.Csfd;
 import com.zemiak.movies.scraper.Imdb;
 import com.zemiak.movies.serie.Serie;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntity;
-
 @Entity
 @Table(name = "movie")
-public class Movie extends PanacheEntity implements Serializable, Comparable<Movie> {
+@NamedQueries({
+    @NamedQuery(name = "Movie.findByGenreWithoutSerie", query = "SELECT m FROM Movie m WHERE m.genre = :genre AND (m.serie IS NULL OR m.serie.id = 0) ORDER BY m.name"),
+    @NamedQuery(name = "Movie.findAll", query = "SELECT m FROM Movie m ORDER BY m.id"),
+    @NamedQuery(name = "Movie.findById", query = "SELECT m FROM Movie m WHERE m.id = :id"),
+    @NamedQuery(name = "Movie.findByIdDesc", query = "SELECT m FROM Movie m ORDER BY m.id DESC"),
+    @NamedQuery(name = "Movie.findByFileName", query = "SELECT m FROM Movie m WHERE m.fileName = :fileName"),
+    @NamedQuery(name = "Movie.findByName", query = "SELECT m FROM Movie m WHERE m.name = :name"),
+    @NamedQuery(name = "Movie.findByOriginalName", query = "SELECT m FROM Movie m WHERE m.originalName = :originalName"),
+    @NamedQuery(name = "Movie.findByUrl", query = "SELECT m FROM Movie m WHERE m.url = :url"),
+    @NamedQuery(name = "Movie.findByPictureFileName", query = "SELECT m FROM Movie m WHERE m.pictureFileName = :pictureFileName"),
+    @NamedQuery(name = "Movie.findByDisplayOrder", query = "SELECT m FROM Movie m WHERE m.displayOrder = :displayOrder"),
+    @NamedQuery(name = "Movie.findByDescription", query = "SELECT m FROM Movie m WHERE m.description = :description"),
+    @NamedQuery(name = "Movie.findByLanguage", query = "SELECT m FROM Movie m WHERE m.language = :language OR m.originalLanguage = :language OR m.subtitles = :language"),
+    @NamedQuery(name = "Movie.findByGenre", query = "SELECT m FROM Movie m WHERE m.genre = :genre"),
+    @NamedQuery(name = "Movie.findBySerie", query = "SELECT m FROM Movie m WHERE m.serie = :serie")})
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
+public class Movie implements Serializable, Comparable<Movie> {
     private static final long serialVersionUID = 3L;
 
     @Id
@@ -38,7 +58,7 @@ public class Movie extends PanacheEntity implements Serializable, Comparable<Mov
     @Basic(optional = false)
     @Column(name = "id")
     @NotNull
-    private Long id;
+    private Integer id;
 
     @Size(max = 512)
     @Column(name = "file_name")
@@ -72,14 +92,17 @@ public class Movie extends PanacheEntity implements Serializable, Comparable<Mov
     @ManyToOne
     private Serie serie;
 
-    @Column(name = "subtitles")
-    private String subtitles;
+    @JoinColumn(name = "subtitles", referencedColumnName = "id")
+    @ManyToOne
+    private Language subtitles;
 
-    @Column(name = "original_language")
-    private String originalLanguage;
+    @JoinColumn(name = "original_language", referencedColumnName = "id")
+    @ManyToOne
+    private Language originalLanguage;
 
-    @Column(name = "language")
-    private String language;
+    @JoinColumn(name = "language", referencedColumnName = "id")
+    @ManyToOne
+    private Language language;
 
     @JoinColumn(name = "genre_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
@@ -108,12 +131,12 @@ public class Movie extends PanacheEntity implements Serializable, Comparable<Mov
         this.created = new Date();
     }
 
-    public Movie(Long id) {
+    public Movie(Integer id) {
         this();
         this.id = id;
     }
 
-    public Movie copyFrom(Movie entity) {
+    public void copyFrom(Movie entity) {
         this.setId(entity.getId());
         this.setName(entity.getName());
         this.setDisplayOrder(entity.getDisplayOrder());
@@ -128,15 +151,13 @@ public class Movie extends PanacheEntity implements Serializable, Comparable<Mov
         this.setSubtitles(entity.getSubtitles());
         this.setUrl(entity.getUrl());
         this.setYear(entity.getYear());
-
-        return this;
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -204,27 +225,27 @@ public class Movie extends PanacheEntity implements Serializable, Comparable<Mov
         this.serie = serie;
     }
 
-    public String getSubtitles() {
+    public Language getSubtitles() {
         return subtitles;
     }
 
-    public void setSubtitles(String subtitles) {
+    public void setSubtitles(Language subtitles) {
         this.subtitles = subtitles;
     }
 
-    public String getOriginalLanguage() {
+    public Language getOriginalLanguage() {
         return originalLanguage;
     }
 
-    public void setOriginalLanguage(String originalLanguage) {
+    public void setOriginalLanguage(Language originalLanguage) {
         this.originalLanguage = originalLanguage;
     }
 
-    public String getLanguage() {
+    public Language getLanguage() {
         return language;
     }
 
-    public void setLanguage(String language) {
+    public void setLanguage(Language language) {
         this.language = language;
     }
 
@@ -282,6 +303,26 @@ public class Movie extends PanacheEntity implements Serializable, Comparable<Mov
         return "";
     }
 
+    public String getSerieName() {
+        return null == serie ? "<None>" : (serie.isEmpty() ? "<None>" : serie.getName());
+    }
+
+    public String getLanguageName() {
+        return null == language ? "<None>" : language.getName();
+    }
+
+    public String getOriginalLanguageName() {
+        return null == originalLanguage ? "<None>" : originalLanguage.getName();
+    }
+
+    public String getSubtitlesName() {
+        return null == subtitles ? "<None>" : subtitles.getName();
+    }
+
+    public boolean isEmptySerie() {
+        return null == serie || serie.getId() == 0;
+    }
+
     @Override
     public int compareTo(Movie o) {
         if (null == displayOrder && null != o.getDisplayOrder()) {
@@ -297,6 +338,10 @@ public class Movie extends PanacheEntity implements Serializable, Comparable<Mov
         }
 
         return displayOrder.compareTo(o.getDisplayOrder());
+    }
+
+    public String getGenreName() {
+        return null == genre ? "<None>" : (genre.isEmpty() ? "<None>" : genre.getName());
     }
 
     public static Movie create() {
@@ -320,21 +365,5 @@ public class Movie extends PanacheEntity implements Serializable, Comparable<Mov
 
     public void setWebPage(String webPage) {
         this.webPage = webPage;
-    }
-
-    public static List<Movie> findByGenre(Genre genre) {
-        return list("genre", genre);
-    }
-
-    public static List<Movie> findByLanguage(Language language) {
-        return list("language", language);
-    }
-
-    public static List<Movie> findBySerie(Serie serie) {
-        return list("serie", serie);
-    }
-
-    public static Movie findByFileName(String fileName) {
-        return find("fileName", fileName).singleResult();
     }
 }

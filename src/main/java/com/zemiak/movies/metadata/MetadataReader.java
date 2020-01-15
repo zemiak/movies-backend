@@ -84,13 +84,9 @@ public class MetadataReader {
             LOG.log(Level.SEVERE, "Cannot close file " + fileName, ex);
         }
 
-        if (null != metaData.getMovie() && !isEmptySerie(metaData.getMovie()) && null != service) {
+        if (null != metaData.getMovie() && !metaData.getMovie().isEmptySerie() && null != service) {
             metaData.setNiceDisplayOrder(service.getNiceDisplayOrder(metaData.getMovie()));
         }
-    }
-
-    private boolean isEmptySerie(Movie movie) {
-        return movie.getSerie() == null || movie.getSerie().getId() == 0;
     }
 
     private void processUserData(final UserDataBox box) {

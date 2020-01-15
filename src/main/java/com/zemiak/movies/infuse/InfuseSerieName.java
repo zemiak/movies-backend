@@ -10,8 +10,8 @@ import com.zemiak.movies.strings.Encodings;
 
 @Dependent
 public class InfuseSerieName {
-    static final Long GOT = 1000L;
-    static final Long MASH = 1L;
+    static final Integer GOT = 1000;
+    static final Integer MASH = 1;
 
     public String process(Movie movie) {
         Serie serie = movie.getSerie();
@@ -29,7 +29,7 @@ public class InfuseSerieName {
     }
 
     private String process(Movie movie, Integer decimals, Integer season) {
-        String serie = Encodings.deAccent(getSerieName(movie));
+        String serie = Encodings.deAccent(movie.getSerieName());
         String seasonNumber = String.format("%02d", season);
         String format = "%0" + String.valueOf(decimals) + "d";
         Integer number = null == movie.getDisplayOrder() ? 0 : movie.getDisplayOrder();
@@ -46,9 +46,5 @@ public class InfuseSerieName {
                 + "." + movieName + ".m4v";
 
         return episodeName;
-    }
-
-    private String getSerieName(Movie movie) {
-        return (null == movie.getSerie() || movie.getSerie().getId() == 0) ? "<None>" : movie.getSerie().getName();
     }
 }

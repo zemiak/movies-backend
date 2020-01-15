@@ -2,9 +2,12 @@ package com.zemiak.movies.genre;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.event.Observes;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.validation.ValidationException;
@@ -22,10 +25,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import com.zemiak.movies.batch.CacheClearEvent;
 import com.zemiak.movies.movie.Movie;
-import com.zemiak.movies.serie.Serie;
-
-import io.quarkus.panache.common.Sort;
 
 @RequestScoped
 @Path("genres")
@@ -33,10 +34,14 @@ import io.quarkus.panache.common.Sort;
 @Produces(MediaType.APPLICATION_JSON)
 @Transactional
 public class GenreService {
+    @PersistenceContext EntityManager em;
+
     @GET
     @Path("all")
-    public List<GenreDTO> all() {
-        return Genre.findAll(Sort.ascending("displayOrder")).list().stream().map(GenreDTO::new).collect(Collectors.toList());
+    public List<Genre> all() {
+        TypedQuery<Genre> query = em.createQuery("SELECT l FROM Genre l ORDER by l.displayOrder", Genre.class);
+
+        return query.getResultList();
     }
 
     @POST
@@ -45,7 +50,7 @@ public class GenreService {
             throw new WebApplicationException(Response.status(Status.NOT_ACCEPTABLE).entity("ID specified").build());
         }
 
-        entity.persist();
+        em.persist(entity);
     }
 
     @PUT
@@ -56,36 +61,40 @@ public class GenreService {
             throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("ID not specified").build());
         }
 
-        target = Genre.findById(entity.getId());
+        target = em.find(Genre.class, entity.getId());
         target.copyFrom(entity);
     }
 
     @GET
     @Path("{id}")
-    public GenreDTO find(@PathParam("id") @NotNull Long id) {
-        return new GenreDTO(Genre.findById(id));
+    public Genre find(@PathParam("id") @NotNull Integer id) {
+        return em.find(Genre.class, id);
     }
 
     @DELETE
     @Path("{id}")
-    public void remove(@PathParam("id") @NotNull Long entityId) {
-        Genre genre = Genre.findById(entityId);
+    public void remove(@PathParam("id") @NotNull Integer entityId) {
+        Genre bean = em.find(Genre.class, entityId);
 
-        if (! Serie.findByGenre(genre).isEmpty()) {
+        if (! em.createNamedQuery("Serie.findByGenre", Movie.class).getResultList().isEmpty()) {
             throw new ValidationException("They are series existing with this genre.");
         }
 
-        if (! Movie.findByGenre(genre).isEmpty()) {
+        if (! em.createNamedQuery("Movie.findByGenre", Movie.class).getResultList().isEmpty()) {
             throw new ValidationException("They are movies existing with this genre.");
         }
 
-        genre.delete();
+        em.remove(bean);
+    }
+
+    public void clearCache(@Observes CacheClearEvent event) {
+        em.getEntityManagerFactory().getCache().evictAll();
     }
 
     @GET
     @Path("search/{pattern}")
-    public List<GenreDTO> getByExpression(@PathParam("pattern") @NotNull final String text) {
-        List<GenreDTO> res = new ArrayList<>();
+    public List<Genre> getByExpression(@PathParam("pattern") @NotNull final String text) {
+        List<Genre> res = new ArrayList<>();
 
         all().stream().filter(entry -> entry.getName().toLowerCase().contains(text.toLowerCase())).forEach(entry -> {
             res.add(entry);

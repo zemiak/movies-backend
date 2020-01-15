@@ -9,6 +9,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -16,23 +18,24 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntity;
-
 @Entity
 @Table(name = "language")
-public class Language extends PanacheEntity implements Serializable {
+@NamedQueries({
+    @NamedQuery(name = "Language.findAll", query = "SELECT l FROM Language l ORDER BY l.name"),
+    @NamedQuery(name = "Language.findById", query = "SELECT l FROM Language l WHERE l.id = :id"),
+    @NamedQuery(name = "Language.findByName", query = "SELECT l FROM Language l WHERE l.name = :name"),
+    @NamedQuery(name = "Language.findByPictureFileName", query = "SELECT l FROM Language l WHERE l.pictureFileName = :pictureFileName"),
+    @NamedQuery(name = "Language.findByDisplayOrder", query = "SELECT l FROM Language l WHERE l.displayOrder = :displayOrder")})
+public class Language implements Serializable {
     private static final long serialVersionUID = 2L;
 
     @Id
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "id")
     @SequenceGenerator(name="seq_global", sequenceName="seq_global", initialValue = 47000000, allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_global")
-    @Basic(optional = false)
-    @Column(name = "id")
-    @NotNull
-    private Long id;
-
-    @Column(name = "lang")
-    private String lang;
+    private String id;
 
     @Basic(optional = false)
     @NotNull
@@ -63,36 +66,28 @@ public class Language extends PanacheEntity implements Serializable {
         this.created = new Date();
     }
 
-    public Language(Long id) {
+    public Language(String id) {
         this();
         this.id = id;
     }
 
     public void copyFrom(Language entity) {
-        this.setLang(entity.getLang());
+        this.setId(entity.getId());
         this.setName(entity.getName());
         this.setDisplayOrder(entity.getDisplayOrder());
         this.setPictureFileName(entity.getPictureFileName());
     }
 
-    public Language(Long id, String name) {
+    public Language(String id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public String getLang() {
-        return lang;
-    }
-
-    public void setLang(String lang) {
-        this.lang = lang;
-    }
-
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -123,7 +118,7 @@ public class Language extends PanacheEntity implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (lang != null ? lang.hashCode() : 0);
+        hash += (id != null ? id.hashCode() : 0);
         return hash;
     }
 
@@ -133,7 +128,7 @@ public class Language extends PanacheEntity implements Serializable {
             return false;
         }
         Language other = (Language) object;
-        if ((this.lang == null && other.lang != null) || (this.lang != null && !this.lang.equals(other.lang))) {
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
         return true;
@@ -145,7 +140,7 @@ public class Language extends PanacheEntity implements Serializable {
     }
 
     public boolean isNone() {
-        return "  ".equals(lang);
+        return "  ".equals(id);
     }
 
     public static Language create() {

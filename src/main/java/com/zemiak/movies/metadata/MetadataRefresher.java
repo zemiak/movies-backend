@@ -122,7 +122,7 @@ public class MetadataRefresher {
                     stats.incrementUpdated();
                 }
 
-                if (null != movie.getSerie() && movie.getSerie().getId() != 0 && (null == movie.getDisplayOrder() || movie.getDisplayOrder().equals(0))) {
+                if (null != movie.getSerie() && !movie.getSerie().isEmpty() && (null == movie.getDisplayOrder() || movie.getDisplayOrder().equals(0))) {
                     LOG.log(Level.SEVERE, "Movie with serie and no order " + fileName, movie);
                 }
             }

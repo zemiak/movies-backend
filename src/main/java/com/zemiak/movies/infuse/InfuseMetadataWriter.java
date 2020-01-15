@@ -49,10 +49,8 @@ public class InfuseMetadataWriter {
                 .replace("{{title}}", movieName)
                 .replace("{{description}}", description)
                 .replace("{{published}}", published)
-                .replace("{{genre}}", getGenreName(movie));
+                .replace("{{genre}}", movie.getGenreName());
     }
 
-    private String getGenreName(Movie movie) {
-        return (null == movie.getGenre() || movie.getGenre().getId() == 0) ? "<None>" : movie.getGenre().getName();
-    }
+
 }

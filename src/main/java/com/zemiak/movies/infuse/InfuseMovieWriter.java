@@ -8,6 +8,8 @@ import java.util.logging.Level;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 import com.zemiak.movies.batch.RefreshStatistics;
 import com.zemiak.movies.batch.logs.BatchLogger;
@@ -24,6 +26,7 @@ public class InfuseMovieWriter {
     private final String path = ConfigurationProvider.getPath();
     @Inject RefreshStatistics stats;
     @Inject InfuseCoversAndLinks metadataFiles;
+    @PersistenceContext EntityManager em;
 
     public void process(final List<String> list) {
         list.stream()
@@ -70,12 +73,11 @@ public class InfuseMovieWriter {
 
     private void makeRecentlyAdded() {
         Genre genre = Genre.create();
-        genre.setId(-1L);
+        genre.setId(-1);
         genre.setName("X-Recently Added");
 
-        service.getRecentlyAdded().stream().forEach(originalMovie -> {
-            Movie movie = Movie.create().copyFrom(originalMovie);
-
+        service.getRecentlyAdded().stream().forEach(movie -> {
+            em.detach(movie);
             movie.setGenre(genre);
             movie.setSerie(null);
             makeMovieLinkNoException(movie);
@@ -84,12 +86,11 @@ public class InfuseMovieWriter {
 
     private void makeNewReleases() {
         Genre genre = Genre.create();
-        genre.setId(-2L);
+        genre.setId(-2);
         genre.setName("X-New Releases");
 
-        service.getNewReleases().stream().forEach(originalMovie -> {
-            Movie movie = Movie.create().copyFrom(originalMovie);
-
+        service.getNewReleases().stream().forEach(movie -> {
+            em.detach(movie);
             movie.setGenre(genre);
             movie.setSerie(null);
             makeMovieLinkNoException(movie);
@@ -97,7 +98,7 @@ public class InfuseMovieWriter {
     }
 
     private String getNumberPrefix(Movie movie) {
-        if ((null == movie.getSerie() || movie.getSerie().getId() == 0) && Objects.nonNull(movie.getYear()) && movie.getYear() > 1800) {
+        if ((null == movie.getSerie() || movie.getSerie().isEmpty()) && Objects.nonNull(movie.getYear()) && movie.getYear() > 1800) {
             return String.format("%03d", (2500 - movie.getYear())) + "-";
         }
 

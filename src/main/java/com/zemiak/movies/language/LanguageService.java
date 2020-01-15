@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.event.Observes;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.validation.ValidationException;
@@ -21,9 +25,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import com.zemiak.movies.batch.CacheClearEvent;
 import com.zemiak.movies.movie.Movie;
-
-import io.quarkus.panache.common.Sort;
 
 @RequestScoped
 @Path("languages")
@@ -31,49 +34,59 @@ import io.quarkus.panache.common.Sort;
 @Produces(MediaType.APPLICATION_JSON)
 @Transactional
 public class LanguageService {
+    @PersistenceContext
+    EntityManager em;
+
     @GET
     @Path("all")
     public List<Language> all() {
-        return Language.findAll(Sort.ascending("displayOrder")).list();
+        TypedQuery<Language> query = em.createQuery("SELECT l FROM Language l ORDER by l.displayOrder", Language.class);
+
+        return query.getResultList();
     }
 
     @PUT
     public void save(@Valid @NotNull Language entity) {
-        if (null == entity.getLang()) {
+        Language target = null;
+
+        if (null == entity.getId()) {
             throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("ID not specified").build());
         }
 
-        Language bean = Language.findById(entity.getLang());
-        bean.copyFrom(entity);
-        bean.persist();
+        target = em.find(Language.class, entity.getId());
+        target.copyFrom(entity);
     }
 
     @POST
     public void create(@Valid @NotNull Language entity) {
-        if (null != entity.getLang()) {
+        if (null != entity.getId()) {
             throw new WebApplicationException(Response.status(Status.NOT_ACCEPTABLE).entity("ID specified").build());
         }
 
-        entity.persist();
+        em.persist(entity);
     }
 
     @GET
     @Path("{id}")
     public Language find(@PathParam("id") @NotNull String id) {
-        return Language.findById(id);
+        return em.find(Language.class, id);
     }
 
     @DELETE
     @Path("{id}")
     public void remove(@PathParam("id") @NotNull String entityId) {
-        Language bean = Language.findById(entityId);
+        Language bean = em.find(Language.class, entityId);
 
 
-        if (! Movie.findByLanguage(bean).isEmpty()) {
+        if (! em.createNamedQuery("Movie.findByLanguage", Movie.class).getResultList().isEmpty()) {
             throw new ValidationException("They are movies existing with this language.");
         }
 
-        bean.delete();
+        em.remove(bean);
+    }
+
+    public void clearCache(@Observes CacheClearEvent event) {
+        em.getEntityManagerFactory().getCache().evictAll();
     }
 
     @GET

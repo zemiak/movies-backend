@@ -9,18 +9,30 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
-import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 @Entity
 @Table(name = "genre")
-public class Genre extends PanacheEntity implements Serializable, Comparable<Genre> {
+@NamedQueries({
+    @NamedQuery(name = "Genre.findAll", query = "SELECT g FROM Genre g ORDER BY g.displayOrder"),
+    @NamedQuery(name = "Genre.findById", query = "SELECT g FROM Genre g WHERE g.id = :id"),
+    @NamedQuery(name = "Genre.findByName", query = "SELECT g FROM Genre g WHERE g.name = :name"),
+    @NamedQuery(name = "Genre.findByPictureFileName", query = "SELECT g FROM Genre g WHERE g.pictureFileName = :pictureFileName"),
+    @NamedQuery(name = "Genre.findByDisplayOrder", query = "SELECT g FROM Genre g WHERE g.displayOrder = :displayOrder"),
+})
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
+public class Genre implements Serializable, Comparable<Genre> {
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -28,7 +40,7 @@ public class Genre extends PanacheEntity implements Serializable, Comparable<Gen
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_global")
     @Basic(optional = false)
     @Column(name = "id")
-    private Long id;
+    private Integer id;
 
     @Basic(optional = false)
     @NotNull
@@ -70,12 +82,12 @@ public class Genre extends PanacheEntity implements Serializable, Comparable<Gen
         this.created = new Date();
     }
 
-    public Genre(Long id) {
+    public Genre(Integer id) {
         this();
         this.id = id;
     }
 
-    public Genre(Long id, String name) {
+    public Genre(Integer id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -87,11 +99,11 @@ public class Genre extends PanacheEntity implements Serializable, Comparable<Gen
         this.setPictureFileName(entity.getPictureFileName());
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -136,6 +148,10 @@ public class Genre extends PanacheEntity implements Serializable, Comparable<Gen
             return false;
         }
         return true;
+    }
+
+    public boolean isEmpty() {
+        return id == 0;
     }
 
     @Override

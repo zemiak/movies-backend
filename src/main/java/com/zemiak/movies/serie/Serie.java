@@ -2,30 +2,42 @@ package com.zemiak.movies.serie;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import com.zemiak.movies.genre.Genre;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntity;
-
 @Entity
 @Table(name = "serie")
-public class Serie extends PanacheEntity implements Serializable, Comparable<Serie> {
+@NamedQueries({
+    @NamedQuery(name = "Serie.findAll", query = "SELECT s FROM Serie s ORDER BY s.genre, s.displayOrder"),
+    @NamedQuery(name = "Serie.findById", query = "SELECT s FROM Serie s WHERE s.id = :id"),
+    @NamedQuery(name = "Serie.findByName", query = "SELECT s FROM Serie s WHERE s.name = :name"),
+    @NamedQuery(name = "Serie.findByPictureFileName", query = "SELECT s FROM Serie s WHERE s.pictureFileName = :pictureFileName"),
+    @NamedQuery(name = "Serie.findByDisplayOrder", query = "SELECT s FROM Serie s WHERE s.displayOrder = :displayOrder"),
+    @NamedQuery(name = "Serie.findByGenre", query = "SELECT s FROM Serie s WHERE s.genre = :genre")})
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
+public class Serie implements Serializable, Comparable<Serie> {
     private static final long serialVersionUID = 4L;
 
     @Id
@@ -34,7 +46,7 @@ public class Serie extends PanacheEntity implements Serializable, Comparable<Ser
     @Basic(optional = false)
     @Column(name = "id")
     @NotNull
-    private Long id;
+    private Integer id;
 
     @Size(max = 128, min = 1)
     @Column(name = "name")
@@ -66,7 +78,7 @@ public class Serie extends PanacheEntity implements Serializable, Comparable<Ser
         this.tvShow = Boolean.FALSE;
     }
 
-    public Serie(Long id) {
+    public Serie(Integer id) {
         this();
         this.id = id;
     }
@@ -80,11 +92,11 @@ public class Serie extends PanacheEntity implements Serializable, Comparable<Ser
         this.setTvShow(entity.isTvShow());
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -161,15 +173,19 @@ public class Serie extends PanacheEntity implements Serializable, Comparable<Ser
         return displayOrder.compareTo(o.getDisplayOrder());
     }
 
-    public String computeGenreName() {
-        return null == genre ? "<None>" : (0 == genre.getId() ? "<None>" : genre.getName());
+    public boolean isEmpty() {
+        return 0 == id;
     }
 
-    public static Serie create() {
+    public String getGenreName() {
+        return null == genre ? "<None>" : (genre.isEmpty() ? "<None>" : genre.getName());
+    }
+
+    public static Serie create(EntityManager em) {
         Serie serie = new Serie();
         serie.setCreated(new Date());
         serie.setDisplayOrder(9000);
-        serie.setGenre(Genre.findById(0));
+        serie.setGenre(em.find(Genre.class, 0));
 
         return serie;
     }
@@ -192,9 +208,5 @@ public class Serie extends PanacheEntity implements Serializable, Comparable<Ser
 
     public void setTvShow(Boolean tvShow) {
         this.tvShow = tvShow;
-    }
-
-    public static List<Serie> findByGenre(Genre genre) {
-        return list("genre", genre);
     }
 }

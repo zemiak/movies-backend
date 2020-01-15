@@ -74,10 +74,10 @@ public class StreamingServlet extends HttpServlet {
         (HttpServletRequest request, HttpServletResponse response, boolean content)
             throws IOException
     {
-        Long movieId;
+        Integer movieId;
 
         try {
-            movieId = Long.valueOf(request.getPathInfo().substring(1));
+            movieId = Integer.valueOf(request.getPathInfo().substring(1));
         } catch (NumberFormatException ex) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND, "Invalid movie ID number: " + request.getPathInfo());
             return;
