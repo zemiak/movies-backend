@@ -70,7 +70,7 @@ public class InfuseMovieWriter {
 
     private void makeRecentlyAdded() {
         Genre genre = Genre.create();
-        genre.setId(-1);
+        genre.setId(-1L);
         genre.setName("X-Recently Added");
 
         service.getRecentlyAdded().stream().forEach(originalMovie -> {
@@ -84,7 +84,7 @@ public class InfuseMovieWriter {
 
     private void makeNewReleases() {
         Genre genre = Genre.create();
-        genre.setId(-2);
+        genre.setId(-2L);
         genre.setName("X-New Releases");
 
         service.getNewReleases().stream().forEach(originalMovie -> {
@@ -97,7 +97,7 @@ public class InfuseMovieWriter {
     }
 
     private String getNumberPrefix(Movie movie) {
-        if ((null == movie.getSerie() || movie.getSerie().isEmpty()) && Objects.nonNull(movie.getYear()) && movie.getYear() > 1800) {
+        if ((null == movie.getSerie() || movie.getSerie().getId() == 0) && Objects.nonNull(movie.getYear()) && movie.getYear() > 1800) {
             return String.format("%03d", (2500 - movie.getYear())) + "-";
         }
 

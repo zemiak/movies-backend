@@ -14,7 +14,6 @@ import javax.persistence.NonUniqueResultException;
 import javax.transaction.Transactional;
 
 import com.zemiak.movies.genre.Genre;
-import com.zemiak.movies.language.Language;
 import com.zemiak.movies.serie.Serie;
 
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
@@ -29,8 +28,8 @@ public class MovieService {
         return Movie.findAll(Sort.ascending("genre", "serie", "displayOrder")).list();
     }
 
-    public Movie find(Integer id) {
-        return Serie.findById(id);
+    public Movie find(Long id) {
+        return Movie.findById(id);
     }
 
     public Movie findByFilename(final String fileNameStart) {
@@ -67,12 +66,12 @@ public class MovieService {
         movie.persist();
     }
 
-    public void save(Movie bean, Integer genreId, Integer serieId, String languageId, String originalLanguageId, String subtitlesId) {
+    public void save(Movie bean, Long genreId, Long serieId, String languageId, String originalLanguageId, String subtitlesId) {
         bean.setGenre(Genre.findById(genreId));
         bean.setSerie(Serie.findById(serieId));
-        bean.setLanguage(Language.findById(languageId));
-        bean.setOriginalLanguage(Language.findById(originalLanguageId));
-        bean.setSubtitles(Language.findById(subtitlesId));
+        bean.setLanguage(languageId);
+        bean.setOriginalLanguage(originalLanguageId);
+        bean.setSubtitles(subtitlesId);
 
         Movie target = Movie.findById(bean.getId());
         target.copyFrom(bean);

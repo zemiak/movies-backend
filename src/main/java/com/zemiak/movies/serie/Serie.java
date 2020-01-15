@@ -34,7 +34,7 @@ public class Serie extends PanacheEntity implements Serializable, Comparable<Ser
     @Basic(optional = false)
     @Column(name = "id")
     @NotNull
-    private Integer id;
+    private Long id;
 
     @Size(max = 128, min = 1)
     @Column(name = "name")
@@ -66,7 +66,7 @@ public class Serie extends PanacheEntity implements Serializable, Comparable<Ser
         this.tvShow = Boolean.FALSE;
     }
 
-    public Serie(Integer id) {
+    public Serie(Long id) {
         this();
         this.id = id;
     }
@@ -80,11 +80,11 @@ public class Serie extends PanacheEntity implements Serializable, Comparable<Ser
         this.setTvShow(entity.isTvShow());
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -161,12 +161,8 @@ public class Serie extends PanacheEntity implements Serializable, Comparable<Ser
         return displayOrder.compareTo(o.getDisplayOrder());
     }
 
-    public boolean isEmpty() {
-        return 0 == id;
-    }
-
-    public String getGenreName() {
-        return null == genre ? "<None>" : (genre.isEmpty() ? "<None>" : genre.getName());
+    public String computeGenreName() {
+        return null == genre ? "<None>" : (0 == genre.getId() ? "<None>" : genre.getName());
     }
 
     public static Serie create() {

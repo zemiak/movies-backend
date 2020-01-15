@@ -2,6 +2,7 @@ package com.zemiak.movies.genre;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.RequestScoped;
 import javax.transaction.Transactional;
@@ -34,8 +35,8 @@ import io.quarkus.panache.common.Sort;
 public class GenreService {
     @GET
     @Path("all")
-    public List<Genre> all() {
-        return Genre.findAll(Sort.ascending("displayOrfer")).list();
+    public List<GenreDTO> all() {
+        return Genre.findAll(Sort.ascending("displayOrder")).list().stream().map(GenreDTO::new).collect(Collectors.toList());
     }
 
     @POST
@@ -61,13 +62,13 @@ public class GenreService {
 
     @GET
     @Path("{id}")
-    public Genre find(@PathParam("id") @NotNull Integer id) {
-        return Genre.findById(id);
+    public GenreDTO find(@PathParam("id") @NotNull Long id) {
+        return new GenreDTO(Genre.findById(id));
     }
 
     @DELETE
     @Path("{id}")
-    public void remove(@PathParam("id") @NotNull Integer entityId) {
+    public void remove(@PathParam("id") @NotNull Long entityId) {
         Genre genre = Genre.findById(entityId);
 
         if (! Serie.findByGenre(genre).isEmpty()) {
@@ -83,8 +84,8 @@ public class GenreService {
 
     @GET
     @Path("search/{pattern}")
-    public List<Genre> getByExpression(@PathParam("pattern") @NotNull final String text) {
-        List<Genre> res = new ArrayList<>();
+    public List<GenreDTO> getByExpression(@PathParam("pattern") @NotNull final String text) {
+        List<GenreDTO> res = new ArrayList<>();
 
         all().stream().filter(entry -> entry.getName().toLowerCase().contains(text.toLowerCase())).forEach(entry -> {
             res.add(entry);

@@ -24,12 +24,15 @@ public class Language extends PanacheEntity implements Serializable {
     private static final long serialVersionUID = 2L;
 
     @Id
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "id")
     @SequenceGenerator(name="seq_global", sequenceName="seq_global", initialValue = 47000000, allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_global")
-    private String id;
+    @Basic(optional = false)
+    @Column(name = "id")
+    @NotNull
+    private Long id;
+
+    @Column(name = "lang")
+    private String lang;
 
     @Basic(optional = false)
     @NotNull
@@ -60,28 +63,36 @@ public class Language extends PanacheEntity implements Serializable {
         this.created = new Date();
     }
 
-    public Language(String id) {
+    public Language(Long id) {
         this();
         this.id = id;
     }
 
     public void copyFrom(Language entity) {
-        this.setId(entity.getId());
+        this.setLang(entity.getLang());
         this.setName(entity.getName());
         this.setDisplayOrder(entity.getDisplayOrder());
         this.setPictureFileName(entity.getPictureFileName());
     }
 
-    public Language(String id, String name) {
+    public Language(Long id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public String getId() {
+    public String getLang() {
+        return lang;
+    }
+
+    public void setLang(String lang) {
+        this.lang = lang;
+    }
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -112,7 +123,7 @@ public class Language extends PanacheEntity implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
+        hash += (lang != null ? lang.hashCode() : 0);
         return hash;
     }
 
@@ -122,7 +133,7 @@ public class Language extends PanacheEntity implements Serializable {
             return false;
         }
         Language other = (Language) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+        if ((this.lang == null && other.lang != null) || (this.lang != null && !this.lang.equals(other.lang))) {
             return false;
         }
         return true;
@@ -134,7 +145,7 @@ public class Language extends PanacheEntity implements Serializable {
     }
 
     public boolean isNone() {
-        return "  ".equals(id);
+        return "  ".equals(lang);
     }
 
     public static Language create() {

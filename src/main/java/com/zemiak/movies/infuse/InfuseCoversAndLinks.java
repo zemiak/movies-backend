@@ -45,7 +45,7 @@ public class InfuseCoversAndLinks {
         Serie serie = movie.getSerie();
         Path linkName;
 
-        if (null == serie || serie.isEmpty()) {
+        if (null == serie || serie.getId() == 0) {
             Files.createDirectories(Paths.get(infuseLinkPath,
                     Encodings.deAccent(getGenreName(movie))
             ));

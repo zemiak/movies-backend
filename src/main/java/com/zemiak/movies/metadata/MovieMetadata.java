@@ -211,7 +211,7 @@ public class MovieMetadata {
 
     public String getMovieName() {
         String title = null == movie.getName() || movie.getName().trim().isEmpty() ? movie.getOriginalName() : movie.getName();
-        if (null != movie.getYear() && movie.getYear() > 0 && (null == movie.getSerie() || movie.getSerie().isEmpty())) {
+        if (null != movie.getYear() && movie.getYear() > 0 && (null == movie.getSerie() || movie.getSerie().getId() == 0)) {
             title += " (" + String.valueOf(movie.getYear()) + ")";
         }
 

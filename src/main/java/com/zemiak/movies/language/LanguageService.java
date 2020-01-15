@@ -39,18 +39,18 @@ public class LanguageService {
 
     @PUT
     public void save(@Valid @NotNull Language entity) {
-        if (null == entity.getId()) {
+        if (null == entity.getLang()) {
             throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("ID not specified").build());
         }
 
-        Language bean = Language.findById(entity.getId());
+        Language bean = Language.findById(entity.getLang());
         bean.copyFrom(entity);
         bean.persist();
     }
 
     @POST
     public void create(@Valid @NotNull Language entity) {
-        if (null != entity.getId()) {
+        if (null != entity.getLang()) {
             throw new WebApplicationException(Response.status(Status.NOT_ACCEPTABLE).entity("ID specified").build());
         }
 

@@ -28,7 +28,7 @@ public class Genre extends PanacheEntity implements Serializable, Comparable<Gen
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_global")
     @Basic(optional = false)
     @Column(name = "id")
-    private Integer id;
+    private Long id;
 
     @Basic(optional = false)
     @NotNull
@@ -70,12 +70,12 @@ public class Genre extends PanacheEntity implements Serializable, Comparable<Gen
         this.created = new Date();
     }
 
-    public Genre(Integer id) {
+    public Genre(Long id) {
         this();
         this.id = id;
     }
 
-    public Genre(Integer id, String name) {
+    public Genre(Long id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -87,11 +87,11 @@ public class Genre extends PanacheEntity implements Serializable, Comparable<Gen
         this.setPictureFileName(entity.getPictureFileName());
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -136,10 +136,6 @@ public class Genre extends PanacheEntity implements Serializable, Comparable<Gen
             return false;
         }
         return true;
-    }
-
-    public boolean isEmpty() {
-        return id == 0;
     }
 
     @Override

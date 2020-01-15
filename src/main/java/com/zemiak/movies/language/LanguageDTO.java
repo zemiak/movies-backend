@@ -9,7 +9,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class LanguageDTO {
-    private String id;
+    private String lang;
     private String name;
     private Integer displayOrder;
     private String created;
@@ -18,18 +18,18 @@ public class LanguageDTO {
     }
 
     public LanguageDTO(Language source) {
-        id = source.getId();
+        lang = source.getLang();
         name = source.getName();
         displayOrder = source.getDisplayOrder();
         created = null == source.getCreated() ? "" : new SimpleDateFormat("yyyy-MM-dd").format(source.getCreated());
     }
 
-    public String getId() {
-        return id;
+    public String getLang() {
+        return lang;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setLang(String lang) {
+        this.lang = lang;
     }
 
     public String getName() {

@@ -51,13 +51,13 @@ public class MovieResource {
 
     @GET
     @Path("by-serie/{id}")
-    public List<Movie> getSerieMovies(@PathParam("id") @NotNull Integer id) {
+    public List<Movie> getSerieMovies(@PathParam("id") @NotNull Long id) {
         return Movie.find("serie = ?1 OR serie IS NULL", Sort.ascending("displayOrder"), Serie.findById(id)).list();
     }
 
     @GET
     @Path("by-genre/{id}")
-    public List<Movie> getGenreMovies(@PathParam("id") @NotNull Integer id) {
+    public List<Movie> getGenreMovies(@PathParam("id") @NotNull Long id) {
         return Movie.find("genre = ?1 OR genre IS NULL", Sort.ascending("genre", "serie", "displayOrder"), Genre.findById(id)).list();
     }
 
@@ -83,13 +83,13 @@ public class MovieResource {
 
     @GET
     @Path("{id}")
-    public Movie find(@PathParam("id") @NotNull Integer id) {
+    public Movie find(@PathParam("id") @NotNull Long id) {
         return service.find(id);
     }
 
     @DELETE
     @Path("{id}")
-    public void remove(@PathParam("id") @NotNull Integer entityId) {
+    public void remove(@PathParam("id") @NotNull Long entityId) {
         Movie target = Movie.findById(entityId);
         if (null == target) {
             throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("ID not found" + entityId).build());
@@ -129,9 +129,13 @@ public class MovieResource {
         List<Movie> res = new ArrayList<>();
 
         all().stream()
-                .filter(movie -> null == movie.getGenre() || movie.getGenre().isEmpty())
+                .filter(movie -> null == movie.getGenre() || isEmpty(movie.getGenre()))
                 .forEach(movie -> res.add(movie));
 
         return res;
+    }
+
+    private boolean isEmpty(Genre genre) {
+        return genre.getId() == 0;
     }
 }

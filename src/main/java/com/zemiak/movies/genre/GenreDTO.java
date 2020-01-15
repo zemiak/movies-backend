@@ -2,14 +2,10 @@ package com.zemiak.movies.genre;
 
 import java.text.SimpleDateFormat;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
-@XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
 public class GenreDTO {
-    private Integer id;
+    private Long id;
     private String name;
     private String pictureFileName;
     private Integer displayOrder;
@@ -18,7 +14,8 @@ public class GenreDTO {
     public GenreDTO() {
     }
 
-    public GenreDTO(Genre source) {
+    public GenreDTO(PanacheEntityBase pe) {
+        Genre source = (Genre) pe;
         id = source.getId();
         name = source.getName();
         pictureFileName = source.getPictureFileName();
@@ -26,11 +23,11 @@ public class GenreDTO {
         created = null == source.getCreated() ? "" : new SimpleDateFormat("yyyy-MM-dd").format(source.getCreated());
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
