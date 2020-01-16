@@ -17,3 +17,6 @@ else
     /sbin/service ${svc} stop
     /sbin/service ${svc} start || exit 30
 fi
+
+cp movies-update /etc/cron.daily/
+chmod +x /etc/cron.daily/movies-update
