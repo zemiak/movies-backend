@@ -23,6 +23,7 @@ import javax.validation.constraints.Size;
 @NamedQueries({
     @NamedQuery(name = "Language.findAll", query = "SELECT l FROM Language l ORDER BY l.name"),
     @NamedQuery(name = "Language.findById", query = "SELECT l FROM Language l WHERE l.id = :id"),
+    @NamedQuery(name = "Language.findByCode", query = "SELECT l FROM Language l WHERE l.code = :code"),
     @NamedQuery(name = "Language.findByName", query = "SELECT l FROM Language l WHERE l.name = :name"),
     @NamedQuery(name = "Language.findByPictureFileName", query = "SELECT l FROM Language l WHERE l.pictureFileName = :pictureFileName"),
     @NamedQuery(name = "Language.findByDisplayOrder", query = "SELECT l FROM Language l WHERE l.displayOrder = :displayOrder")})
@@ -30,12 +31,17 @@ public class Language implements Serializable {
     private static final long serialVersionUID = 2L;
 
     @Id
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "id")
     @SequenceGenerator(name="seq_global", sequenceName="seq_global", initialValue = 47000000, allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_global")
-    private String id;
+    @Basic(optional = false)
+    @Column(name = "id")
+    @NotNull
+    private Integer id;
+
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "code")
+    private String code;
 
     @Basic(optional = false)
     @NotNull
@@ -66,7 +72,7 @@ public class Language implements Serializable {
         this.created = new Date();
     }
 
-    public Language(String id) {
+    public Language(Integer id) {
         this();
         this.id = id;
     }
@@ -78,16 +84,16 @@ public class Language implements Serializable {
         this.setPictureFileName(entity.getPictureFileName());
     }
 
-    public Language(String id, String name) {
+    public Language(Integer id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -149,5 +155,13 @@ public class Language implements Serializable {
         lang.setDisplayOrder(9000);
 
         return lang;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 }
