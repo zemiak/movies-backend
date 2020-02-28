@@ -1,135 +1,65 @@
 package com.zemiak.movies.serie;
 
-import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
 
 import com.zemiak.movies.genre.Genre;
 
+import io.quarkus.hibernate.orm.panache.PanacheEntity;
+
 @Entity
-@Table(name = "serie")
-@NamedQueries({
-    @NamedQuery(name = "Serie.findAll", query = "SELECT s FROM Serie s ORDER BY s.genre, s.displayOrder"),
-    @NamedQuery(name = "Serie.findById", query = "SELECT s FROM Serie s WHERE s.id = :id"),
-    @NamedQuery(name = "Serie.findByName", query = "SELECT s FROM Serie s WHERE s.name = :name"),
-    @NamedQuery(name = "Serie.findByPictureFileName", query = "SELECT s FROM Serie s WHERE s.pictureFileName = :pictureFileName"),
-    @NamedQuery(name = "Serie.findByDisplayOrder", query = "SELECT s FROM Serie s WHERE s.displayOrder = :displayOrder"),
-    @NamedQuery(name = "Serie.findByGenre", query = "SELECT s FROM Serie s WHERE s.genre = :genre")})
-@XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
-public class Serie implements Serializable, Comparable<Serie> {
-    private static final long serialVersionUID = 4L;
-
-    @Id
-    @SequenceGenerator(name="seq_global", sequenceName="seq_global", initialValue = 47000000, allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_global")
-    @Basic(optional = false)
-    @Column(name = "id")
-    @NotNull
-    private Integer id;
-
+public class Serie extends PanacheEntity implements Comparable<Serie> {
     @Size(max = 128, min = 1)
     @Column(name = "name")
     @NotNull
-    private String name;
+    public String name;
 
     @Size(max = 512)
     @Column(name = "picture_file_name")
-    private String pictureFileName;
+    public String pictureFileName;
 
     @Column(name = "display_order")
     @NotNull
-    private Integer displayOrder;
+    public Integer displayOrder;
 
     @JoinColumn(name = "genre_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     @NotNull
-    private Genre genre;
+    public Genre genre;
 
     @Column(name = "created")
     @Temporal(TemporalType.TIMESTAMP)
-    private Date created;
+    public Date created;
 
     @Column(name = "tv_show")
-    private Boolean tvShow;
+    public Boolean tvShow;
 
     public Serie() {
         this.created = new Date();
         this.tvShow = Boolean.FALSE;
     }
 
-    public Serie(Integer id) {
+    public Serie(Long id) {
         this();
         this.id = id;
     }
 
     public void copyFrom(Serie entity) {
-        this.setId(entity.getId());
-        this.setName(entity.getName());
-        this.setDisplayOrder(entity.getDisplayOrder());
-        this.setPictureFileName(entity.getPictureFileName());
-        this.setGenre(entity.getGenre());
-        this.setTvShow(entity.isTvShow());
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getPictureFileName() {
-        return pictureFileName;
-    }
-
-    public void setPictureFileName(String pictureFileName) {
-        this.pictureFileName = pictureFileName;
-    }
-
-    public Integer getDisplayOrder() {
-        return displayOrder;
-    }
-
-    public void setDisplayOrder(Integer displayOrder) {
-        this.displayOrder = displayOrder;
-    }
-
-    public Genre getGenre() {
-        return genre;
-    }
-
-    public void setGenre(Genre genre) {
-        this.genre = genre;
+        this.id = entity.id;
+        this.name = entity.name;
+        this.displayOrder = entity.displayOrder;
+        this.pictureFileName = entity.pictureFileName;
+        this.genre = entity.genre;
+        this.tvShow = entity.tvShow;
+        this.created = entity.created;
     }
 
     @Override
@@ -153,24 +83,24 @@ public class Serie implements Serializable, Comparable<Serie> {
 
     @Override
     public String toString() {
-        return getName();
+        return name;
     }
 
     @Override
     public int compareTo(Serie o) {
-        if (null == displayOrder && null != o.getDisplayOrder()) {
+        if (null == displayOrder && null != o.displayOrder) {
             return -1;
         }
 
-        if (null != displayOrder && null == o.getDisplayOrder()) {
+        if (null != displayOrder && null == o.displayOrder) {
             return 1;
         }
 
-        if (null == displayOrder && null == o.getDisplayOrder()) {
+        if (null == displayOrder && null == o.displayOrder) {
             return 0;
         }
 
-        return displayOrder.compareTo(o.getDisplayOrder());
+        return displayOrder.compareTo(o.displayOrder);
     }
 
     public boolean isEmpty() {
@@ -181,32 +111,12 @@ public class Serie implements Serializable, Comparable<Serie> {
         return null == genre ? "<None>" : (genre.isEmpty() ? "<None>" : genre.name);
     }
 
-    public static Serie create(EntityManager em) {
+    public static Serie create() {
         Serie serie = new Serie();
-        serie.setCreated(new Date());
-        serie.setDisplayOrder(9000);
-        serie.setGenre(em.find(Genre.class, 0));
+        serie.created = new Date();
+        serie.displayOrder = 9000;
+        serie.genre = Genre.findById(0l);
 
         return serie;
-    }
-
-    public Date getCreated() {
-        return created;
-    }
-
-    public void setCreated(Date created) {
-        this.created = created;
-    }
-
-    public Boolean isTvShow() {
-        return tvShow;
-    }
-
-    public Boolean getTvShow() {
-        return tvShow;
-    }
-
-    public void setTvShow(Boolean tvShow) {
-        this.tvShow = tvShow;
     }
 }

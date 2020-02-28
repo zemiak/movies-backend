@@ -1,13 +1,9 @@
 package com.zemiak.movies.genre;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Observes;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.validation.ValidationException;
@@ -27,6 +23,7 @@ import javax.ws.rs.core.Response.Status;
 
 import com.zemiak.movies.batch.CacheClearEvent;
 import com.zemiak.movies.movie.Movie;
+import com.zemiak.movies.serie.Serie;
 
 import io.quarkus.hibernate.orm.panache.Panache;
 import io.quarkus.panache.common.Parameters;
@@ -45,10 +42,18 @@ public class GenreService {
     }
 
     @POST
-    @PUT
     public void create(@Valid @NotNull Genre entity) {
         if (null != entity.id) {
             throw new WebApplicationException(Response.status(Status.NOT_ACCEPTABLE).entity("ID specified").build());
+        }
+
+        entity.persist();
+    }
+
+    @PUT
+    public void update(@Valid @NotNull Genre entity) {
+        if (null == entity.id) {
+            throw new WebApplicationException(Response.status(Status.NOT_ACCEPTABLE).entity("ID not specified").build());
         }
 
         entity.persist();
@@ -62,18 +67,18 @@ public class GenreService {
 
     @DELETE
     @Path("{id}")
-    public void remove(@PathParam("id") @NotNull Integer entityId) {
-        Genre bean = em.find(Genre.class, entityId);
+    public void remove(@PathParam("id") @NotNull Long entityId) {
+        Genre bean = Genre.findById(entityId);
 
-        if (! em.createNamedQuery("Serie.findByGenre", Movie.class).getResultList().isEmpty()) {
+        if (Serie.find("genre", bean).count() > 0){
             throw new ValidationException("They are series existing with this genre.");
         }
 
-        if (! em.createNamedQuery("Movie.findByGenre", Movie.class).getResultList().isEmpty()) {
+        if (Movie.find("genre", bean).count() > 0) {
             throw new ValidationException("They are movies existing with this genre.");
         }
 
-        em.remove(bean);
+        bean.delete();
     }
 
     public void clearCache(@Observes CacheClearEvent event) {

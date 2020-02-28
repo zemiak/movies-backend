@@ -36,9 +36,6 @@ import com.zemiak.movies.strings.Encodings;
 @Produces(MediaType.APPLICATION_JSON)
 @Transactional
 public class MovieResource {
-    @PersistenceContext
-    EntityManager em;
-
     @Inject MovieService service;
 
     @GET

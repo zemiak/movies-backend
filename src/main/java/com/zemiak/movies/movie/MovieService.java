@@ -9,48 +9,31 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-import javax.persistence.NonUniqueResultException;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 
 import com.zemiak.movies.genre.Genre;
 import com.zemiak.movies.language.Language;
 import com.zemiak.movies.serie.Serie;
 
+import io.quarkus.hibernate.orm.panache.PanacheQuery;
+import io.quarkus.panache.common.Sort;
+
 @Transactional
 @ApplicationScoped
 public class MovieService {
-    @PersistenceContext
-    EntityManager em;
-
     public List<Movie> all() {
-        TypedQuery<Movie> query = em.createQuery("SELECT l FROM Movie l ORDER BY l.genre, l.serie, l.displayOrder", Movie.class);
-
-        return query.getResultList();
+        return Movie.findAll(Sort.ascending("genre", "serie", "displayOrder")).list();
     }
 
-    public Movie find(Integer id) {
-        return em.find(Movie.class, id);
+    public Movie find(Long id) {
+        return Movie.findById(id);
     }
 
     public Movie findByFilename(final String fileNameStart) {
         String fileName = removeFileSeparatorFromStartIfNeeded(fileNameStart);
 
-        Query query = em.createNamedQuery("Movie.findByFileName");
-        query.setParameter("fileName", fileName);
-        Movie movie;
-
-        try {
-            movie = (Movie) query.getSingleResult();
-        } catch (NoResultException | NonUniqueResultException ex) {
-            movie = null;
-        }
-
-        return movie;
+        List<Movie> list = Movie.find("fileName", fileName).list();
+        return (list.isEmpty() || list.size() > 1) ? null : list.get(0);
     }
 
     public Movie create(String newFile) {
@@ -58,34 +41,28 @@ public class MovieService {
         final String baseFileName = new File(newFile).getName();
         final String name = baseFileName.substring(0, baseFileName.lastIndexOf("."));
 
-        movie.setFileName(newFile);
-        movie.setGenre(em.getReference(Genre.class, 0));
-        movie.setSerie(em.getReference(Serie.class, 0));
-        movie.setName(name);
-        movie.setPictureFileName(name + ".jpg");
-        movie.setDisplayOrder(0);
-        em.persist(movie);
+        movie.fileName = newFile;
+        movie.genre = Genre.findById(0l);
+        movie.serie = Serie.findById(0l);
+        movie.name = name;
+        movie.pictureFileName = name + ".jpg";
+        movie.displayOrder = 0;
+        movie.persist();
 
         return movie;
     }
 
     public void mergeAndSave(Movie movie) {
-        em.merge(movie);
+        movie.persist();
     }
 
-    public void detach(Movie movie) {
-        em.detach(movie);
-    }
-
-    public void save(Movie bean, Integer genreId, Integer serieId, String languageId, String originalLanguageId, String subtitlesId) {
-        bean.setGenre(em.getReference(Genre.class, genreId));
-        bean.setSerie(em.getReference(Serie.class, serieId));
-        bean.setLanguage(em.getReference(Language.class, languageId));
-        bean.setOriginalLanguage(em.getReference(Language.class, originalLanguageId));
-        bean.setSubtitles(em.getReference(Language.class, subtitlesId));
-
-        Movie target = em.find(Movie.class, bean.getId());
-        target.copyFrom(bean);
+    public void save(Movie bean, Long genreId, Long serieId, Long languageId, Long originalLanguageId, Long subtitlesId) {
+        bean.genre = Genre.findById(genreId);
+        bean.serie = Serie.findById(serieId);
+        bean.language = Language.findById(languageId);
+        bean.originalLanguage = Language.findById(originalLanguageId);
+        bean.subtitles = Language.findById(subtitlesId);
+        bean.persist();
     }
 
     public List<Movie> getNewReleases() {
@@ -93,13 +70,12 @@ public class MovieService {
         cal.setTime(new Date());
 
         List<Movie> movies = new ArrayList<>();
-        List<Movie> all = em.createQuery("SELECT l FROM Movie l ORDER BY l.genre, l.serie, l.displayOrder", Movie.class).getResultList();
-        all.stream()
-                .filter((movie) -> (null != movie.getYear() && movie.getYear() >= (cal.get(Calendar.YEAR) - 3)))
+        Movie.findAll(Sort.ascending("genre", "serie", "displayOrder")).stream().map(e -> (Movie) e)
+                .filter((movie) -> (null != movie.year && movie.year >= (cal.get(Calendar.YEAR) - 3)))
                 .forEach((movie) -> {
                     movies.add(movie);
                 });
-        Collections.sort(movies, (Movie o1, Movie o2) -> o1.getYear().compareTo(o2.getYear()) * -1);
+        Collections.sort(movies, (Movie o1, Movie o2) -> o1.year.compareTo(o2.year) * -1);
 
         return movies;
     }
@@ -119,23 +95,19 @@ public class MovieService {
     public String getNiceDisplayOrder(Movie movie) {
         final Counter i = new Counter();
 
-        List<Movie> list = em.createQuery("SELECT l FROM Movie l WHERE l.serie = :serie ORDER BY l.displayOrder", Movie.class)
-            .setParameter("serie", movie.getSerie()).getResultList();
-        int count = list.size();
+        PanacheQuery<Movie> q = Movie.find("serie", Sort.ascending("displayOrder"), movie.serie);
+        long count = q.count();
 
-        list.stream()
+        q.list().stream().map(e -> (Movie) e)
                 .peek(m -> i.inc())
-                .filter(m -> m.getId().equals(movie.getId()))
+                .filter(m -> m.id.equals(movie.id))
                 .findFirst();
 
         return String.format("%0" + String.valueOf(count).length() + "d", i.get());
     }
 
     public List<Movie> getRecentlyAdded() {
-        TypedQuery<Movie> query = em.createQuery("SELECT l FROM Movie l ORDER BY l.id DESC", Movie.class);
-        query.setMaxResults(64);
-
-        return query.getResultList();
+        return Movie.findAll(Sort.descending("id")).page(0, 64).list();
     }
 
     public static String removeFileSeparatorFromStartIfNeeded(String relative) {

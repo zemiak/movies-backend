@@ -1,13 +1,9 @@
 package com.zemiak.movies.language;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Observes;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.validation.ValidationException;
@@ -28,6 +24,8 @@ import javax.ws.rs.core.Response.Status;
 import com.zemiak.movies.batch.CacheClearEvent;
 import com.zemiak.movies.movie.Movie;
 
+import io.quarkus.hibernate.orm.panache.Panache;
+import io.quarkus.panache.common.Parameters;
 import io.quarkus.panache.common.Sort;
 
 @RequestScoped
@@ -44,14 +42,11 @@ public class LanguageService {
 
     @PUT
     public void save(@Valid @NotNull Language entity) {
-        Language target = null;
-
         if (null == entity.id) {
             throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("ID not specified").build());
         }
 
-        target = em.find(Language.class, entity.id);
-        target.copyFrom(entity);
+        entity.persist();
     }
 
     @POST
@@ -60,41 +55,41 @@ public class LanguageService {
             throw new WebApplicationException(Response.status(Status.NOT_ACCEPTABLE).entity("ID specified").build());
         }
 
-        em.persist(entity);
+        entity.persist();
     }
 
     @GET
     @Path("{id}")
-    public Language find(@PathParam("id") @NotNull String id) {
-        return em.find(Language.class, id);
+    public Language find(@PathParam("id") @NotNull Long id) {
+        return Language.findById(id);
+    }
+
+    @GET
+    @Path("{code}/code")
+    public Language findByCode(@PathParam("id") @NotNull String code) {
+        return Language.find("code", code).firstResult();
     }
 
     @DELETE
     @Path("{id}")
-    public void remove(@PathParam("id") @NotNull String entityId) {
-        Language bean = em.find(Language.class, entityId);
+    public void remove(@PathParam("id") @NotNull Long entityId) {
+        Language bean = Language.findById(entityId);
 
 
-        if (! em.createNamedQuery("Movie.findByLanguage", Movie.class).getResultList().isEmpty()) {
+        if (Movie.find("language", bean).count() > 0 || Movie.find("originalLanguage", bean).count() > 0 || Movie.find("subtitles", bean).count() > 0) {
             throw new ValidationException("They are movies existing with this language.");
         }
 
-        em.remove(bean);
+        bean.delete();
     }
 
     public void clearCache(@Observes CacheClearEvent event) {
-        em.getEntityManagerFactory().getCache().evictAll();
+        Panache.getEntityManager().getEntityManagerFactory().getCache().evictAll();
     }
 
     @GET
     @Path("search/{pattern}")
     public List<Language> getByExpression(@PathParam("pattern") @NotNull final String text) {
-        List<Language> res = new ArrayList<>();
-
-        all().stream().filter(entry -> entry.name.toLowerCase().contains(text.toLowerCase())).forEach(entry -> {
-            res.add(entry);
-        });
-
-        return res;
+        return Language.find("UPPER(name) LIKE UPPER('%:pattern%')", Parameters.with("pattern", text)).list();
     }
 }
