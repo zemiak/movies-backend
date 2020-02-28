@@ -28,38 +28,35 @@ import javax.ws.rs.core.Response.Status;
 import com.zemiak.movies.batch.CacheClearEvent;
 import com.zemiak.movies.movie.Movie;
 
+import io.quarkus.panache.common.Sort;
+
 @RequestScoped
 @Path("languages")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @Transactional
 public class LanguageService {
-    @PersistenceContext
-    EntityManager em;
-
     @GET
     @Path("all")
     public List<Language> all() {
-        TypedQuery<Language> query = em.createQuery("SELECT l FROM Language l ORDER by l.displayOrder", Language.class);
-
-        return query.getResultList();
+        return Language.listAll(Sort.by("displayOrder"));
     }
 
     @PUT
     public void save(@Valid @NotNull Language entity) {
         Language target = null;
 
-        if (null == entity.getId()) {
+        if (null == entity.id) {
             throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("ID not specified").build());
         }
 
-        target = em.find(Language.class, entity.getId());
+        target = em.find(Language.class, entity.id);
         target.copyFrom(entity);
     }
 
     @POST
     public void create(@Valid @NotNull Language entity) {
-        if (null != entity.getId()) {
+        if (null != entity.id) {
             throw new WebApplicationException(Response.status(Status.NOT_ACCEPTABLE).entity("ID specified").build());
         }
 
@@ -94,7 +91,7 @@ public class LanguageService {
     public List<Language> getByExpression(@PathParam("pattern") @NotNull final String text) {
         List<Language> res = new ArrayList<>();
 
-        all().stream().filter(entry -> entry.getName().toLowerCase().contains(text.toLowerCase())).forEach(entry -> {
+        all().stream().filter(entry -> entry.name.toLowerCase().contains(text.toLowerCase())).forEach(entry -> {
             res.add(entry);
         });
 

@@ -28,47 +28,36 @@ import javax.ws.rs.core.Response.Status;
 import com.zemiak.movies.batch.CacheClearEvent;
 import com.zemiak.movies.movie.Movie;
 
+import io.quarkus.hibernate.orm.panache.Panache;
+import io.quarkus.panache.common.Parameters;
+import io.quarkus.panache.common.Sort;
+
 @RequestScoped
 @Path("genres")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @Transactional
 public class GenreService {
-    @PersistenceContext EntityManager em;
-
     @GET
     @Path("all")
     public List<Genre> all() {
-        TypedQuery<Genre> query = em.createQuery("SELECT l FROM Genre l ORDER by l.displayOrder", Genre.class);
-
-        return query.getResultList();
+        return Genre.listAll(Sort.by("displayOrder"));
     }
 
     @POST
+    @PUT
     public void create(@Valid @NotNull Genre entity) {
         if (null != entity.id) {
             throw new WebApplicationException(Response.status(Status.NOT_ACCEPTABLE).entity("ID specified").build());
         }
 
-        em.persist(entity);
-    }
-
-    @PUT
-    public void save(@Valid @NotNull Genre entity) {
-        Genre target = null;
-
-        if (null == entity.id) {
-            throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("ID not specified").build());
-        }
-
-        target = em.find(Genre.class, entity.id);
-        target.copyFrom(entity);
+        entity.persist();
     }
 
     @GET
     @Path("{id}")
-    public Genre find(@PathParam("id") @NotNull Integer id) {
-        return em.find(Genre.class, id);
+    public Genre find(@PathParam("id") @NotNull Long id) {
+        return Genre.findById(id);
     }
 
     @DELETE
@@ -88,18 +77,12 @@ public class GenreService {
     }
 
     public void clearCache(@Observes CacheClearEvent event) {
-        em.getEntityManagerFactory().getCache().evictAll();
+        Panache.getEntityManager().getEntityManagerFactory().getCache().evictAll();
     }
 
     @GET
     @Path("search/{pattern}")
     public List<Genre> getByExpression(@PathParam("pattern") @NotNull final String text) {
-        List<Genre> res = new ArrayList<>();
-
-        all().stream().filter(entry -> entry.name.toLowerCase().contains(text.toLowerCase())).forEach(entry -> {
-            res.add(entry);
-        });
-
-        return res;
+        return Genre.find("UPPER(name) LIKE UPPER('%:pattern%')", Parameters.with("pattern", text)).list();
     }
 }

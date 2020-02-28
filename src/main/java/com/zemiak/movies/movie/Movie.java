@@ -307,15 +307,15 @@ public class Movie implements Serializable, Comparable<Movie> {
     }
 
     public String getLanguageName() {
-        return null == language ? "<None>" : language.getName();
+        return null == language ? "<None>" : language.name;
     }
 
     public String getOriginalLanguageName() {
-        return null == originalLanguage ? "<None>" : originalLanguage.getName();
+        return null == originalLanguage ? "<None>" : originalLanguage.name;
     }
 
     public String getSubtitlesName() {
-        return null == subtitles ? "<None>" : subtitles.getName();
+        return null == subtitles ? "<None>" : subtitles.name;
     }
 
     public boolean isEmptySerie() {
