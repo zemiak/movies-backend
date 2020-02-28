@@ -94,8 +94,8 @@ public class InfuseCoversAndLinks {
     private void createGenreCover(Movie movie) {
         Path link = Paths.get(infuseLinkPath,
                     Encodings.deAccent(getGenreName(movie)),
-                    "folder." + getFileExt(movie.getGenre().getPictureFileName()));
-        Path existing = Paths.get(imgPath, "genre", movie.getGenre().getPictureFileName());
+                    "folder." + getFileExt(movie.getGenre().pictureFileName));
+        Path existing = Paths.get(imgPath, "genre", movie.getGenre().pictureFileName);
 
         createSymbolicLink(link, existing);
     }
@@ -119,7 +119,7 @@ public class InfuseCoversAndLinks {
     }
 
     private String getGenreName(Movie movie) {
-        String name = movie.getGenre().getName();
+        String name = movie.getGenre().name;
         if ("Children".equals(name)) {
             name = "0-Children";
         }

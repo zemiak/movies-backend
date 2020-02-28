@@ -132,7 +132,7 @@ public class StaticServlet extends HttpServlet {
                 throw new IllegalStateException("Unknown genre ID: " + id);
             }
 
-            return "/genre/" + genre.getPictureFileName();
+            return "/genre/" + genre.pictureFileName;
         }
     }
 }

@@ -276,7 +276,7 @@ public class Movie implements Serializable, Comparable<Movie> {
     }
 
     public String composeGenreName() {
-        return getGenre().getName();
+        return getGenre().name;
     }
 
     @Override
@@ -340,7 +340,7 @@ public class Movie implements Serializable, Comparable<Movie> {
     }
 
     public String getGenreName() {
-        return null == genre ? "<None>" : (genre.isEmpty() ? "<None>" : genre.getName());
+        return null == genre ? "<None>" : (genre.isEmpty() ? "<None>" : genre.name);
     }
 
     public static Movie create() {

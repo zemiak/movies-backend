@@ -178,7 +178,7 @@ public class Serie implements Serializable, Comparable<Serie> {
     }
 
     public String getGenreName() {
-        return null == genre ? "<None>" : (genre.isEmpty() ? "<None>" : genre.getName());
+        return null == genre ? "<None>" : (genre.isEmpty() ? "<None>" : genre.name);
     }
 
     public static Serie create(EntityManager em) {

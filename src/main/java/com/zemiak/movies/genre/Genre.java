@@ -1,134 +1,66 @@
 package com.zemiak.movies.genre;
 
-import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
+
+import io.quarkus.hibernate.orm.panache.PanacheEntity;
 
 @Entity
-@Table(name = "genre")
-@NamedQueries({
-    @NamedQuery(name = "Genre.findAll", query = "SELECT g FROM Genre g ORDER BY g.displayOrder"),
-    @NamedQuery(name = "Genre.findById", query = "SELECT g FROM Genre g WHERE g.id = :id"),
-    @NamedQuery(name = "Genre.findByName", query = "SELECT g FROM Genre g WHERE g.name = :name"),
-    @NamedQuery(name = "Genre.findByPictureFileName", query = "SELECT g FROM Genre g WHERE g.pictureFileName = :pictureFileName"),
-    @NamedQuery(name = "Genre.findByDisplayOrder", query = "SELECT g FROM Genre g WHERE g.displayOrder = :displayOrder"),
-})
-@XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
-public class Genre implements Serializable, Comparable<Genre> {
-    private static final long serialVersionUID = 1L;
-
-    @Id
-    @SequenceGenerator(name="seq_global", sequenceName="seq_global", initialValue = 47000000, allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_global")
-    @Basic(optional = false)
-    @Column(name = "id")
-    private Integer id;
-
+public class Genre extends PanacheEntity implements Comparable<Genre> {
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 128)
     @Column(name = "name")
-    private String name;
+    public String name;
 
     @Column(name = "protected")
-    private Integer protectedGenre;
+    public Long protectedGenre;
 
     @Column(name = "picture_file_name")
     @Size(max = 512)
-    private String pictureFileName;
+    public String pictureFileName;
 
     @Column(name = "display_order")
-    private Integer displayOrder;
+    public Long displayOrder;
 
     @Column(name = "created")
     @Temporal(TemporalType.TIMESTAMP)
-    private Date created;
+    public Date created;
 
     public static Genre create() {
         Genre genre = new Genre();
-        genre.setCreated(new Date());
-        genre.setDisplayOrder(9000);
+        genre.created = new Date();
+        genre.displayOrder = 9000l;
 
         return genre;
-    }
-
-    public Date getCreated() {
-        return created;
-    }
-
-    public void setCreated(Date created) {
-        this.created = created;
     }
 
     public Genre() {
         this.created = new Date();
     }
 
-    public Genre(Integer id) {
+    public Genre(Long id) {
         this();
         this.id = id;
     }
 
-    public Genre(Integer id, String name) {
+    public Genre(Long id, String name) {
         this.id = id;
         this.name = name;
     }
 
     public void copyFrom(Genre entity) {
-        this.setId(entity.getId());
-        this.setName(entity.getName());
-        this.setDisplayOrder(entity.getDisplayOrder());
-        this.setPictureFileName(entity.getPictureFileName());
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getPictureFileName() {
-        return pictureFileName;
-    }
-
-    public void setPictureFileName(String pictureFileName) {
-        this.pictureFileName = pictureFileName;
-    }
-
-    public Integer getDisplayOrder() {
-        return displayOrder;
-    }
-
-    public void setDisplayOrder(Integer displayOrder) {
-        this.displayOrder = displayOrder;
+        this.id = entity.id;
+        this.name = entity.name;
+        this.displayOrder = entity.displayOrder;
+        this.pictureFileName = entity.pictureFileName;
     }
 
     @Override
@@ -161,18 +93,18 @@ public class Genre implements Serializable, Comparable<Genre> {
 
     @Override
     public int compareTo(Genre o) {
-        if (null == displayOrder && null != o.getDisplayOrder()) {
+        if (null == displayOrder && null != o.displayOrder) {
             return -1;
         }
 
-        if (null != displayOrder && null == o.getDisplayOrder()) {
+        if (null != displayOrder && null == o.displayOrder) {
             return 1;
         }
 
-        if (null == displayOrder && null == o.getDisplayOrder()) {
+        if (null == displayOrder && null == o.displayOrder) {
             return 0;
         }
 
-        return displayOrder.compareTo(o.getDisplayOrder());
+        return displayOrder.compareTo(o.displayOrder);
     }
 }

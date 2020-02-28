@@ -46,7 +46,7 @@ public class GenreService {
 
     @POST
     public void create(@Valid @NotNull Genre entity) {
-        if (null != entity.getId()) {
+        if (null != entity.id) {
             throw new WebApplicationException(Response.status(Status.NOT_ACCEPTABLE).entity("ID specified").build());
         }
 
@@ -57,11 +57,11 @@ public class GenreService {
     public void save(@Valid @NotNull Genre entity) {
         Genre target = null;
 
-        if (null == entity.getId()) {
+        if (null == entity.id) {
             throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("ID not specified").build());
         }
 
-        target = em.find(Genre.class, entity.getId());
+        target = em.find(Genre.class, entity.id);
         target.copyFrom(entity);
     }
 
@@ -96,7 +96,7 @@ public class GenreService {
     public List<Genre> getByExpression(@PathParam("pattern") @NotNull final String text) {
         List<Genre> res = new ArrayList<>();
 
-        all().stream().filter(entry -> entry.getName().toLowerCase().contains(text.toLowerCase())).forEach(entry -> {
+        all().stream().filter(entry -> entry.name.toLowerCase().contains(text.toLowerCase())).forEach(entry -> {
             res.add(entry);
         });
 

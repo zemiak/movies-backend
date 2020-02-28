@@ -73,8 +73,8 @@ public class InfuseMovieWriter {
 
     private void makeRecentlyAdded() {
         Genre genre = Genre.create();
-        genre.setId(-1);
-        genre.setName("X-Recently Added");
+        genre.id = -1l;
+        genre.name = "X-Recently Added";
 
         service.getRecentlyAdded().stream().forEach(movie -> {
             em.detach(movie);
@@ -86,8 +86,8 @@ public class InfuseMovieWriter {
 
     private void makeNewReleases() {
         Genre genre = Genre.create();
-        genre.setId(-2);
-        genre.setName("X-New Releases");
+        genre.id = -2l;
+        genre.name = "X-New Releases";
 
         service.getNewReleases().stream().forEach(movie -> {
             em.detach(movie);
