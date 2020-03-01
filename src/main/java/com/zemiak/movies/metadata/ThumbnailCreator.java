@@ -8,7 +8,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.zemiak.movies.batch.logs.BatchLogger;
-import com.zemiak.movies.lookup.ConfigurationProvider;
+import com.zemiak.movies.config.ConfigurationProvider;
 import com.zemiak.movies.movie.MovieService;
 import com.zemiak.movies.scraper.WebMetadataReader;
 
@@ -28,14 +28,14 @@ public class ThumbnailCreator {
                 .map(fileName -> Paths.get(fileName).toFile().getAbsolutePath())
                 .map(fileName -> service.findByFilename(fileName.substring(path.length())))
                 .filter(movie -> null != movie)
-                .filter(movie -> !Paths.get(imgPath, "movie", movie.getPictureFileName()).toFile().exists())
+                .filter(movie -> !Paths.get(imgPath, "movie", movie.pictureFileName).toFile().exists())
                 .forEach(movie -> {
                     WebMetadataReader reader = new WebMetadataReader(imgPath, path, ffmpeg, developmentSystem);
 
                     if (reader.processThumbnail(movie)) {
-                        LOG.log(Level.FINE, "Generated a thumbnail {0}", movie.getPictureFileName());
+                        LOG.log(Level.FINE, "Generated a thumbnail {0}", movie.pictureFileName);
                     } else {
-                        LOG.log(Level.SEVERE, "Error generating a thumbnail {0}", movie.getPictureFileName());
+                        LOG.log(Level.SEVERE, "Error generating a thumbnail {0}", movie.pictureFileName);
                     }
                 });
     }

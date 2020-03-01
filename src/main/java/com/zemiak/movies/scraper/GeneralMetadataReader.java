@@ -47,7 +47,7 @@ public class GeneralMetadataReader implements IWebMetadataReader {
 
     @Override
     public void processThumbnail(Movie movie) {
-        final String movieFileName = Paths.get(path, movie.getFileName()).toString();
+        final String movieFileName = Paths.get(path, movie.fileName).toString();
 
         final List<String> params = Arrays.asList(
             "-s", "180", "-i", movieFileName, "-o", imageFileName

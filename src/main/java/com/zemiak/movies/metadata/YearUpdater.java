@@ -8,7 +8,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.zemiak.movies.batch.logs.BatchLogger;
-import com.zemiak.movies.lookup.ConfigurationProvider;
+import com.zemiak.movies.config.ConfigurationProvider;
 import com.zemiak.movies.movie.MovieService;
 import com.zemiak.movies.scraper.WebMetadataReader;
 
@@ -25,19 +25,19 @@ public class YearUpdater {
                 .map(fileName -> Paths.get(fileName).toFile().getAbsolutePath())
                 .map(fileName -> service.findByFilename(fileName.substring(ConfigurationProvider.getPath().length())))
                 .filter(movie -> null != movie)
-                .filter(movie -> null != movie.getUrl() && !movie.getUrl().trim().isEmpty())
-                .filter(movie -> null == movie.getYear())
-                .filter(movie -> null != movie.getWebPage())
+                .filter(movie -> null != movie.url && !movie.url.trim().isEmpty())
+                .filter(movie -> null == movie.year)
+                .filter(movie -> null != movie.year)
                 .forEach(movie -> {
                     final Integer year = reader.parseYear(movie);
                     if (null == year) {
                         return;
                     }
 
-                    movie.setYear(year);
+                    movie.year = year;
                     service.mergeAndSave(movie);
 
-                    LOG.log(Level.INFO, "... updated year in DB of " + movie.getFileName() + " to " + movie.getYear(), movie.getId());
+                    LOG.log(Level.INFO, "... updated year in DB of " + movie.fileName + " to " + movie.year, movie.id);
 
                     try {
                         Thread.sleep(1000);

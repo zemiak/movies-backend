@@ -82,7 +82,7 @@ public class Language extends PanacheEntity {
     }
 
     public boolean isNone() {
-        return "  ".equals(id);
+        return "  ".equals(code);
     }
 
     public static Language create() {

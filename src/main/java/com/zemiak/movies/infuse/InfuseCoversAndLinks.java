@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.zemiak.movies.lookup.ConfigurationProvider;
+import com.zemiak.movies.config.ConfigurationProvider;
 import com.zemiak.movies.movie.Movie;
 import com.zemiak.movies.movie.MovieService;
 import com.zemiak.movies.serie.Serie;
@@ -30,11 +30,11 @@ public class InfuseCoversAndLinks {
 
     public void createGenreAndSerieCovers() {
         service.all().stream().forEach(movie -> {
-            if (null != movie.getGenre()) {
+            if (null != movie.genre) {
                 createGenreCover(movie);
             }
 
-            if (null != movie.getSerie()) {
+            if (null != movie.serie) {
                 createSerieCover(movie);
             }
         });
@@ -42,7 +42,7 @@ public class InfuseCoversAndLinks {
 
     public boolean createLink(Movie movie, String movieName, int order) throws IOException {
         String discriminator = 0 == order ? "" : "_" + order;
-        Serie serie = movie.getSerie();
+        Serie serie = movie.serie;
         Path linkName;
 
         if (null == serie || serie.isEmpty()) {
@@ -56,17 +56,17 @@ public class InfuseCoversAndLinks {
         } else {
             Files.createDirectories(Paths.get(infuseLinkPath,
                     Encodings.deAccent(getGenreName(movie)),
-                    Encodings.deAccent(serie.getName())
+                    Encodings.deAccent(serie.name)
             ));
 
             String movieNameInSerie = getSeriedMovieName(movie, movieName, discriminator);
             linkName = Paths.get(infuseLinkPath,
                     Encodings.deAccent(getGenreName(movie)),
-                    Encodings.deAccent(serie.getName()),
+                    Encodings.deAccent(serie.name),
                     movieNameInSerie);
         }
 
-        Path existing = Paths.get(path, movie.getFileName());
+        Path existing = Paths.get(path, movie.fileName);
 
         try {
             Files.createSymbolicLink(linkName, existing);
@@ -81,12 +81,12 @@ public class InfuseCoversAndLinks {
     }
 
     private void createSerieCover(Movie movie) {
-        Serie serie = movie.getSerie();
+        Serie serie = movie.serie;
         Path link = Paths.get(infuseLinkPath,
                     Encodings.deAccent(getGenreName(movie)),
-                    Encodings.deAccent(serie.getName()),
-                    "folder." + getFileExt(serie.getPictureFileName()));
-        Path existing = Paths.get(imgPath, "serie", serie.getPictureFileName());
+                    Encodings.deAccent(serie.name),
+                    "folder." + getFileExt(serie.pictureFileName));
+        Path existing = Paths.get(imgPath, "serie", serie.pictureFileName);
 
         createSymbolicLink(link, existing);
     }
@@ -94,8 +94,8 @@ public class InfuseCoversAndLinks {
     private void createGenreCover(Movie movie) {
         Path link = Paths.get(infuseLinkPath,
                     Encodings.deAccent(getGenreName(movie)),
-                    "folder." + getFileExt(movie.getGenre().pictureFileName));
-        Path existing = Paths.get(imgPath, "genre", movie.getGenre().pictureFileName);
+                    "folder." + getFileExt(movie.genre.pictureFileName));
+        Path existing = Paths.get(imgPath, "genre", movie.genre.pictureFileName);
 
         createSymbolicLink(link, existing);
     }
@@ -113,13 +113,13 @@ public class InfuseCoversAndLinks {
         pos = fileNameWithExt.lastIndexOf(".");
         String fileNameWithoutExt = fileNameWithExt.substring(0, pos);
 
-        Path link = Paths.get(filePath, fileNameWithoutExt + "." + getFileExt(movie.getPictureFileName()));
-        Path existing = Paths.get(imgPath, "movie", movie.getPictureFileName());
+        Path link = Paths.get(filePath, fileNameWithoutExt + "." + getFileExt(movie.pictureFileName));
+        Path existing = Paths.get(imgPath, "movie", movie.pictureFileName);
         createSymbolicLink(link, existing);
     }
 
     private String getGenreName(Movie movie) {
-        String name = movie.getGenre().name;
+        String name = movie.genre.name;
         if ("Children".equals(name)) {
             name = "0-Children";
         }
@@ -130,7 +130,7 @@ public class InfuseCoversAndLinks {
     private String getSeriedMovieName(Movie movie, String movieName, String discriminator) {
         // Infuse somehow does not group series together :-(
 
-//        if (! movie.getSerie().isTvShow()) {
+//        if (! movie.serie.isTvShow()) {
             return service.getNiceDisplayOrder(movie) + " " + Encodings.deAccent(movieName) + discriminator
                     + ".m4v";
 //        }

@@ -11,7 +11,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 
 import com.zemiak.movies.batch.logs.BatchLogger;
-import com.zemiak.movies.lookup.ConfigurationProvider;
+import com.zemiak.movies.config.ConfigurationProvider;
 
 @Dependent
 public class PrepareMovieFileList {

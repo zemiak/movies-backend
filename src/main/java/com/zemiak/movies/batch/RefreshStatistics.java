@@ -6,7 +6,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 
 import com.zemiak.movies.batch.logs.BatchLogger;
-import com.zemiak.movies.lookup.ConfigurationProvider;
+import com.zemiak.movies.config.ConfigurationProvider;
 
 @ApplicationScoped
 public class RefreshStatistics {

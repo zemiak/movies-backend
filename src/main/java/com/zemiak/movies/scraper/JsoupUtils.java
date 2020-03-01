@@ -25,21 +25,21 @@ public class JsoupUtils {
     }
 
     static Document getMovieDocument(final Movie movie) {
-        String url = movie.getUrl();
+        String url = movie.url;
 
         return getDocument(url);
     }
 
     static Document getMovieDocumentFromString(Movie movie) {
-        if (null == movie.getWebPage() && null != movie.getUrl()) {
+        if (null == movie.webPage && null != movie.url) {
             Document webPage = getMovieDocument(movie);
             if (null == webPage) {
                 return null;
             }
 
-            movie.setWebPage(webPage.toString());
+            movie.webPage = webPage.toString();
         }
 
-        return Jsoup.parse(movie.getWebPage());
+        return Jsoup.parse(movie.webPage);
     }
 }

@@ -29,7 +29,7 @@ public class Csfd implements IWebMetadataReader {
 
     @Override
     public boolean accepts(final Movie movie) {
-        final String url = movie.getUrl();
+        final String url = movie.url;
 
         return (null != url) && (url.startsWith(URL1) || url.startsWith(URL2) || url.startsWith(URL3));
     }
@@ -131,7 +131,7 @@ public class Csfd implements IWebMetadataReader {
 
     @Override
     public Integer parseYear(final Movie movie) {
-        if (null == movie.getWebPage()) {
+        if (null == movie.webPage) {
             return null;
         }
 

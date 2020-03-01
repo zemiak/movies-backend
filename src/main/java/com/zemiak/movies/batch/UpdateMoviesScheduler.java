@@ -12,7 +12,7 @@ import javax.ws.rs.Path;
 import com.zemiak.movies.batch.logs.BatchLogger;
 import com.zemiak.movies.batch.logs.SendLogFile;
 import com.zemiak.movies.infuse.InfuseService;
-import com.zemiak.movies.lookup.ConfigurationProvider;
+import com.zemiak.movies.config.ConfigurationProvider;
 import com.zemiak.movies.metadata.MetadataService;
 
 

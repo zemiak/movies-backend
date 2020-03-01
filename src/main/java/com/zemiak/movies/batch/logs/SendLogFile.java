@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.zemiak.movies.lookup.ConfigurationProvider;
+import com.zemiak.movies.config.ConfigurationProvider;
 
 import io.quarkus.mailer.Mail;
 import io.quarkus.mailer.Mailer;

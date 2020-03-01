@@ -121,7 +121,7 @@ public class MovieMetadata {
 
         if (commentsAreEmpty && movie.isDescriptionEmpty() && !movie.isUrlEmpty()) {
             if (debug) {
-                LOG.log(Level.INFO, "{0}: metadata and movie comments empty, comments URL not. Updating.", movie.getFileName());
+                LOG.log(Level.INFO, "{0}: metadata and movie comments empty, comments URL not. Updating.", movie.fileName);
             }
 
             return true;
@@ -139,7 +139,7 @@ public class MovieMetadata {
     }
 
     public boolean isNameEqual() {
-        if (name == null && movie.getName() != null) {
+        if (name == null && movie.name != null) {
             return false;
         }
 
@@ -149,11 +149,11 @@ public class MovieMetadata {
     }
 
     public boolean isYearEqual() {
-        if (year == null && movie.getYear() != null) {
+        if (year == null && movie.year != null) {
             return false;
         }
 
-        return year == null || year.equals(movie.getYear());
+        return year == null || year.equals(movie.year);
     }
 
     public boolean isGenreEqual() {
@@ -172,7 +172,7 @@ public class MovieMetadata {
 
             if (debug) {
                 LOG.log(Level.INFO, "{0}: isMetadataEqual: Name is not equal. Is \"{1}\", should be \"{2}\"",
-                        new Object[]{movie.getFileName(), name, getMovieName()});
+                        new Object[]{movie.fileName, name, getMovieName()});
             }
         }
 
@@ -181,7 +181,7 @@ public class MovieMetadata {
 
             if (debug) {
                 LOG.log(Level.INFO, "{0}: isMetadataEqual: Genre is not equal. Is \"{1}\", should be \"{2}\"",
-                        new Object[]{movie.getFileName(), genre, movie.composeGenreName()});
+                        new Object[]{movie.fileName, genre, movie.composeGenreName()});
             }
         }
 
@@ -190,7 +190,7 @@ public class MovieMetadata {
 
             if (debug) {
                 LOG.log(Level.INFO, "{0}: isMetadataEqual: Year is not equal. Is \"{1}\", should be \"{2}\"",
-                        new Object[]{movie.getFileName(), year, String.valueOf(movie.getYear())});
+                        new Object[]{movie.fileName, year, String.valueOf(movie.year)});
             }
         }
 
@@ -210,9 +210,9 @@ public class MovieMetadata {
     }
 
     public String getMovieName() {
-        String title = null == movie.getName() || movie.getName().trim().isEmpty() ? movie.getOriginalName() : movie.getName();
-        if (null != movie.getYear() && movie.getYear() > 0 && (null == movie.getSerie() || movie.getSerie().isEmpty())) {
-            title += " (" + String.valueOf(movie.getYear()) + ")";
+        String title = null == movie.name || movie.name.trim().isEmpty() ? movie.originalName : movie.name;
+        if (null != movie.year && movie.year > 0 && (null == movie.serie || movie.serie.isEmpty())) {
+            title += " (" + String.valueOf(movie.year) + ")";
         }
 
         return title;

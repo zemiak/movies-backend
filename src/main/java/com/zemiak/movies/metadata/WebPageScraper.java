@@ -8,7 +8,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.zemiak.movies.batch.logs.BatchLogger;
-import com.zemiak.movies.lookup.ConfigurationProvider;
+import com.zemiak.movies.config.ConfigurationProvider;
 import com.zemiak.movies.movie.MovieService;
 import com.zemiak.movies.scraper.WebMetadataReader;
 
@@ -25,15 +25,15 @@ public class WebPageScraper {
                 .map(fileName -> Paths.get(fileName).toFile().getAbsolutePath())
                 .map(fileName -> service.findByFilename(fileName.substring(ConfigurationProvider.getPath().length())))
                 .filter(movie -> null != movie)
-                .filter(movie -> null != movie.getUrl() && !"".equals(movie.getUrl()))
-                .filter(movie -> null == movie.getWebPage() || "".equals(movie.getWebPage()))
+                .filter(movie -> null != movie.url && !"".equals(movie.url))
+                .filter(movie -> null == movie.webPage || "".equals(movie.webPage))
                 .limit(50)
                 .forEach(movie -> {
                     String webPage = reader.readPage(movie);
-                    movie.setWebPage(webPage);
+                    movie.webPage = webPage;
                     service.mergeAndSave(movie);
 
-                    LOG.log(Level.INFO, "... updated web page in DB of " + movie.getUrl(), movie.getId());
+                    LOG.log(Level.INFO, "... updated web page in DB of " + movie.url, movie.id);
 
                     try {
                         Thread.sleep(1000);

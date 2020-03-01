@@ -86,7 +86,16 @@ public class SerieService {
         List<Serie> res = new ArrayList<>();
         String textAscii = Encodings.toAscii(text.trim().toLowerCase());
 
-        Serie.findAll().stream().map(entry -> (Serie) entry).forEach(entry -> {
+        /**
+         * TODO: optimize findAll() - either set page and size or do the filtering with SQL
+         *
+         * https://quarkus.io/guides/hibernate-orm-panache
+         *
+         * "You should only use list and stream methods if your table contains small enough data sets.
+         * For larger data sets you can use the find method equivalents, which return a PanacheQuery
+         * on which you can do paging"
+         */
+        Serie.streamAll().map(entry -> (Serie) entry).forEach(entry -> {
             String name = (null == entry.name ? ""
                     : Encodings.toAscii(entry.name.trim().toLowerCase()));
             if (name.contains(textAscii)) {

@@ -1,4 +1,4 @@
-package com.zemiak.movies.lookup;
+package com.zemiak.movies.config;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;

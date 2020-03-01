@@ -6,9 +6,6 @@ import java.util.List;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -30,6 +27,10 @@ import com.zemiak.movies.genre.Genre;
 import com.zemiak.movies.serie.Serie;
 import com.zemiak.movies.strings.Encodings;
 
+import io.quarkus.hibernate.orm.panache.Panache;
+import io.quarkus.panache.common.Parameters;
+import io.quarkus.panache.common.Sort;
+
 @RequestScoped
 @Path("movies")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -47,67 +48,67 @@ public class MovieResource {
     @GET
     @Path("new")
     public List<Movie> getNewMovies() {
-        TypedQuery<Movie> query = em.createQuery("SELECT l FROM Movie l WHERE (l.genre = :genreNew1 OR l.genre IS NULL) ORDER BY l.genre, l.serie, l.displayOrder", Movie.class);
-        query.setParameter("genreNew1", em.find(Genre.class, 0));
-
-        return query.getResultList();
+        return Movie.find("genre = :valueNew OR genre IS NULL",
+            Sort.ascending("genre", "serie", "displayOrder"),
+            Parameters.with("valueNew", Genre.findById(0)))
+            .list();
     }
 
     @GET
     @Path("by-serie/{id}")
-    public List<Movie> getSerieMovies(@PathParam("id") @NotNull Integer id) {
-        Serie serie = em.find(Serie.class, id);
-        TypedQuery<Movie> query = em.createQuery("SELECT l FROM Movie l WHERE L.SERIE IS NULL OR l.serie = :serie ORDER BY l.displayOrder", Movie.class);
-        query.setParameter("serie", serie);
-
-        return query.getResultList();
+    public List<Movie> getSerieMovies(@PathParam("id") @NotNull Long id) {
+        return Movie.find("serie = :valueNew OR serie IS NULL",
+            Sort.ascending("displayOrder"),
+            Parameters.with("valueNew", Serie.findById(id)))
+            .list();
     }
 
     @GET
     @Path("by-genre/{id}")
-    public List<Movie> getGenreMovies(@PathParam("id") @NotNull Integer id) {
-        Genre genre = em.find(Genre.class, id);
-        TypedQuery<Movie> query = em.createQuery("SELECT l FROM Movie l WHERE l.genre IS NULL OR l.genre = :genre ORDER by l.genre, l.serie, l.displayOrder", Movie.class);
-        query.setParameter("genre", genre);
-
-        return query.getResultList();
+    public List<Movie> getGenreMovies(@PathParam("id") @NotNull Long id) {
+        return Movie.find("genre = :valueNew OR genre IS NULL",
+            Sort.ascending("displayOrder"),
+            Parameters.with("valueNew", Genre.findById(id)))
+            .list();
     }
 
     @PUT
     public void save(@Valid @NotNull Movie entity) {
-        Movie target = null;
-
-        if (null == entity.getId()) {
+        if (null == entity.id) {
             throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("ID not specified").build());
         }
 
-        target = em.find(Movie.class, entity.getId());
-        target.copyFrom(entity);
+        entity.persist();
     }
 
     @POST
     public void create(@Valid @NotNull Movie entity) {
-        if (null != entity.getId()) {
+        if (null != entity.id) {
             throw new WebApplicationException(Response.status(Status.NOT_ACCEPTABLE).entity("ID specified").build());
         }
 
-        em.persist(entity);
+        entity.persist();
     }
 
     @GET
     @Path("{id}")
-    public Movie find(@PathParam("id") @NotNull Integer id) {
+    public Movie find(@PathParam("id") @NotNull Long id) {
         return service.find(id);
     }
 
     @DELETE
     @Path("{id}")
-    public void remove(@PathParam("id") @NotNull Integer entityId) {
-        em.remove(em.find(Movie.class, entityId));
+    public void remove(@PathParam("id") @NotNull Long entityId) {
+        Movie m = Movie.findById(entityId);
+        if (null == m) {
+            throw new WebApplicationException(Status.NOT_FOUND);
+        }
+
+        m.delete();
     }
 
     public void clearCache(@Observes CacheClearEvent event) {
-        em.getEntityManagerFactory().getCache().evictAll();
+        Panache.getEntityManager().getEntityManagerFactory().getCache().evictAll();
     }
 
     @GET
@@ -116,9 +117,18 @@ public class MovieResource {
         List<Movie> res = new ArrayList<>();
         String textAscii = Encodings.toAscii(text.trim().toLowerCase());
 
-        all().stream().forEach(entry -> {
-            String name = null == entry.getName() ? ""
-                    : Encodings.toAscii(entry.getName().trim().toLowerCase());
+        /**
+         * TODO: optimize findAll() - either set page and size or do the filtering with SQL
+         *
+         * https://quarkus.io/guides/hibernate-orm-panache
+         *
+         * "You should only use list and stream methods if your table contains small enough data sets.
+         * For larger data sets you can use the find method equivalents, which return a PanacheQuery
+         * on which you can do paging"
+         */
+        Movie.streamAll().map(e -> (Movie) e).forEach(entry -> {
+            String name = null == entry.name ? ""
+                    : Encodings.toAscii(entry.name.trim().toLowerCase());
             if (name.contains(textAscii)) {
                 res.add(entry);
             }
@@ -130,21 +140,6 @@ public class MovieResource {
     @GET
     @Path("last/{count}")
     public List<Movie> getLastMovies(@PathParam("count") @NotNull Integer count) {
-        TypedQuery<Movie> query = em.createQuery("SELECT l FROM Movie l ORDER BY l.id DESC", Movie.class);
-        query.setMaxResults(count);
-
-        return query.getResultList();
-    }
-
-    @GET
-    @Path("new")
-    public List<Movie> findAllNew() {
-        List<Movie> res = new ArrayList<>();
-
-        all().stream()
-                .filter(movie -> null == movie.getGenre() || movie.getGenre().isEmpty())
-                .forEach(movie -> res.add(movie));
-
-        return res;
+        return Movie.findAll(Sort.descending("id")).page(0, count).list();
     }
 }

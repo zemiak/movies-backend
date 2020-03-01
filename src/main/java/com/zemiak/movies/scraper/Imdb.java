@@ -25,7 +25,7 @@ public class Imdb implements IWebMetadataReader {
 
     @Override
     public boolean accepts(final Movie movie) {
-        final String url = movie.getUrl();
+        final String url = movie.url;
         return (null != url) && (url.startsWith(URL1) || url.startsWith(URL2) || url.startsWith(URL3));
     }
 

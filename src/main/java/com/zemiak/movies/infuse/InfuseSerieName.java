@@ -10,16 +10,16 @@ import com.zemiak.movies.strings.Encodings;
 
 @Dependent
 public class InfuseSerieName {
-    static final Integer GOT = 1000;
-    static final Integer MASH = 1;
+    static final Long GOT = 1000l;
+    static final Long MASH = 1l;
 
     public String process(Movie movie) {
-        Serie serie = movie.getSerie();
+        Serie serie = movie.serie;
         String name;
 
-        if (Objects.equals(GOT, serie.getId())) {
-            name = process(movie, 2, movie.getDisplayOrder() / 100);
-        } else if (Objects.equals(MASH, serie.getId())) {
+        if (Objects.equals(GOT, serie.id)) {
+            name = process(movie, 2, movie.displayOrder / 100);
+        } else if (Objects.equals(MASH, serie.id)) {
             name = process(movie, 3, 1);
         } else {
             name = process(movie, 2, 1);
@@ -32,9 +32,9 @@ public class InfuseSerieName {
         String serie = Encodings.deAccent(movie.getSerieName());
         String seasonNumber = String.format("%02d", season);
         String format = "%0" + String.valueOf(decimals) + "d";
-        Integer number = null == movie.getDisplayOrder() ? 0 : movie.getDisplayOrder();
-        String movieName = (null == movie.getOriginalName() || "".equals(movie.getOriginalName().trim()))
-                ? movie.getName() : movie.getOriginalName();
+        Integer number = null == movie.displayOrder ? 0 : movie.displayOrder;
+        String movieName = (null == movie.originalName || "".equals(movie.originalName.trim()))
+                ? movie.name : movie.originalName;
 
         if (null == movieName || "".equals(movieName)) {
             movieName = "";

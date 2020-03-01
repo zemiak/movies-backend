@@ -35,10 +35,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.zemiak.movies.lookup.CDILookup;
-import com.zemiak.movies.lookup.ConfigurationProvider;
+import com.zemiak.movies.config.ConfigurationProvider;
 import com.zemiak.movies.movie.Movie;
-import com.zemiak.movies.movie.MovieService;
 
 @WebServlet(urlPatterns = {"/stream/*"})
 public class StreamingServlet extends HttpServlet {
@@ -48,12 +46,10 @@ public class StreamingServlet extends HttpServlet {
     private static final String MULTIPART_BOUNDARY = "MULTIPART_BYTERANGES";
 
     private String basePath;
-    private MovieService service;
 
     @Override
     public void init() throws ServletException {
         this.basePath = ConfigurationProvider.getPath();
-        this.service = new CDILookup().lookup(MovieService.class);
     }
 
     @Override
@@ -83,13 +79,13 @@ public class StreamingServlet extends HttpServlet {
             return;
         }
 
-        Movie movie = service.find(movieId);
+        Movie movie = Movie.findById(movieId);
         if (null == movie) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND, "Movie ID not found: " + movieId);
             return;
         }
 
-        String requestedFile = Paths.get(basePath, movie.getFileName()).toString();
+        String requestedFile = Paths.get(basePath, movie.fileName).toString();
 
         File file = new File(requestedFile);
 

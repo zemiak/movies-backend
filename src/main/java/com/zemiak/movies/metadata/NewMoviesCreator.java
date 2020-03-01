@@ -8,7 +8,7 @@ import javax.inject.Inject;
 
 import com.zemiak.movies.batch.RefreshStatistics;
 import com.zemiak.movies.batch.logs.BatchLogger;
-import com.zemiak.movies.lookup.ConfigurationProvider;
+import com.zemiak.movies.config.ConfigurationProvider;
 import com.zemiak.movies.movie.MovieService;
 
 @Dependent
@@ -28,7 +28,7 @@ public class NewMoviesCreator {
                 .forEach(m -> {
                     stats.incrementCreated();
                     LOG.log(Level.INFO, "Created a new movie ''{0}''/''{1}'', id {2}...",
-                            new Object[]{m.getFileName(), m.getName(), m.getId()});
+                            new Object[]{m.fileName, m.name, m.id});
                 });
     }
 

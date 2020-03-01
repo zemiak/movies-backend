@@ -14,7 +14,7 @@ import javax.persistence.PersistenceContext;
 import com.zemiak.movies.batch.RefreshStatistics;
 import com.zemiak.movies.batch.logs.BatchLogger;
 import com.zemiak.movies.genre.Genre;
-import com.zemiak.movies.lookup.ConfigurationProvider;
+import com.zemiak.movies.config.ConfigurationProvider;
 import com.zemiak.movies.movie.Movie;
 import com.zemiak.movies.movie.MovieService;
 
@@ -45,21 +45,21 @@ public class InfuseMovieWriter {
         try {
             makeMovieLink(movie);
         } catch (IOException ex) {
-            LOG.log(Level.SEVERE, "Cannot make movie link for " + movie.getFileName() + ": " + ex.getMessage(), null);
+            LOG.log(Level.SEVERE, "Cannot make movie link for " + movie.fileName + ": " + ex.getMessage(), null);
         }
     }
 
     private void makeMovieLink(Movie movie) throws IOException {
-        if (null == movie.getGenre()) {
-            LOG.log(Level.SEVERE, "Movie {0} has no genre", movie.getFileName());
+        if (null == movie.genre) {
+            LOG.log(Level.SEVERE, "Movie {0} has no genre", movie.fileName);
             return;
         }
 
         String movieName = getNumberPrefix(movie) +
-                ((null == movie.getOriginalName() || "".equals(movie.getOriginalName().trim()))
-                ? movie.getName() : movie.getOriginalName());
+                ((null == movie.originalName || "".equals(movie.originalName.trim()))
+                ? movie.name : movie.originalName);
         if (null == movieName || "".equals(movieName)) {
-            LOG.log(Level.SEVERE, "Movie {0} has no name", movie.getFileName());
+            LOG.log(Level.SEVERE, "Movie {0} has no name", movie.fileName);
             return;
         }
 
@@ -68,7 +68,7 @@ public class InfuseMovieWriter {
             i++;
         }
 
-        LOG.log(Level.FINE, "Created Infuse movie link for movie ", movie.getFileName());
+        LOG.log(Level.FINE, "Created Infuse movie link for movie ", movie.fileName);
     }
 
     private void makeRecentlyAdded() {
@@ -78,8 +78,8 @@ public class InfuseMovieWriter {
 
         service.getRecentlyAdded().stream().forEach(movie -> {
             em.detach(movie);
-            movie.setGenre(genre);
-            movie.setSerie(null);
+            movie.genre = genre;
+            movie.serie = null;
             makeMovieLinkNoException(movie);
         });
     }
@@ -91,21 +91,21 @@ public class InfuseMovieWriter {
 
         service.getNewReleases().stream().forEach(movie -> {
             em.detach(movie);
-            movie.setGenre(genre);
-            movie.setSerie(null);
+            movie.genre = genre;
+            movie.serie = null;
             makeMovieLinkNoException(movie);
         });
     }
 
     private String getNumberPrefix(Movie movie) {
-        if ((null == movie.getSerie() || movie.getSerie().isEmpty()) && Objects.nonNull(movie.getYear()) && movie.getYear() > 1800) {
-            return String.format("%03d", (2500 - movie.getYear())) + "-";
+        if ((null == movie.serie || movie.serie.isEmpty()) && Objects.nonNull(movie.year) && movie.year > 1800) {
+            return String.format("%03d", (2500 - movie.year)) + "-";
         }
 
-        if (null == movie.getDisplayOrder() || movie.getDisplayOrder().equals(0) || movie.getDisplayOrder() > 999) {
+        if (null == movie.displayOrder || movie.displayOrder.equals(0) || movie.displayOrder > 999) {
             return "";
         }
 
-        return String.valueOf(movie.getDisplayOrder());
+        return String.valueOf(movie.displayOrder);
     }
 }

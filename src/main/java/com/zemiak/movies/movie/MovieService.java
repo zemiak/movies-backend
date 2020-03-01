@@ -70,6 +70,7 @@ public class MovieService {
         cal.setTime(new Date());
 
         List<Movie> movies = new ArrayList<>();
+        // TODO: limit to 50 results
         Movie.findAll(Sort.ascending("genre", "serie", "displayOrder")).stream().map(e -> (Movie) e)
                 .filter((movie) -> (null != movie.year && movie.year >= (cal.get(Calendar.YEAR) - 3)))
                 .forEach((movie) -> {

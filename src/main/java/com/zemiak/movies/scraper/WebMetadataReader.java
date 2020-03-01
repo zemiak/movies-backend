@@ -50,7 +50,7 @@ public class WebMetadataReader {
     }
 
     public String getImageFileName(final Movie movie) {
-        return Paths.get(imgPath, "movie", movie.getPictureFileName()).toString();
+        return Paths.get(imgPath, "movie", movie.pictureFileName).toString();
     }
 
     public Integer parseYear(final Movie movie) {

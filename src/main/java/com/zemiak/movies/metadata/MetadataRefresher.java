@@ -13,7 +13,7 @@ import javax.inject.Inject;
 import com.zemiak.movies.batch.RefreshStatistics;
 import com.zemiak.movies.batch.logs.BatchLogger;
 import com.zemiak.movies.batch.logs.CommandLine;
-import com.zemiak.movies.lookup.ConfigurationProvider;
+import com.zemiak.movies.config.ConfigurationProvider;
 import com.zemiak.movies.movie.Movie;
 import com.zemiak.movies.movie.MovieService;
 import com.zemiak.movies.scraper.WebMetadataReader;
@@ -72,7 +72,7 @@ public class MetadataRefresher {
 
     private void updateYear(final String fileName, final MovieMetadata data) {
         if (! data.isYearEqual()) {
-            update(fileName, YEAR, String.valueOf(data.getMovie().getYear()));
+            update(fileName, YEAR, String.valueOf(data.getMovie().year));
         }
     }
 
@@ -89,7 +89,7 @@ public class MetadataRefresher {
             if (null != desc && !desc.trim().isEmpty() && !desc.equals(data.getComments())) {
                 update(fileName, COMMENTS, desc);
 
-                data.getMovie().setDescription(desc);
+                data.getMovie().description = desc;
                 service.mergeAndSave(data.getMovie());
             } else {
                 if (null == desc) {
@@ -122,7 +122,7 @@ public class MetadataRefresher {
                     stats.incrementUpdated();
                 }
 
-                if (null != movie.getSerie() && !movie.getSerie().isEmpty() && (null == movie.getDisplayOrder() || movie.getDisplayOrder().equals(0))) {
+                if (null != movie.serie && !movie.serie.isEmpty() && (null == movie.displayOrder || movie.displayOrder.equals(0))) {
                     LOG.log(Level.SEVERE, "Movie with serie and no order " + fileName, movie);
                 }
             }

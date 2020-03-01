@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 
 import javax.enterprise.context.Dependent;
 
-import com.zemiak.movies.lookup.ConfigurationProvider;
+import com.zemiak.movies.config.ConfigurationProvider;
 
 @Dependent
 public class BasicInfuseFolderStructureCreator {

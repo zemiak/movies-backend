@@ -7,7 +7,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.zemiak.movies.batch.logs.BatchLogger;
-import com.zemiak.movies.lookup.ConfigurationProvider;
+import com.zemiak.movies.config.ConfigurationProvider;
 import com.zemiak.movies.movie.MovieService;
 import com.zemiak.movies.scraper.WebMetadataReader;
 
@@ -25,14 +25,14 @@ public class DescriptionsUpdater {
                 .map(fileName -> service.findByFilename(fileName.substring(path.length())))
                 .filter(movie -> null != movie && movie.isDescriptionEmpty())
                 .filter(movie -> reader.canFetchDescription(movie))
-                .filter(movie -> null != movie.getWebPage())
+                .filter(movie -> null != movie.webPage)
                 .forEach(movie -> {
                     String desc = reader.parseDescription(movie);
 
-                    movie.setDescription(desc);
+                    movie.description = desc;
                     service.mergeAndSave(movie);
 
-                    LOG.log(Level.INFO, "... update description in DB of ", movie.getFileName());
+                    LOG.log(Level.INFO, "... update description in DB of ", movie.fileName);
                 });
     }
 }

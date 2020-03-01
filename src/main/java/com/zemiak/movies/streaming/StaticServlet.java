@@ -12,15 +12,13 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response.Status;
 
 import com.zemiak.movies.genre.Genre;
-import com.zemiak.movies.genre.GenreService;
-import com.zemiak.movies.lookup.CDILookup;
-import com.zemiak.movies.lookup.ConfigurationProvider;
+import com.zemiak.movies.config.ConfigurationProvider;
 import com.zemiak.movies.movie.Movie;
-import com.zemiak.movies.movie.MovieService;
 import com.zemiak.movies.serie.Serie;
-import com.zemiak.movies.serie.SerieService;
 
 /**
  * Based on http://bruno.defraine.net/StaticServlet.java
@@ -29,15 +27,9 @@ import com.zemiak.movies.serie.SerieService;
 public class StaticServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private final String imgPath;
-    private final MovieService movies;
-    private final SerieService series;
-    private final GenreService genres;
 
     public StaticServlet() {
         imgPath = ConfigurationProvider.getImgPath();
-        movies = new CDILookup().lookup(MovieService.class);
-        series = new CDILookup().lookup(SerieService.class);
-        genres = new CDILookup().lookup(GenreService.class);
     }
 
     @Override
@@ -109,27 +101,27 @@ public class StaticServlet extends HttpServlet {
         }
 
         private String movieFileName(Integer id) {
-            Movie movie = movies.find(id);
+            Movie movie = Movie.findById(id);
             if (null == movie) {
-                throw new IllegalStateException("Unknown movie ID: " + id);
+                throw new WebApplicationException("Unknown movie ID: " + id, Status.NOT_FOUND);
             }
 
-            return "/movie/" + movie.getPictureFileName();
+            return "/movie/" + movie.pictureFileName;
         }
 
         private String serieFileName(Integer id) {
-            Serie serie = series.find(id);
+            Serie serie = Serie.findById(id);
             if (null == serie) {
-                throw new IllegalStateException("Unknown serie ID: " + id);
+                throw new WebApplicationException("Unknown serie ID: " + id, Status.NOT_FOUND);
             }
 
-            return "/serie/" + serie.getPictureFileName();
+            return "/serie/" + serie.pictureFileName;
         }
 
         private String genreFileName(Integer id) {
-            Genre genre = genres.find(id);
+            Genre genre = Genre.findById(id);
             if (null == genre) {
-                throw new IllegalStateException("Unknown genre ID: " + id);
+                throw new WebApplicationException("Unknown genre ID: " + id, Status.NOT_FOUND);
             }
 
             return "/genre/" + genre.pictureFileName;
