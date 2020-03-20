@@ -1,27 +1,47 @@
-FROM adoptopenjdk/openjdk8:alpine-jre
+####
+# This Dockerfile is used in order to build a container that runs the Quarkus application in JVM mode
+#
+# Before building the docker image run:
+#
+# mvn package
+#
+# Then, build the image with:
+#
+# docker build -f src/main/docker/Dockerfile.jvm -t quarkus/my-artifactId-jvm .
+#
+# Then run the container using:
+#
+# docker run -i --rm -p 8080:8080 quarkus/my-artifactId-jvm
+#
+###
+FROM registry.access.redhat.com/ubi8/ubi-minimal:8.1
 
-RUN apk add --add --no-cache curl
+ARG JAVA_PACKAGE=java-1.8.0-openjdk-headless
+ARG RUN_JAVA_VERSION=1.3.5
 
-# Memory limit is in Megs
-ENV AB_ENABLED=jmx_exporter \
-    QUARKUS_HTTP_PORT=8080 \
-    MEMORY_LIMIT=96 \
-    AUTODEPLOY_FOLDER=/deployments
+ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en'
 
-COPY target/lib/* ${AUTODEPLOY_FOLDER}/lib/
-COPY target/*-runner.jar ${AUTODEPLOY_FOLDER}/app.jar
+# Install java and the run-java script
+# Also set up permissions for user `1001`
+RUN microdnf install openssl curl ca-certificates ${JAVA_PACKAGE} \
+    && microdnf update \
+    && microdnf clean all \
+    && mkdir /deployments \
+    && chown 1001 /deployments \
+    && chmod "g+rwX" /deployments \
+    && chown 1001:root /deployments \
+    && curl https://repo1.maven.org/maven2/io/fabric8/run-java-sh/${RUN_JAVA_VERSION}/run-java-sh-${RUN_JAVA_VERSION}-sh.sh -o /deployments/run-java.sh \
+    && chown 1001 /deployments/run-java.sh \
+    && chmod 540 /deployments/run-java.sh \
+    && echo "securerandom.source=file:/dev/urandom" >> /etc/alternatives/jre/lib/security/java.security
 
-EXPOSE ${QUARKUS_HTTP_PORT}
-VOLUME ["/data"]
+# Configure the JAVA_OPTIONS, you can add -XshowSettings:vm to also display the heap size.
+ENV JAVA_OPTIONS="-Dquarkus.http.host=0.0.0.0 -Djava.util.logging.manager=org.jboss.logmanager.LogManager"
 
-HEALTHCHECK --interval=15s --timeout=2s \
- CMD curl --fail http://localhost:${QUARKUS_HTTP_PORT} || exit 1
+COPY target/lib/* /deployments/lib/
+COPY target/*-runner.jar /deployments/app.jar
 
-RUN adduser -G root --no-create-home --disabled-password 1001 \
-  && chown -R 1001 ${AUTODEPLOY_FOLDER} \
-  && chmod -R "g+rwX" ${AUTODEPLOY_FOLDER} \
-  && chown -R 1001:root ${AUTODEPLOY_FOLDER} \
-  && mkdir -p /data
+EXPOSE 8080
+USER 1001
 
-WORKDIR ${AUTODEPLOY_FOLDER}
-ENTRYPOINT [ "sh", "-c", "exec java -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=${QUARKUS_HTTP_PORT} -Djava.util.logging.manager=org.jboss.logmanager.LogManager -Xms32m -Xmx${MEMORY_LIMIT}m -jar app.jar" ]
+ENTRYPOINT [ "/deployments/run-java.sh" ]

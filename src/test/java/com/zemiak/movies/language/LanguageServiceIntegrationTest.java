@@ -1,21 +1,20 @@
 package com.zemiak.movies.language;
 
+import org.junit.jupiter.api.Test;
+
 import io.quarkus.test.junit.QuarkusTest;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import javax.inject.Inject;
-
-import org.junit.jupiter.api.Test;
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.CoreMatchers.is;
 
 @QuarkusTest
 public class LanguageServiceIntegrationTest {
-    @Inject
-    LanguageService service;
-
-    // @Test
-    // TODO: Panache tests will work again in 1.3.0
+    @Test
     public void allLanguagesCountGreaterThanZero() {
-        assertTrue(service.all().size() > 0);
+        given()
+          .when().get("/genres/all")
+          .then()
+             .statusCode(200)
+             .body(is("hello"));
     }
 }
