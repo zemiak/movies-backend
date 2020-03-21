@@ -1,14 +1,17 @@
 package com.zemiak.movies.genre;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
+import javax.json.Json;
+import javax.json.JsonObject;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.zemiak.movies.strings.DateFormatter;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 
@@ -31,19 +34,18 @@ public class Genre extends PanacheEntity implements Comparable<Genre> {
     public Long displayOrder;
 
     @Column(name = "created")
-    @Temporal(TemporalType.TIMESTAMP)
-    public Date created;
+    public LocalDateTime created;
 
     public static Genre create() {
         Genre genre = new Genre();
-        genre.created = new Date();
+        genre.created = LocalDateTime.now();
         genre.displayOrder = 9000l;
 
         return genre;
     }
 
     public Genre() {
-        this.created = new Date();
+        this.created = LocalDateTime.now();
     }
 
     public Genre(Long id) {
@@ -82,6 +84,7 @@ public class Genre extends PanacheEntity implements Comparable<Genre> {
         return true;
     }
 
+    @JsonIgnore
     public boolean isEmpty() {
         return id == 0;
     }
@@ -89,6 +92,17 @@ public class Genre extends PanacheEntity implements Comparable<Genre> {
     @Override
     public String toString() {
         return name;
+    }
+
+    public JsonObject toJson() {
+        return Json.createObjectBuilder()
+            .add("id", this.id)
+            .add("name", this.name)
+            .add("created", DateFormatter.format(this.created))
+            .add("pictureFileName", this.pictureFileName)
+            .add("protectedGenre", this.protectedGenre)
+            .add("displayOrder", this.displayOrder)
+            .build();
     }
 
     @Override

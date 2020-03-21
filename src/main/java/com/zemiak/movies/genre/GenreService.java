@@ -6,7 +6,6 @@ import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Observes;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
-import javax.validation.ValidationException;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -26,7 +25,6 @@ import com.zemiak.movies.movie.Movie;
 import com.zemiak.movies.serie.Serie;
 
 import io.quarkus.hibernate.orm.panache.Panache;
-import io.quarkus.panache.common.Parameters;
 import io.quarkus.panache.common.Sort;
 
 @RequestScoped
@@ -42,12 +40,13 @@ public class GenreService {
     }
 
     @POST
-    public void create(@Valid @NotNull Genre entity) {
+    public Long create(@Valid @NotNull Genre entity) {
         if (null != entity.id) {
             throw new WebApplicationException(Response.status(Status.NOT_ACCEPTABLE).entity("ID specified").build());
         }
 
         entity.persist();
+        return entity.id;
     }
 
     @PUT
@@ -56,29 +55,42 @@ public class GenreService {
             throw new WebApplicationException(Response.status(Status.NOT_ACCEPTABLE).entity("ID not specified").build());
         }
 
-        entity.persist();
+        Genre findEntity = Genre.findById(entity.id);
+        if (null == findEntity) {
+            throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("ID not found" + entity.id).build());
+        }
+
+        Panache.getEntityManager().merge(entity);
     }
 
     @GET
     @Path("{id}")
     public Genre find(@PathParam("id") @NotNull Long id) {
-        return Genre.findById(id);
+        Genre entity = Genre.findById(id);
+        if (null == entity) {
+            throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("ID not found: " + String.valueOf(id)).build());
+        }
+
+        return entity;
     }
 
     @DELETE
     @Path("{id}")
-    public void remove(@PathParam("id") @NotNull Long entityId) {
-        Genre bean = Genre.findById(entityId);
-
-        if (Serie.find("genre", bean).count() > 0){
-            throw new ValidationException("They are series existing with this genre.");
+    public void remove(@PathParam("id") @NotNull Long id) {
+        Genre entity = Genre.findById(id);
+        if (null == entity) {
+            throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("ID not found: " + String.valueOf(id)).build());
         }
 
-        if (Movie.find("genre", bean).count() > 0) {
-            throw new ValidationException("They are movies existing with this genre.");
+        if (Serie.find("genre", entity).count() > 0){
+            throw new WebApplicationException(Response.status(Status.NOT_ACCEPTABLE).entity("They are series existing with this genre." + String.valueOf(id)).build());
         }
 
-        bean.delete();
+        if (Movie.find("genre", entity).count() > 0) {
+            throw new WebApplicationException(Response.status(Status.NOT_ACCEPTABLE).entity("They are movies existing with this genre. ID: " + String.valueOf(id)).build());
+        }
+
+        entity.delete();
     }
 
     public void clearCache(@Observes CacheClearEvent event) {
@@ -87,7 +99,7 @@ public class GenreService {
 
     @GET
     @Path("search/{pattern}")
-    public List<Genre> getByExpression(@PathParam("pattern") @NotNull final String text) {
-        return Genre.find("UPPER(name) LIKE UPPER('%:pattern%')", Parameters.with("pattern", text)).list();
+    public List<Genre> getByExpression(@PathParam("pattern") @NotNull final String pattern) {
+        return Genre.find("UPPER(name) LIKE ?1", "%" + pattern.toUpperCase() + "%").list();
     }
 }
