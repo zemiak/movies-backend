@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Observes;
+import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -33,10 +34,13 @@ import io.quarkus.panache.common.Sort;
 @Produces(MediaType.APPLICATION_JSON)
 @Transactional
 public class GenreService {
+    @Inject
+    GenreRepository repo;
+
     @GET
     @Path("all")
     public List<Genre> all() {
-        return Genre.listAll(Sort.by("displayOrder"));
+        return repo.listAll(Sort.by("displayOrder"));
     }
 
     @POST
@@ -55,7 +59,7 @@ public class GenreService {
             throw new WebApplicationException(Response.status(Status.NOT_ACCEPTABLE).entity("ID not specified").build());
         }
 
-        Genre findEntity = Genre.findById(entity.id);
+        Genre findEntity = repo.findById(entity.id);
         if (null == findEntity) {
             throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("ID not found" + entity.id).build());
         }
@@ -66,7 +70,7 @@ public class GenreService {
     @GET
     @Path("{id}")
     public Genre find(@PathParam("id") @NotNull Long id) {
-        Genre entity = Genre.findById(id);
+        Genre entity = repo.findById(id);
         if (null == entity) {
             throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("ID not found: " + String.valueOf(id)).build());
         }
@@ -77,7 +81,7 @@ public class GenreService {
     @DELETE
     @Path("{id}")
     public void remove(@PathParam("id") @NotNull Long id) {
-        Genre entity = Genre.findById(id);
+        Genre entity = repo.findById(id);
         if (null == entity) {
             throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("ID not found: " + String.valueOf(id)).build());
         }
@@ -100,6 +104,6 @@ public class GenreService {
     @GET
     @Path("search/{pattern}")
     public List<Genre> getByExpression(@PathParam("pattern") @NotNull final String pattern) {
-        return Genre.find("UPPER(name) LIKE ?1", "%" + pattern.toUpperCase() + "%").list();
+        return repo.find("UPPER(name) LIKE ?1", "%" + pattern.toUpperCase() + "%").list();
     }
 }

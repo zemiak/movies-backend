@@ -4,9 +4,9 @@ import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Observes;
+import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
-import javax.validation.ValidationException;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -25,7 +25,6 @@ import com.zemiak.movies.batch.CacheClearEvent;
 import com.zemiak.movies.movie.Movie;
 
 import io.quarkus.hibernate.orm.panache.Panache;
-import io.quarkus.panache.common.Parameters;
 import io.quarkus.panache.common.Sort;
 
 @RequestScoped
@@ -34,53 +33,74 @@ import io.quarkus.panache.common.Sort;
 @Produces(MediaType.APPLICATION_JSON)
 @Transactional
 public class LanguageService {
+    @Inject
+    LanguageRepository repo;
+
     @GET
     @Path("all")
     public List<Language> all() {
-        return Language.listAll(Sort.by("displayOrder"));
-    }
-
-    @PUT
-    public void save(@Valid @NotNull Language entity) {
-        if (null == entity.id) {
-            throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("ID not specified").build());
-        }
-
-        entity.persist();
+        return repo.listAll(Sort.by("displayOrder"));
     }
 
     @POST
-    public void create(@Valid @NotNull Language entity) {
+    public Long create(@Valid @NotNull Language entity) {
         if (null != entity.id) {
             throw new WebApplicationException(Response.status(Status.NOT_ACCEPTABLE).entity("ID specified").build());
         }
 
         entity.persist();
+        return entity.id;
+    }
+
+    @PUT
+    public void update(@Valid @NotNull Language entity) {
+        if (null == entity.id) {
+            throw new WebApplicationException(Response.status(Status.NOT_ACCEPTABLE).entity("ID not specified").build());
+        }
+
+        Language findEntity = repo.findById(entity.id);
+        if (null == findEntity) {
+            throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("ID not found" + entity.id).build());
+        }
+
+        Panache.getEntityManager().merge(entity);
     }
 
     @GET
     @Path("{id}")
     public Language find(@PathParam("id") @NotNull Long id) {
-        return Language.findById(id);
-    }
+        Language entity = repo.findById(id);
+        if (null == entity) {
+            throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("ID not found: " + String.valueOf(id)).build());
+        }
 
-    @GET
-    @Path("{code}/code")
-    public Language findByCode(@PathParam("id") @NotNull String code) {
-        return Language.find("code", code).firstResult();
+        return entity;
     }
 
     @DELETE
     @Path("{id}")
-    public void remove(@PathParam("id") @NotNull Long entityId) {
-        Language bean = Language.findById(entityId);
-
-
-        if (Movie.find("language", bean).count() > 0 || Movie.find("originalLanguage", bean).count() > 0 || Movie.find("subtitles", bean).count() > 0) {
-            throw new ValidationException("They are movies existing with this language.");
+    public void remove(@PathParam("id") @NotNull Long id) {
+        Language entity = repo.findById(id);
+        if (null == entity) {
+            throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("ID not found: " + String.valueOf(id)).build());
         }
 
-        bean.delete();
+        if (Movie.find("language", entity).count() > 0 || Movie.find("originalLanguage", entity).count() > 0 || Movie.find("subtitles", entity).count() > 0) {
+            throw new WebApplicationException(Response.status(Status.NOT_ACCEPTABLE).entity("They are movies existing with this language." + String.valueOf(id)).build());
+        }
+
+        entity.delete();
+    }
+
+    @GET
+    @Path("{code}/code")
+    public Language findByCode(@PathParam("code") @NotNull String code) {
+        Language entity = repo.find("code", code).firstResult();
+        if (null == entity) {
+            throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("Code not found: " + String.valueOf(code)).build());
+        }
+
+        return entity;
     }
 
     public void clearCache(@Observes CacheClearEvent event) {
@@ -89,7 +109,7 @@ public class LanguageService {
 
     @GET
     @Path("search/{pattern}")
-    public List<Language> getByExpression(@PathParam("pattern") @NotNull final String text) {
-        return Language.find("UPPER(name) LIKE UPPER('%:pattern%')", Parameters.with("pattern", text)).list();
+    public List<Language> getByExpression(@PathParam("pattern") @NotNull final String pattern) {
+        return repo.find("UPPER(name) LIKE ?1", "%" + pattern.toUpperCase() + "%").list();
     }
 }

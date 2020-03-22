@@ -1,4 +1,4 @@
-package com.zemiak.movies.language;
+package com.zemiak.movies.genre;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -14,7 +14,6 @@ import javax.json.JsonObject;
 import javax.ws.rs.core.Response.Status;
 
 import com.zemiak.movies.AssuredRequests;
-import com.zemiak.movies.genre.Genre;
 import com.zemiak.movies.strings.DateFormatter;
 
 import org.junit.jupiter.api.Test;

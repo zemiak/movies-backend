@@ -7,16 +7,24 @@ import javax.json.JsonObject;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.zemiak.movies.strings.DateFormatter;
+import com.zemiak.movies.strings.NullAwareJsonObjectBuilder;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
 @Entity
-public class Genre extends PanacheEntity implements Comparable<Genre> {
+public class Genre extends PanacheEntityBase implements Comparable<Genre> {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public Long id;
+
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 128)
@@ -95,7 +103,7 @@ public class Genre extends PanacheEntity implements Comparable<Genre> {
     }
 
     public JsonObject toJson() {
-        return Json.createObjectBuilder()
+        return NullAwareJsonObjectBuilder.create()
             .add("id", this.id)
             .add("name", this.name)
             .add("created", DateFormatter.format(this.created))
@@ -120,5 +128,13 @@ public class Genre extends PanacheEntity implements Comparable<Genre> {
         }
 
         return displayOrder.compareTo(o.displayOrder);
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }
