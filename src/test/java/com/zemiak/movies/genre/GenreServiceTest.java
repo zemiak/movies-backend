@@ -46,9 +46,12 @@ public class GenreServiceTest {
         assertTrue(null != id, "Create genre returns ID");
 
         Genre entity = req.get("/genres/" + String.valueOf(id)).jsonPath().getObject("$", Genre.class);
+
+        String actualDate = DateFormatter.format(entity.created);
+
         assertEquals(id, entity.id, "Genre ID must be the same as created");
         assertEquals(genre.getString("name"), entity.name, "Name must be the same as created");
-        assertEquals(genre.getString("created"), DateFormatter.format(entity.created), "created must be the same as created");
+        assertEquals(genre.getString("created"), actualDate, "created must be the same as created");
         assertEquals(genre.getString("pictureFileName"), entity.pictureFileName, "pictureFileName must be the same as created");
     }
 

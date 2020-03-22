@@ -39,7 +39,7 @@ public class LanguageServiceTest {
         JsonObject language = Json.createObjectBuilder()
             .add("name", "Hello, World")
             .add("code", "ua")
-            .add("created", DateFormatter.format(LocalDateTime.now()))
+            .add("created", DateFormatter.format(LocalDateTime.now()).toString())
             .add("pictureFileName", "u-a.jpg")
             .build();
 

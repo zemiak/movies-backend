@@ -2,6 +2,11 @@ package com.zemiak.movies;
 
 import static io.restassured.RestAssured.given;
 
+import java.io.StringReader;
+
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonObject;
 import javax.json.JsonValue;
 
 import io.restassured.RestAssured;
@@ -41,6 +46,14 @@ public class AssuredRequests {
 
     public Response get(String endpoint) {
         return get(endpoint, 200);
+    }
+
+    public JsonArray getArray(String endpoint) {
+        return Json.createReader(new StringReader(get(endpoint).body().asString())).readArray();
+    }
+
+    public JsonObject getObject(String endpoint) {
+        return Json.createReader(new StringReader(get(endpoint).body().asString())).readObject();
     }
 
     public Response delete(String endpoint) {

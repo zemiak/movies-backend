@@ -86,7 +86,7 @@ public class GenreService {
             throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("ID not found: " + String.valueOf(id)).build());
         }
 
-        if (Serie.find("genre", entity).count() > 0){
+        if (Serie.find("genreId", entity.id).count() > 0){
             throw new WebApplicationException(Response.status(Status.NOT_ACCEPTABLE).entity("They are series existing with this genre." + String.valueOf(id)).build());
         }
 

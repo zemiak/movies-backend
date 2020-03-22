@@ -2,12 +2,11 @@ package com.zemiak.movies.serie;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
-import javax.json.JsonObject;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -46,14 +45,12 @@ public class SerieService {
 
     @GET
     @Path("all")
-    public List<JsonObject> all() {
-        return Serie.streamAll(Sort.ascending("displayOrder")).map(Serie::toJson).collect(Collectors.toList());
+    public List<Serie> all() {
+        return repo.listAll(Sort.ascending("displayOrder"));
     }
 
     @POST
-    public Long create(@Valid @NotNull JsonObject jsonEntity) {
-        Serie entity = new Serie(jsonEntity, genreRepo);
-
+    public Long create(@Valid @NotNull Serie entity) {
         if (null != entity.id) {
             throw new WebApplicationException(Response.status(Status.NOT_ACCEPTABLE).entity("ID specified").build());
         }
@@ -63,9 +60,7 @@ public class SerieService {
     }
 
     @PUT
-    public void update(@Valid @NotNull JsonObject jsonEntity) {
-        Serie entity = new Serie(jsonEntity, genreRepo);
-
+    public void update(@Valid @NotNull Serie entity) {
         if (null == entity.id) {
             throw new WebApplicationException(Response.status(Status.NOT_ACCEPTABLE).entity("ID not specified").build());
         }
@@ -80,13 +75,13 @@ public class SerieService {
 
     @GET
     @Path("{id}")
-    public JsonObject find(@PathParam("id") @NotNull final Long id) {
+    public Serie find(@PathParam("id") @NotNull final Long id) {
         Serie entity = repo.findById(id);
         if (null == entity) {
             throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("ID not found: " + String.valueOf(id)).build());
         }
 
-        return entity.toJson();
+        return entity;
     }
 
     @DELETE
@@ -97,7 +92,7 @@ public class SerieService {
             throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("ID not found: " + String.valueOf(id)).build());
         }
 
-        if (Movie.find("language", entity).count() > 0 || Movie.find("originalLanguage", entity).count() > 0 || Movie.find("subtitles", entity).count() > 0) {
+        if (Movie.find("serie", entity).count() > 0) {
             throw new WebApplicationException(Response.status(Status.NOT_ACCEPTABLE).entity("They are movies existing with this language." + String.valueOf(id)).build());
         }
 
@@ -110,8 +105,8 @@ public class SerieService {
 
     @GET
     @Path("search/{pattern}")
-    public List<JsonObject> getByExpression(@PathParam("pattern") @NotNull final String text) {
-        List<JsonObject> res = new ArrayList<>();
+    public List<Serie> getByExpression(@PathParam("pattern") @NotNull final String text) {
+        List<Serie> res = new ArrayList<>();
         String textAscii = Encodings.toAscii(text.trim().toLowerCase());
 
         /**
@@ -123,13 +118,15 @@ public class SerieService {
          * For larger data sets you can use the find method equivalents, which return a PanacheQuery
          * on which you can do paging"
          */
-        Serie.streamAll().map(entry -> (Serie) entry).forEach(entry -> {
+        Stream<Serie> stream = Serie.streamAll();
+        stream.map(entry -> (Serie) entry).forEach(entry -> {
             String name = (null == entry.name ? ""
                     : Encodings.toAscii(entry.name.trim().toLowerCase()));
             if (name.contains(textAscii)) {
-                res.add(entry.toJson());
+                res.add(entry);
             }
         });
+        stream.close();
 
         return res;
     }

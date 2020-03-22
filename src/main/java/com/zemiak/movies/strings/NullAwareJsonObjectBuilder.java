@@ -129,7 +129,8 @@ public class NullAwareJsonObjectBuilder implements JsonObjectBuilder {
     @Override
     public JsonObjectBuilder addNull(String name) {
         Objects.requireNonNull(name);
-        return builder.addNull(name);
+        builder.addNull(name);
+        return this;
     }
 
     @Override
