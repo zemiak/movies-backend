@@ -143,10 +143,6 @@ public class MetadataReader {
                     metaData.setGrouping(unknownBoxToString(b));
                     break;
 
-                case "©gen":
-                    metaData.setGenre(unknownBoxToString(b));
-                    break;
-
                 case "©day":
                     String dateString = unknownBoxToString(b);
                     if (dateString.length() > 4) {

@@ -35,7 +35,7 @@ public class YearUpdater {
                     }
 
                     movie.year = year;
-                    service.mergeAndSave(movie);
+                    movie.persist();
 
                     LOG.log(Level.INFO, "... updated year in DB of " + movie.fileName + " to " + movie.year, movie.id);
 

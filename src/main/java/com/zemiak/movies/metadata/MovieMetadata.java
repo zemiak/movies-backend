@@ -15,7 +15,7 @@ public class MovieMetadata {
     private String composer;
     private String albumName;
     private String grouping;
-    private String genre;
+    private Long genreId;
     private Integer year;
     private String comments;
     private String niceDisplayOrder;
@@ -29,12 +29,12 @@ public class MovieMetadata {
     public MovieMetadata() {
     }
 
-    public String getGenre() {
-        return genre;
+    public Long getGenreId() {
+        return genreId;
     }
 
-    public void setGenre(String genre) {
-        this.genre = genre;
+    public void setGenre(Long genreId) {
+        this.genreId = genreId;
     }
 
     public String getName() {
@@ -111,7 +111,7 @@ public class MovieMetadata {
 
     @Override
     public String toString() {
-        return "MovieMetadata{" + "genre=" + genre + ", name=" + name + ", comments=" + comments + '}';
+        return "MovieMetadata{" + "genre=" + genreId + ", name=" + name + ", comments=" + comments + '}';
     }
 
     private boolean commentsShouldBeUpdated0(final boolean debug) {
@@ -157,11 +157,11 @@ public class MovieMetadata {
     }
 
     public boolean isGenreEqual() {
-        if (genre == null) {
+        if (genreId == null) {
             return false;
         }
 
-        return genre.equals(movie.composeGenreName());
+        return genreId.equals(movie.genreId);
     }
 
     private boolean isMetadataEqual0(final boolean debug) {
@@ -181,7 +181,7 @@ public class MovieMetadata {
 
             if (debug) {
                 LOG.log(Level.INFO, "{0}: isMetadataEqual: Genre is not equal. Is \"{1}\", should be \"{2}\"",
-                        new Object[]{movie.fileName, genre, movie.composeGenreName()});
+                        new Object[]{movie.fileName, genreId, movie.genreId});
             }
         }
 
@@ -211,7 +211,7 @@ public class MovieMetadata {
 
     public String getMovieName() {
         String title = null == movie.name || movie.name.trim().isEmpty() ? movie.originalName : movie.name;
-        if (null != movie.year && movie.year > 0 && (null == movie.serie || movie.serie.isEmpty())) {
+        if (null != movie.year && movie.year > 0 && (null == movie.serieId || 0l == movie.serieId)) {
             title += " (" + String.valueOf(movie.year) + ")";
         }
 

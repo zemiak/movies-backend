@@ -8,12 +8,9 @@ import java.util.logging.Level;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 
 import com.zemiak.movies.batch.RefreshStatistics;
 import com.zemiak.movies.batch.logs.BatchLogger;
-import com.zemiak.movies.genre.Genre;
 import com.zemiak.movies.config.ConfigurationProvider;
 import com.zemiak.movies.movie.Movie;
 import com.zemiak.movies.movie.MovieService;
@@ -21,12 +18,16 @@ import com.zemiak.movies.movie.MovieService;
 @Dependent
 public class InfuseMovieWriter {
     private static final BatchLogger LOG = BatchLogger.getLogger(InfuseMovieWriter.class.getName());
-
-    @Inject MovieService service;
     private final String path = ConfigurationProvider.getPath();
-    @Inject RefreshStatistics stats;
-    @Inject InfuseCoversAndLinks metadataFiles;
-    @PersistenceContext EntityManager em;
+
+    @Inject
+    MovieService service;
+
+    @Inject
+    RefreshStatistics stats;
+
+    @Inject
+    InfuseCoversAndLinks metadataFiles;
 
     public void process(final List<String> list) {
         list.stream()
@@ -50,7 +51,7 @@ public class InfuseMovieWriter {
     }
 
     private void makeMovieLink(Movie movie) throws IOException {
-        if (null == movie.genre) {
+        if (null == movie.genreId) {
             LOG.log(Level.SEVERE, "Movie {0} has no genre", movie.fileName);
             return;
         }
@@ -72,33 +73,23 @@ public class InfuseMovieWriter {
     }
 
     private void makeRecentlyAdded() {
-        Genre genre = Genre.create();
-        genre.id = -1l;
-        genre.name = "X-Recently Added";
-
         service.getRecentlyAdded().stream().forEach(movie -> {
-            em.detach(movie);
-            movie.genre = genre;
-            movie.serie = null;
+            movie.genreId = -1l;
+            movie.serieId = null;
             makeMovieLinkNoException(movie);
         });
     }
 
     private void makeNewReleases() {
-        Genre genre = Genre.create();
-        genre.id = -2l;
-        genre.name = "X-New Releases";
-
         service.getNewReleases().stream().forEach(movie -> {
-            em.detach(movie);
-            movie.genre = genre;
-            movie.serie = null;
+            movie.genreId = -2l;
+            movie.serieId = null;
             makeMovieLinkNoException(movie);
         });
     }
 
     private String getNumberPrefix(Movie movie) {
-        if ((null == movie.serie || movie.serie.isEmpty()) && Objects.nonNull(movie.year) && movie.year > 1800) {
+        if ((null == movie.serieId || 0 == movie.serieId) && Objects.nonNull(movie.year) && movie.year > 1800) {
             return String.format("%03d", (2500 - movie.year)) + "-";
         }
 

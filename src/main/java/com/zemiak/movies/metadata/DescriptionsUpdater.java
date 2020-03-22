@@ -30,7 +30,7 @@ public class DescriptionsUpdater {
                     String desc = reader.parseDescription(movie);
 
                     movie.description = desc;
-                    service.mergeAndSave(movie);
+                    movie.persist();
 
                     LOG.log(Level.INFO, "... update description in DB of ", movie.fileName);
                 });

@@ -31,7 +31,7 @@ public class WebPageScraper {
                 .forEach(movie -> {
                     String webPage = reader.readPage(movie);
                     movie.webPage = webPage;
-                    service.mergeAndSave(movie);
+                    movie.persist();
 
                     LOG.log(Level.INFO, "... updated web page in DB of " + movie.url, movie.id);
 

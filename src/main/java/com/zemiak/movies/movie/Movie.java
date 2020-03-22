@@ -1,26 +1,31 @@
 package com.zemiak.movies.movie;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.util.Objects;
 
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import com.zemiak.movies.genre.Genre;
-import com.zemiak.movies.language.Language;
 import com.zemiak.movies.scraper.Csfd;
 import com.zemiak.movies.scraper.Imdb;
-import com.zemiak.movies.serie.Serie;
+import com.zemiak.movies.strings.DateFormatter;
+import com.zemiak.movies.strings.NullAwareJsonObjectBuilder;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
 @Entity
-public class Movie extends PanacheEntity implements Comparable<Movie> {
+public class Movie extends PanacheEntityBase implements Comparable<Movie> {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public Long id;
+
     @Size(max = 512)
     @Column(name = "file_name")
     public String fileName;
@@ -49,30 +54,24 @@ public class Movie extends PanacheEntity implements Comparable<Movie> {
     @Column(name = "description", length = 16384)
     public String description;
 
-    @JoinColumn(name = "serie_id", referencedColumnName = "id")
-    @ManyToOne
-    public Serie serie;
+    @Column(name = "serie_id")
+    public Long serieId;
 
-    @JoinColumn(name = "subtitles", referencedColumnName = "id")
-    @ManyToOne
-    public Language subtitles;
+    @Column(name = "subtitles")
+    public Long subtitlesId;
 
-    @JoinColumn(name = "original_language", referencedColumnName = "id")
-    @ManyToOne
-    public Language originalLanguage;
+    @Column(name = "original_language")
+    public Long originalLanguageId;
 
-    @JoinColumn(name = "language", referencedColumnName = "id")
-    @ManyToOne
-    public Language language;
+    @Column(name = "language")
+    public Long languageId;
 
-    @JoinColumn(name = "genre_id", referencedColumnName = "id")
-    @ManyToOne(optional = false)
     @NotNull
-    public Genre genre;
+    @Column(name = "genre_id")
+    public Long genreId;
 
     @Column(name = "created")
-    @Temporal(TemporalType.TIMESTAMP)
-    public Date created;
+    public LocalDateTime created;
 
     @Column(name = "year")
     public Integer year;
@@ -80,21 +79,45 @@ public class Movie extends PanacheEntity implements Comparable<Movie> {
     @Column(name = "web_page", length = 128)
     public String webPage;
 
-    public Date getCreated() {
-        return created;
-    }
-
-    public void setCreated(Date created) {
-        this.created = created;
-    }
-
     public Movie() {
-        this.created = new Date();
+        this.created = LocalDateTime.now();
     }
 
     public Movie(Long id) {
         this();
         this.id = id;
+    }
+
+    public static JsonObject toJson(PanacheEntityBase baseEntity) {
+        Objects.requireNonNull(baseEntity);
+        Movie entity = (Movie) baseEntity;
+
+        JsonObjectBuilder builder = NullAwareJsonObjectBuilder.create()
+            .add("id", entity.id)
+            .add("fileName", entity.fileName)
+            .add("name", entity.name)
+            .add("originalName", entity.originalName)
+            .add("url", entity.url)
+            .add("pictureFileName", entity.pictureFileName)
+            .add("displayOrder", entity.displayOrder)
+            .add("description", entity.description)
+            .add("serieId", entity.serieId)
+            .add("subtitlesId", entity.subtitlesId)
+            .add("originalLanguageId", entity.originalLanguageId)
+            .add("languageId", entity.languageId)
+            .add("genreId", entity.genreId)
+            .add("year", entity.year)
+            .add("webPage", entity.webPage);
+
+        if (null != entity.created) {
+            builder.add("created", DateFormatter.format(entity.created));
+        }
+
+        return builder.build();
+    }
+
+    public JsonObject toJson() {
+        return toJson(this);
     }
 
     public void copyFrom(Movie entity) {
@@ -104,12 +127,12 @@ public class Movie extends PanacheEntity implements Comparable<Movie> {
         this.pictureFileName = entity.pictureFileName;
         this.description = entity.description;
         this.fileName = entity.fileName;
-        this.genre = entity.genre;
-        this.language = entity.language;
-        this.originalLanguage = entity.originalLanguage;
+        this.genreId = entity.genreId;
+        this.languageId = entity.languageId;
+        this.originalLanguageId = entity.originalLanguageId;
         this.originalName = entity.originalName;
-        this.serie = entity.serie;
-        this.subtitles = entity.subtitles;
+        this.serieId = entity.serieId;
+        this.subtitlesId = entity.subtitlesId;
         this.url = entity.url;
         this.year = entity.year;
     }
@@ -131,10 +154,6 @@ public class Movie extends PanacheEntity implements Comparable<Movie> {
             return false;
         }
         return true;
-    }
-
-    public String composeGenreName() {
-        return genre.name;
     }
 
     @Override
@@ -160,24 +179,8 @@ public class Movie extends PanacheEntity implements Comparable<Movie> {
         return "";
     }
 
-    public String getSerieName() {
-        return null == serie ? "<None>" : (serie.isEmpty() ? "<None>" : serie.name);
-    }
-
-    public String getLanguageName() {
-        return null == language ? "<None>" : language.name;
-    }
-
-    public String getOriginalLanguageName() {
-        return null == originalLanguage ? "<None>" : originalLanguage.name;
-    }
-
-    public String getSubtitlesName() {
-        return null == subtitles ? "<None>" : subtitles.name;
-    }
-
     public boolean isEmptySerie() {
-        return null == serie || serie.id == 0;
+        return null == serieId || serieId == 0;
     }
 
     @Override
@@ -197,13 +200,9 @@ public class Movie extends PanacheEntity implements Comparable<Movie> {
         return displayOrder.compareTo(o.displayOrder);
     }
 
-    public String getGenreName() {
-        return null == genre ? "<None>" : (genre.isEmpty() ? "<None>" : genre.name);
-    }
-
     public static Movie create() {
         Movie movie = new Movie();
-        movie.setCreated(new Date());
+        movie.created = LocalDateTime.now();
 
         return movie;
     }

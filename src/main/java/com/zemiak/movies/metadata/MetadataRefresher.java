@@ -15,6 +15,7 @@ import com.zemiak.movies.batch.logs.BatchLogger;
 import com.zemiak.movies.batch.logs.CommandLine;
 import com.zemiak.movies.config.ConfigurationProvider;
 import com.zemiak.movies.movie.Movie;
+import com.zemiak.movies.movie.MovieRepository;
 import com.zemiak.movies.movie.MovieService;
 import com.zemiak.movies.scraper.WebMetadataReader;
 import com.zemiak.movies.strings.Joiner;
@@ -25,8 +26,14 @@ public class MetadataRefresher {
 
     private WebMetadataReader descriptions;
 
-    @Inject MovieService service;
-    @Inject RefreshStatistics stats;
+    @Inject
+    MovieService service;
+
+    @Inject
+    RefreshStatistics stats;
+
+    @Inject
+    MovieRepository movieRepo;
 
     private final String mp4tags = ConfigurationProvider.getMp4Tags();
     private final String path = ConfigurationProvider.getPath();
@@ -78,7 +85,7 @@ public class MetadataRefresher {
 
     private void updateGenre(final String fileName, final MovieMetadata data) {
         if (! data.isGenreEqual()) {
-            update(fileName, GENRE, data.getMovie().composeGenreName());
+            update(fileName, GENRE, movieRepo.composeGenreName(data.getMovie()));
         }
     }
 
@@ -90,7 +97,7 @@ public class MetadataRefresher {
                 update(fileName, COMMENTS, desc);
 
                 data.getMovie().description = desc;
-                service.mergeAndSave(data.getMovie());
+                data.getMovie().persist();
             } else {
                 if (null == desc) {
                     LOG.info("Wanted to update comment, but not because of null desc");
@@ -122,7 +129,7 @@ public class MetadataRefresher {
                     stats.incrementUpdated();
                 }
 
-                if (null != movie.serie && !movie.serie.isEmpty() && (null == movie.displayOrder || movie.displayOrder.equals(0))) {
+                if (null != movie.serieId && 0 != movie.serieId && (null == movie.displayOrder || movie.displayOrder.equals(0))) {
                     LOG.log(Level.SEVERE, "Movie with serie and no order " + fileName, movie);
                 }
             }
