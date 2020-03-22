@@ -90,7 +90,7 @@ public class GenreService {
             throw new WebApplicationException(Response.status(Status.NOT_ACCEPTABLE).entity("They are series existing with this genre." + String.valueOf(id)).build());
         }
 
-        if (Movie.find("genre", entity).count() > 0) {
+        if (Movie.find("genreId", entity.id).count() > 0) {
             throw new WebApplicationException(Response.status(Status.NOT_ACCEPTABLE).entity("They are movies existing with this genre. ID: " + String.valueOf(id)).build());
         }
 

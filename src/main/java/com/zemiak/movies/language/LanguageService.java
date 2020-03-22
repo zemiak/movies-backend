@@ -85,7 +85,7 @@ public class LanguageService {
             throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("ID not found: " + String.valueOf(id)).build());
         }
 
-        if (Movie.find("language", entity).count() > 0 || Movie.find("originalLanguage", entity).count() > 0 || Movie.find("subtitles", entity).count() > 0) {
+        if (Movie.find("languageId", entity.id).count() > 0 || Movie.find("originalLanguageId", entity.id).count() > 0 || Movie.find("subtitlesId", entity.id).count() > 0) {
             throw new WebApplicationException(Response.status(Status.NOT_ACCEPTABLE).entity("They are movies existing with this language." + String.valueOf(id)).build());
         }
 

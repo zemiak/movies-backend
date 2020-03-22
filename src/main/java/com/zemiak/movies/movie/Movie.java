@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.zemiak.movies.scraper.Csfd;
 import com.zemiak.movies.scraper.Imdb;
 import com.zemiak.movies.strings.DateFormatter;
@@ -161,14 +162,17 @@ public class Movie extends PanacheEntityBase implements Comparable<Movie> {
         return "Movie{" + "id=" + id + ", name=" + name + '}';
     }
 
+    @JsonIgnore
     public boolean isDescriptionEmpty() {
         return null == description || "".equals(description.trim()) || "''".equals(description.trim());
     }
 
+    @JsonIgnore
     public boolean isUrlEmpty() {
         return null == url || "".equals(url.trim()) || "''".equals(url.trim());
     }
 
+    @JsonIgnore
     public String getUrlFlag() {
         if (new Csfd().accepts(this)) {
             return "CSFD";
@@ -179,6 +183,7 @@ public class Movie extends PanacheEntityBase implements Comparable<Movie> {
         return "";
     }
 
+    @JsonIgnore
     public boolean isEmptySerie() {
         return null == serieId || serieId == 0;
     }
