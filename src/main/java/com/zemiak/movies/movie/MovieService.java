@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.stream.Stream;
 
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Observes;
@@ -52,6 +53,84 @@ public class MovieService {
         return repo.listAll(Sort.ascending("displayOrder"));
     }
 
+    @POST
+    public Long create(@Valid @NotNull Movie entity) {
+        if (null != entity.id) {
+            throw new WebApplicationException(Response.status(Status.NOT_ACCEPTABLE).entity("ID specified").build());
+        }
+
+        entity.persist();
+        return entity.id;
+    }
+
+    @PUT
+    public void update(@Valid @NotNull Movie entity) {
+        if (null == entity.id) {
+            throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("ID not specified").build());
+        }
+
+        Movie findEntity = repo.findById(entity.id);
+        if (null == findEntity) {
+            throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("ID not found" + entity.id).build());
+        }
+
+        Panache.getEntityManager().merge(entity);
+    }
+
+    @GET
+    @Path("{id}")
+    public Movie find(@PathParam("id") @NotNull Long id) {
+        Movie entity = repo.findById(id);
+        if (null == entity) {
+            throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("ID not found: " + String.valueOf(id)).build());
+        }
+
+        return entity;
+    }
+
+    @DELETE
+    @Path("{id}")
+    public void remove(@PathParam("id") @NotNull Long id) {
+        Movie entity = repo.findById(id);
+        if (null == entity) {
+            throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("ID not found: " + String.valueOf(id)).build());
+        }
+
+        entity.delete();
+    }
+
+    public void clearCache(@Observes CacheClearEvent event) {
+        Panache.getEntityManager().getEntityManagerFactory().getCache().evictAll();
+    }
+
+    @GET
+    @Path("search/{pattern}")
+    public List<Movie> getByExpression(@PathParam("pattern") @NotNull final String text) {
+        List<Movie> res = new ArrayList<>();
+        String textAscii = Encodings.toAscii(text.trim().toLowerCase());
+
+        /**
+         * TODO: optimize findAll() - either set page and size or do the filtering with SQL
+         *
+         * https://quarkus.io/guides/hibernate-orm-panache
+         *
+         * "You should only use list and stream methods if your table contains small enough data sets.
+         * For larger data sets you can use the find method equivalents, which return a PanacheQuery
+         * on which you can do paging"
+         */
+        Stream<Movie> stream = Movie.streamAll();
+        Movie.streamAll().map(e -> (Movie) e).forEach(entry -> {
+            String name = null == entry.name ? ""
+                    : Encodings.toAscii(entry.name.trim().toLowerCase());
+            if (name.contains(textAscii)) {
+                res.add(entry);
+            }
+        });
+        stream.close();
+
+        return res;
+    }
+
     @GET
     @Path("new")
     public List<Movie> getNewMovies() {
@@ -77,71 +156,6 @@ public class MovieService {
             Sort.ascending("displayOrder"),
             Parameters.with("valueNew", Genre.findById(id)))
             .list();
-    }
-
-    @PUT
-    public void save(@Valid @NotNull Movie entity) {
-        if (null == entity.id) {
-            throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("ID not specified").build());
-        }
-
-        entity.persist();
-    }
-
-    @POST
-    public void create(@Valid @NotNull Movie entity) {
-        if (null != entity.id) {
-            throw new WebApplicationException(Response.status(Status.NOT_ACCEPTABLE).entity("ID specified").build());
-        }
-
-        entity.persist();
-    }
-
-    @GET
-    @Path("{id}")
-    public Movie find(@PathParam("id") @NotNull Long id) {
-        return repo.findById(id);
-    }
-
-    @DELETE
-    @Path("{id}")
-    public void remove(@PathParam("id") @NotNull Long entityId) {
-        Movie m = Movie.findById(entityId);
-        if (null == m) {
-            throw new WebApplicationException(Status.NOT_FOUND);
-        }
-
-        m.delete();
-    }
-
-    public void clearCache(@Observes CacheClearEvent event) {
-        Panache.getEntityManager().getEntityManagerFactory().getCache().evictAll();
-    }
-
-    @GET
-    @Path("search/{pattern}")
-    public List<Movie> getByExpression(@PathParam("pattern") @NotNull final String text) {
-        List<Movie> res = new ArrayList<>();
-        String textAscii = Encodings.toAscii(text.trim().toLowerCase());
-
-        /**
-         * TODO: optimize findAll() - either set page and size or do the filtering with SQL
-         *
-         * https://quarkus.io/guides/hibernate-orm-panache
-         *
-         * "You should only use list and stream methods if your table contains small enough data sets.
-         * For larger data sets you can use the find method equivalents, which return a PanacheQuery
-         * on which you can do paging"
-         */
-        Movie.streamAll().map(e -> (Movie) e).forEach(entry -> {
-            String name = null == entry.name ? ""
-                    : Encodings.toAscii(entry.name.trim().toLowerCase());
-            if (name.contains(textAscii)) {
-                res.add(entry);
-            }
-        });
-
-        return res;
     }
 
     @GET

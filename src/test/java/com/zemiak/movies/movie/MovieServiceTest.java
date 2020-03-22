@@ -34,7 +34,7 @@ public class MovieServiceTest {
         assertFalse(movies.isEmpty(), "Movies are not empty");
     }
 
-    // @Test
+    @Test
     public void create() {
         JsonObject movie = Json.createObjectBuilder()
             .add("name", "Hello, World")
@@ -53,15 +53,15 @@ public class MovieServiceTest {
         assertEquals(movie.getString("pictureFileName"), entity.pictureFileName, "pictureFileName must be the same as created");
     }
 
-    // @Test
+    @Test
     public void find() {
-        Long id = 0l;
+        Long id = 1l;
         Movie entity = req.get("/movies/" + String.valueOf(id)).jsonPath().getObject("$", Movie.class);
         assertEquals(id, entity.id, "Movie ID must be the same as specified");
-        assertEquals("Not defined", entity.name, "Name must be Not defined");
+        assertEquals("Patalie s Lochneskou", entity.name, "Name must be Patalie s Lochneskou");
     }
 
-    // @Test
+    @Test
     public void remove() {
         JsonObject movie = Json.createObjectBuilder()
             .add("name", "Hello, World")
@@ -77,31 +77,40 @@ public class MovieServiceTest {
         req.get("/movies/" + String.valueOf(id), Status.NOT_FOUND.getStatusCode());
     }
 
-    // @Test
+    @Test
+    public void artificialTrue() {
+        assertTrue(Boolean.TRUE);
+    }
+
+    @Test
     public void update() {
-        Long id = 0l;
+        Long id = 1l;
         Movie entity = req.get("/movies/" + String.valueOf(id)).jsonPath().getObject("$", Movie.class);
         assertEquals(id, entity.id, "Movie ID must be the same as specified");
-        assertEquals("Not defined", entity.name, "Name must be Not defined");
+        assertEquals("Patalie s Lochneskou", entity.name, "Name must be Patalie s Lochneskou");
 
         entity.name = "Some";
         JsonObject json = entity.toJson();
+
+        System.err.println("Hello !");
+        System.err.println("Hello !!");
+        System.err.println("Hello !!!");
 
         req.put("/movies", json, Status.NO_CONTENT.getStatusCode());
 
         entity = req.get("/movies/" + String.valueOf(id)).jsonPath().getObject("$", Movie.class);
         assertEquals("Some", entity.name, "Updated name must be: Some");
 
-        entity.name = "Not defined";
+        entity.name = "Patalie s Lochneskou";
         req.put("/movies", entity.toJson(), Status.NO_CONTENT.getStatusCode());
     }
 
-    // @Test
+    @Test
     public void search() throws UnsupportedEncodingException {
-        String text = "not";
+        String text = "vezi";
         List<Movie> movies = req.get("/movies/search/" + URLEncoder.encode(text, "UTF-8")).jsonPath().getList("$", Movie.class);
         assertFalse(movies.isEmpty());
-        assertEquals("Not defined", movies.get(0).name, "One Not defined should be found");
+        assertEquals("Kde vezi ten vlkodlak", movies.get(0).name, "One Kde vezi ten vlkodlak should be found");
     }
 
     // @Test
