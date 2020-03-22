@@ -1,22 +1,33 @@
 package com.zemiak.movies.serie;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
+import javax.json.JsonObject;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.zemiak.movies.genre.Genre;
+import com.zemiak.movies.genre.GenreRepository;
+import com.zemiak.movies.strings.DateFormatter;
+import com.zemiak.movies.strings.NullAwareJsonObject;
+import com.zemiak.movies.strings.NullAwareJsonObjectBuilder;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
 @Entity
-public class Serie extends PanacheEntity implements Comparable<Serie> {
+public class Serie extends PanacheEntityBase implements Comparable<Serie> {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public Long id;
+
     @Size(max = 128, min = 1)
     @Column(name = "name")
     @NotNull
@@ -36,14 +47,47 @@ public class Serie extends PanacheEntity implements Comparable<Serie> {
     public Genre genre;
 
     @Column(name = "created")
-    @Temporal(TemporalType.TIMESTAMP)
-    public Date created;
+    public LocalDateTime created;
 
     @Column(name = "tv_show")
     public Boolean tvShow;
 
+    public static JsonObject toJson(PanacheEntityBase baseEntity) {
+        Serie entity = (Serie) baseEntity;
+
+        return NullAwareJsonObjectBuilder.create()
+            .add("id", entity.id)
+            .add("name", entity.name)
+            .add("pictureFileName", entity.pictureFileName)
+            .add("displayOrder", entity.displayOrder)
+            .add("created", DateFormatter.format(entity.created))
+            .add("tvShow", entity.tvShow)
+            .add("genre", null == entity.genre ? null : entity.genre.id)
+            .build();
+    }
+
+    public JsonObject toJson() {
+        return toJson(this);
+    }
+
+    public Serie(JsonObject from, GenreRepository genreRepo) {
+        NullAwareJsonObject data = NullAwareJsonObject.create(from);
+
+        this.id = data.getLong("id");
+        this.name = data.getString("name");
+        this.pictureFileName = data.getString("pictureFileName");
+        this.displayOrder = data.getInteger("displayOrder");
+        this.created = data.getDateTime("created");
+        this.tvShow = data.getBoolean("tvShow");
+
+        Long genreId = data.getLong("genre");
+        if (null != genreId) {
+            this.genre = genreRepo.findById(genreId);
+        }
+    }
+
     public Serie() {
-        this.created = new Date();
+        this.created = LocalDateTime.now();
         this.tvShow = Boolean.FALSE;
     }
 
@@ -103,6 +147,7 @@ public class Serie extends PanacheEntity implements Comparable<Serie> {
         return displayOrder.compareTo(o.displayOrder);
     }
 
+    @JsonIgnore
     public boolean isEmpty() {
         return 0 == id;
     }
@@ -113,10 +158,18 @@ public class Serie extends PanacheEntity implements Comparable<Serie> {
 
     public static Serie create() {
         Serie serie = new Serie();
-        serie.created = new Date();
+        serie.created = LocalDateTime.now();
         serie.displayOrder = 9000;
         serie.genre = Genre.findById(0l);
 
         return serie;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

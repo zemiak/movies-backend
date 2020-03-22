@@ -2,9 +2,6 @@ package com.zemiak.movies;
 
 import static io.restassured.RestAssured.given;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
 import javax.json.JsonValue;
 
 import io.restassured.RestAssured;

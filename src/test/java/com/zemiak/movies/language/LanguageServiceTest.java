@@ -58,7 +58,7 @@ public class LanguageServiceTest {
         Long id = 0l;
         Language entity = req.get("/languages/" + String.valueOf(id)).jsonPath().getObject("$", Language.class);
         assertEquals(id, entity.id, "Language ID must be the same as specified");
-        assertEquals("English", entity.name, "Name must be None");
+        assertEquals("English", entity.name, "Name must be English");
     }
 
     @Test
@@ -96,7 +96,7 @@ public class LanguageServiceTest {
         req.put("/languages", entity.toJson(), Status.NO_CONTENT.getStatusCode());
     }
 
-    // @Test
+    @Test
     public void search() throws UnsupportedEncodingException {
         String text = "On";
         List<Language> languages = req.get("/languages/search/" + URLEncoder.encode(text, "UTF-8")).jsonPath().getList("$", Language.class);
@@ -104,7 +104,7 @@ public class LanguageServiceTest {
         assertEquals("None", languages.get(0).name, "One None should be found");
     }
 
-    // @Test
+    @Test
     public void createMustFailIfIDIsNotEmpty() {
         JsonObject language = Json.createObjectBuilder()
             .add("id", 42)
@@ -116,7 +116,7 @@ public class LanguageServiceTest {
         req.post("/languages", language, Status.NOT_ACCEPTABLE.getStatusCode());
     }
 
-    // @Test
+    @Test
     public void updateMustFailIfIDIsEmpty() {
         JsonObject language = Json.createObjectBuilder()
             .add("name", "Hello, World")
@@ -127,19 +127,19 @@ public class LanguageServiceTest {
         req.put("/languages", language, Status.NOT_ACCEPTABLE.getStatusCode());
     }
 
-    // @Test
+    @Test
     public void findMustFailIfEntityDoesNotExist() {
         Long id = 42000l;
         req.get("/languages/" + String.valueOf(id), Status.NOT_FOUND.getStatusCode());
     }
 
-    // @Test
+    @Test
     public void deleteMustFailIfEntityDoesNotExist() {
         Long id = 42000l;
         req.delete("/languages/" + String.valueOf(id), Status.NOT_FOUND.getStatusCode());
     }
 
-    // @Test
+    @Test
     public void updateMustFailIfEntityDoesNotExist() {
         Long id = 42000l;
         JsonObject language = Json.createObjectBuilder()
@@ -152,34 +152,34 @@ public class LanguageServiceTest {
         req.put("/languages", language, Status.NOT_FOUND.getStatusCode());
     }
 
-    // @Test
+    @Test
     public void searchMustReturnEmptyListOnNonExistingCriteria() throws UnsupportedEncodingException {
         String text = "Does Not Exist";
         List<Language> languages = req.get("/languages/search/" + URLEncoder.encode(text, "UTF-8")).jsonPath().getList("$", Language.class);
         assertTrue(languages.isEmpty());
     }
 
-    // @Test
+    @Test
     public void removeMustFailIfSeriesWithLanguageExist() {
         Long idThatIsReferencedInSeries = 0l;
         req.delete("/languages/" + String.valueOf(idThatIsReferencedInSeries), Status.NOT_ACCEPTABLE.getStatusCode());
     }
 
-    // @Test
+    @Test
     public void removeMustFailIfMoviesWithLanguageExist() {
-        Long idThatIsReferencedInMoviesButNotInSeries = 16l;
+        Long idThatIsReferencedInMoviesButNotInSeries = 13l;
         req.delete("/languages/" + String.valueOf(idThatIsReferencedInMoviesButNotInSeries), Status.NOT_ACCEPTABLE.getStatusCode());
     }
 
-    // @Test
+    @Test
     public void findByCode() {
         String code = "en";
         Language entity = req.get("/languages/" + String.valueOf(code) + "/code").jsonPath().getObject("$", Language.class);
         assertEquals(code, entity.code, "Language Code must be the same as specified");
-        assertEquals("English", entity.name, "Name must be None");
+        assertEquals("English", entity.name, "Name must be English");
     }
 
-    // @Test
+    @Test
     public void findByCodeMustFailIfEntityDoesNotExist() {
         String code = "xy";
         req.get("/languages/" + String.valueOf(code) + "/code", Status.NOT_FOUND.getStatusCode());

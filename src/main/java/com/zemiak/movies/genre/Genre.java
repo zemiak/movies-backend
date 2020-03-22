@@ -2,7 +2,6 @@ package com.zemiak.movies.genre;
 
 import java.time.LocalDateTime;
 
-import javax.json.Json;
 import javax.json.JsonObject;
 import javax.persistence.Basic;
 import javax.persistence.Column;
