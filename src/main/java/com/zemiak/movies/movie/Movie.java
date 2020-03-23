@@ -100,19 +100,17 @@ public class Movie extends PanacheEntityBase implements Comparable<Movie> {
             .add("originalName", entity.originalName)
             .add("url", entity.url)
             .add("pictureFileName", entity.pictureFileName)
-            .add("displayOrder", entity.displayOrder)
             .add("description", entity.description)
-            .add("serieId", entity.serieId)
-            .add("subtitlesId", entity.subtitlesId)
-            .add("originalLanguageId", entity.originalLanguageId)
-            .add("languageId", entity.languageId)
-            .add("genreId", entity.genreId)
-            .add("year", entity.year)
             .add("webPage", entity.webPage);
 
-        if (null != entity.created) {
-            builder.add("created", DateFormatter.format(entity.created));
-        }
+        NullAwareJsonObjectBuilder.addInteger(builder, "displayOrder", entity.displayOrder);
+        NullAwareJsonObjectBuilder.addLong(builder, "serieId", entity.serieId);
+        NullAwareJsonObjectBuilder.addLong(builder, "subtitlesId", entity.subtitlesId);
+        NullAwareJsonObjectBuilder.addLong(builder, "originalLanguageId", entity.originalLanguageId);
+        NullAwareJsonObjectBuilder.addLong(builder, "languageId", entity.languageId);
+        NullAwareJsonObjectBuilder.addLong(builder, "genreId", entity.genreId);
+        NullAwareJsonObjectBuilder.addInteger(builder, "year", entity.year);
+        NullAwareJsonObjectBuilder.addDate(builder, "created", entity.created);
 
         return builder.build();
     }

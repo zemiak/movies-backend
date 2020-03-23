@@ -3,6 +3,7 @@ package com.zemiak.movies.genre;
 import java.time.LocalDateTime;
 
 import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -102,14 +103,16 @@ public class Genre extends PanacheEntityBase implements Comparable<Genre> {
     }
 
     public JsonObject toJson() {
-        return NullAwareJsonObjectBuilder.create()
+        JsonObjectBuilder builder = NullAwareJsonObjectBuilder.create()
             .add("id", this.id)
             .add("name", this.name)
-            .add("created", DateFormatter.format(this.created))
-            .add("pictureFileName", this.pictureFileName)
-            .add("protectedGenre", this.protectedGenre)
-            .add("displayOrder", this.displayOrder)
-            .build();
+            .add("pictureFileName", this.pictureFileName);
+
+        NullAwareJsonObjectBuilder.addLong(builder, "displayOrder", this.displayOrder);
+        NullAwareJsonObjectBuilder.addLong(builder, "protectedGenre", this.protectedGenre);
+        NullAwareJsonObjectBuilder.addDate(builder, "created", this.created);
+
+        return builder.build();
     }
 
     @Override

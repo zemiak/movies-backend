@@ -119,7 +119,7 @@ public class MovieService {
          * on which you can do paging"
          */
         Stream<Movie> stream = Movie.streamAll();
-        Movie.streamAll().map(e -> (Movie) e).forEach(entry -> {
+        stream.map(e -> (Movie) e).forEach(entry -> {
             String name = null == entry.name ? ""
                     : Encodings.toAscii(entry.name.trim().toLowerCase());
             if (name.contains(textAscii)) {

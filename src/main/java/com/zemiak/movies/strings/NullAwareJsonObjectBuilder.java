@@ -2,6 +2,7 @@ package com.zemiak.movies.strings;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 import javax.json.Json;
@@ -136,5 +137,29 @@ public class NullAwareJsonObjectBuilder implements JsonObjectBuilder {
     @Override
     public JsonObject build() {
         return builder.build();
+    }
+
+    public static void addLong(JsonObjectBuilder builder2, String name, Long value) {
+        if (null != value) {
+            builder2.add(name, value);
+        }
+    }
+
+    public static void addInteger(JsonObjectBuilder builder2, String name, Integer value) {
+        if (null != value) {
+            builder2.add(name, value);
+        }
+    }
+
+    public static void addBoolean(JsonObjectBuilder builder2, String name, Boolean value) {
+        if (null != value) {
+            builder2.add(name, value);
+        }
+    }
+
+    public static void addDate(JsonObjectBuilder builder2, String name, LocalDateTime value) {
+        if (null != value) {
+            builder2.add(name, DateFormatter.format(value));
+        }
     }
 }
