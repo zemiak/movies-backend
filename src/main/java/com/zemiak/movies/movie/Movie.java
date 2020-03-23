@@ -16,7 +16,6 @@ import javax.validation.constraints.Size;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.zemiak.movies.scraper.Csfd;
 import com.zemiak.movies.scraper.Imdb;
-import com.zemiak.movies.strings.DateFormatter;
 import com.zemiak.movies.strings.NullAwareJsonObjectBuilder;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;

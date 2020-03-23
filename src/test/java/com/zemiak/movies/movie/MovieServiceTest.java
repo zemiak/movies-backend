@@ -11,12 +11,10 @@ import java.util.List;
 
 import javax.json.Json;
 import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
 import javax.ws.rs.core.Response.Status;
 
 import com.zemiak.movies.AssuredRequests;
 import com.zemiak.movies.strings.DateFormatter;
-import com.zemiak.movies.strings.NullAwareJsonObjectBuilder;
 
 import org.junit.jupiter.api.Test;
 
