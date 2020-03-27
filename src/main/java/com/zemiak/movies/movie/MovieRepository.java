@@ -33,17 +33,17 @@ public class MovieRepository implements PanacheRepository<Movie> {
 
     public String getSerieName(Movie movie) {
         Serie serieEntity = serieRepo.findById(movie.serieId);
-        return null == serieEntity ? "<None>" : (serieEntity.isEmpty() ? "<None>" : serieEntity.name);
+        return null == serieEntity ? "None" : (serieEntity.isEmpty() ? "None" : serieEntity.name);
     }
 
     public String getGenreName(Movie movie) {
         Genre genreEntity = genreRepo.findById(movie.genreId);
-        return null == genreEntity ? "<None>" : (genreEntity.isEmpty() ? "<None>" : genreEntity.name);
+        return null == genreEntity ? "None" : (genreEntity.isEmpty() ? "None" : genreEntity.name);
     }
 
     private String getLanguageNameId(Movie movie, Long languageId) {
         Language languageEntity = langRepo.findById(languageId);
-        return null == languageEntity ? "<None>" : languageEntity.name;
+        return null == languageEntity ? "None" : languageEntity.name;
     }
 
     public String getLanguageName(Movie movie) {
@@ -60,6 +60,6 @@ public class MovieRepository implements PanacheRepository<Movie> {
 
     public String getGenrePictureFileName(Movie movie) {
         Genre genreEntity = genreRepo.findById(movie.genreId);
-        return null == genreEntity ? null : genreEntity.pictureFileName;
+        return null == genreEntity ? "null.jpg" : genreEntity.pictureFileName;
     }
 }

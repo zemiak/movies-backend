@@ -66,7 +66,7 @@ public class MovieService {
     @PUT
     public void update(@Valid @NotNull Movie entity) {
         if (null == entity.id) {
-            throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("ID not specified").build());
+            throw new WebApplicationException(Response.status(Status.NOT_ACCEPTABLE).entity("ID not specified").build());
         }
 
         Movie findEntity = repo.findById(entity.id);
@@ -193,7 +193,7 @@ public class MovieService {
 
         List<Movie> movies = new ArrayList<>();
         // TODO: limit to 50 results
-        Movie.findAll(Sort.ascending("genre", "serie", "displayOrder")).stream().map(e -> (Movie) e)
+        Movie.findAll(Sort.ascending("genreId", "serieId", "displayOrder")).stream().map(e -> (Movie) e)
                 .filter((movie) -> (null != movie.year && movie.year >= (cal.get(Calendar.YEAR) - 3)))
                 .forEach((movie) -> {
                     movies.add(movie);

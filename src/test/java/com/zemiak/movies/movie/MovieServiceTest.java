@@ -38,6 +38,7 @@ public class MovieServiceTest {
     public void create() {
         JsonObject movie = Json.createObjectBuilder()
             .add("name", "Hello, World")
+            .add("fileName", "hello-world.m4v")
             .add("created", DateFormatter.format(LocalDateTime.now()))
             .add("pictureFileName", "u-a.jpg")
             .add("genre", 0l)
@@ -65,6 +66,7 @@ public class MovieServiceTest {
     public void remove() {
         JsonObject movie = Json.createObjectBuilder()
             .add("name", "Hello, World")
+            .add("fileName", "hello-world.m4v")
             .add("created", DateFormatter.format(LocalDateTime.now()))
             .add("pictureFileName", "u-a.jpg")
             .add("genre", 0l)
@@ -109,11 +111,12 @@ public class MovieServiceTest {
         assertEquals("Kde vezi ten vlkodlak", movies.get(0).name, "One Kde vezi ten vlkodlak should be found");
     }
 
-    // @Test
+    @Test
     public void createMustFailIfIDIsNotEmpty() {
         JsonObject movie = Json.createObjectBuilder()
             .add("id", 42)
             .add("name", "Hello, World")
+            .add("fileName", "hello-world.m4v")
             .add("created", DateFormatter.format(LocalDateTime.now()))
             .add("pictureFileName", "u-a.jpg")
             .add("genre", 0l)
@@ -121,10 +124,11 @@ public class MovieServiceTest {
         req.post("/movies", movie, Status.NOT_ACCEPTABLE.getStatusCode());
     }
 
-    // @Test
+    @Test
     public void updateMustFailIfIDIsEmpty() {
         JsonObject movie = Json.createObjectBuilder()
             .add("name", "Hello, World")
+            .add("fileName", "hello-world.m4v")
             .add("created", DateFormatter.format(LocalDateTime.now()))
             .add("pictureFileName", "u-a.jpg")
             .add("genre", 0l)
@@ -132,24 +136,25 @@ public class MovieServiceTest {
         req.put("/movies", movie, Status.NOT_ACCEPTABLE.getStatusCode());
     }
 
-    // @Test
+    @Test
     public void findMustFailIfEntityDoesNotExist() {
         Long id = 42000l;
         req.get("/movies/" + String.valueOf(id), Status.NOT_FOUND.getStatusCode());
     }
 
-    // @Test
+    @Test
     public void deleteMustFailIfEntityDoesNotExist() {
         Long id = 42000l;
         req.delete("/movies/" + String.valueOf(id), Status.NOT_FOUND.getStatusCode());
     }
 
-    // @Test
+    @Test
     public void updateMustFailIfEntityDoesNotExist() {
         Long id = 42000l;
         JsonObject movie = Json.createObjectBuilder()
             .add("id", id)
             .add("name", "Hello, World")
+            .add("fileName", "hello-world.m4v")
             .add("created", DateFormatter.format(LocalDateTime.now()))
             .add("pictureFileName", "u-a.jpg")
             .add("genre", 0l)
@@ -157,16 +162,10 @@ public class MovieServiceTest {
         req.put("/movies", movie, Status.NOT_FOUND.getStatusCode());
     }
 
-    // @Test
+    @Test
     public void searchMustReturnEmptyListOnNonExistingCriteria() throws UnsupportedEncodingException {
         String text = "Does Not Exist";
         List<Movie> movies = req.get("/movies/search/" + URLEncoder.encode(text, "UTF-8")).jsonPath().getList("$", Movie.class);
         assertTrue(movies.isEmpty());
-    }
-
-    // @Test
-    public void removeMustFailIfMoviesWithMovieExist() {
-        Long idThatIsReferencedInMoviesButNotInMovies = 30010l;
-        req.delete("/movies/" + String.valueOf(idThatIsReferencedInMoviesButNotInMovies), Status.NOT_ACCEPTABLE.getStatusCode());
     }
 }

@@ -38,6 +38,7 @@ public class GenreServiceTest {
     public void create() {
         JsonObject genre = Json.createObjectBuilder()
             .add("name", "Hello, World")
+            .add("fileName", "hello-world.m4v")
             .add("created", DateFormatter.format(LocalDateTime.now()))
             .add("pictureFileName", "hello-world.jpg")
             .build();
@@ -67,6 +68,7 @@ public class GenreServiceTest {
     public void remove() {
         JsonObject genre = Json.createObjectBuilder()
             .add("name", "Hello, World")
+            .add("fileName", "hello-world.m4v")
             .add("created", DateFormatter.format(LocalDateTime.now()))
             .add("pictureFileName", "hello-world.jpg")
             .build();
@@ -108,6 +110,7 @@ public class GenreServiceTest {
         JsonObject genre = Json.createObjectBuilder()
             .add("id", 42)
             .add("name", "Hello, World")
+            .add("fileName", "hello-world.m4v")
             .add("created", DateFormatter.format(LocalDateTime.now()))
             .add("pictureFileName", "hello-world.jpg")
             .build();
@@ -118,6 +121,7 @@ public class GenreServiceTest {
     public void updateMustFailIfIDIsEmpty() {
         JsonObject genre = Json.createObjectBuilder()
             .add("name", "Hello, World")
+            .add("fileName", "hello-world.m4v")
             .add("created", DateFormatter.format(LocalDateTime.now()))
             .add("pictureFileName", "hello-world.jpg")
             .build();
@@ -142,6 +146,7 @@ public class GenreServiceTest {
         JsonObject genre = Json.createObjectBuilder()
             .add("id", id)
             .add("name", "Hello, World")
+            .add("fileName", "hello-world.m4v")
             .add("created", DateFormatter.format(LocalDateTime.now()))
             .add("pictureFileName", "hello-world.jpg")
             .build();

@@ -13,7 +13,7 @@ public class MetadataService {
     @Inject ThumbnailCreator thumbnails;
     @Inject PrepareMovieFileList movieFileList;
     @Inject YearUpdater years;
-    @Inject WebPageScraper scraper;
+    // @Inject WebPageScraper scraper;
 
     public void process() {
 //        scraper.process(movieFileList.getFiles());

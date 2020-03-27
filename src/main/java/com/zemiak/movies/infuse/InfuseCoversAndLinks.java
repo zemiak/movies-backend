@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import javax.resource.spi.IllegalStateException;
 
 import com.zemiak.movies.config.ConfigurationProvider;
 import com.zemiak.movies.movie.Movie;
@@ -77,6 +78,10 @@ public class InfuseCoversAndLinks {
                     Encodings.deAccent(getGenreName(movie)),
                     Encodings.deAccent(serie.name),
                     movieNameInSerie);
+        }
+
+        if (null == movie.fileName) {
+            throw new RuntimeException("fileName of movie " + movie.name + " is null!");
         }
 
         Path existing = Paths.get(path, movie.fileName);

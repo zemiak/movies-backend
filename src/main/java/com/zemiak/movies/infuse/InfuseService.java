@@ -7,9 +7,14 @@ import com.zemiak.movies.batch.PrepareMovieFileList;
 
 @Dependent
 public class InfuseService {
-    @Inject BasicInfuseFolderStructureCreator basic;
-    @Inject InfuseMovieWriter writer;
-    @Inject PrepareMovieFileList movieFileList;
+    @Inject
+    BasicInfuseFolderStructureCreator basic;
+
+    @Inject
+    InfuseMovieWriter writer;
+
+    @Inject
+    PrepareMovieFileList movieFileList;
 
     public void process() {
         basic.cleanAndCreate();

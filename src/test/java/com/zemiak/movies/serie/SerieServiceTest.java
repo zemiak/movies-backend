@@ -38,6 +38,7 @@ public class SerieServiceTest {
     public void create() {
         JsonObject serie = Json.createObjectBuilder()
             .add("name", "Hello, World")
+            .add("fileName", "hello-world.m4v")
             .add("created", DateFormatter.format(LocalDateTime.now()))
             .add("pictureFileName", "u-a.jpg")
             .add("genre", 0l)
@@ -65,6 +66,7 @@ public class SerieServiceTest {
     public void remove() {
         JsonObject serie = Json.createObjectBuilder()
             .add("name", "Hello, World")
+            .add("fileName", "hello-world.m4v")
             .add("created", DateFormatter.format(LocalDateTime.now()))
             .add("pictureFileName", "u-a.jpg")
             .add("genre", 0l)
@@ -109,6 +111,7 @@ public class SerieServiceTest {
         JsonObject serie = Json.createObjectBuilder()
             .add("id", 42)
             .add("name", "Hello, World")
+            .add("fileName", "hello-world.m4v")
             .add("created", DateFormatter.format(LocalDateTime.now()))
             .add("pictureFileName", "u-a.jpg")
             .add("genre", 0l)
@@ -120,6 +123,7 @@ public class SerieServiceTest {
     public void updateMustFailIfIDIsEmpty() {
         JsonObject serie = Json.createObjectBuilder()
             .add("name", "Hello, World")
+            .add("fileName", "hello-world.m4v")
             .add("created", DateFormatter.format(LocalDateTime.now()))
             .add("pictureFileName", "u-a.jpg")
             .add("genre", 0l)
@@ -145,6 +149,7 @@ public class SerieServiceTest {
         JsonObject serie = Json.createObjectBuilder()
             .add("id", id)
             .add("name", "Hello, World")
+            .add("fileName", "hello-world.m4v")
             .add("created", DateFormatter.format(LocalDateTime.now()))
             .add("pictureFileName", "u-a.jpg")
             .add("genre", 0l)

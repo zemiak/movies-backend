@@ -75,7 +75,7 @@ public class InfuseMovieWriter {
     private void makeRecentlyAdded() {
         service.getRecentlyAdded().stream().forEach(movie -> {
             movie.genreId = -1l;
-            movie.serieId = null;
+            movie.serieId = 0l;
             makeMovieLinkNoException(movie);
         });
     }
@@ -83,7 +83,7 @@ public class InfuseMovieWriter {
     private void makeNewReleases() {
         service.getNewReleases().stream().forEach(movie -> {
             movie.genreId = -2l;
-            movie.serieId = null;
+            movie.serieId = 0l;
             makeMovieLinkNoException(movie);
         });
     }

@@ -38,6 +38,7 @@ public class LanguageServiceTest {
     public void create() {
         JsonObject language = Json.createObjectBuilder()
             .add("name", "Hello, World")
+            .add("fileName", "hello-world.m4v")
             .add("code", "ua")
             .add("created", DateFormatter.format(LocalDateTime.now()).toString())
             .add("pictureFileName", "u-a.jpg")
@@ -65,6 +66,7 @@ public class LanguageServiceTest {
     public void remove() {
         JsonObject language = Json.createObjectBuilder()
             .add("name", "Hello, World")
+            .add("fileName", "hello-world.m4v")
             .add("code", "ua")
             .add("created", DateFormatter.format(LocalDateTime.now()))
             .add("pictureFileName", "u-a.jpg")
@@ -110,6 +112,7 @@ public class LanguageServiceTest {
             .add("id", 42)
             .add("code", "ua")
             .add("name", "Hello, World")
+            .add("fileName", "hello-world.m4v")
             .add("created", DateFormatter.format(LocalDateTime.now()))
             .add("pictureFileName", "u-a.jpg")
             .build();
@@ -120,6 +123,7 @@ public class LanguageServiceTest {
     public void updateMustFailIfIDIsEmpty() {
         JsonObject language = Json.createObjectBuilder()
             .add("name", "Hello, World")
+            .add("fileName", "hello-world.m4v")
             .add("code", "ua")
             .add("created", DateFormatter.format(LocalDateTime.now()))
             .add("pictureFileName", "u-a.jpg")
@@ -146,6 +150,7 @@ public class LanguageServiceTest {
             .add("id", id)
             .add("code", "ua")
             .add("name", "Hello, World")
+            .add("fileName", "hello-world.m4v")
             .add("created", DateFormatter.format(LocalDateTime.now()))
             .add("pictureFileName", "u-a.jpg")
             .build();
