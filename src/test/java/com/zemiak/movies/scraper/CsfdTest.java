@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.zemiak.movies.movie.Movie;
 
-// import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Test;
 
 public class CsfdTest {
     Csfd cut;
@@ -16,7 +16,7 @@ public class CsfdTest {
         movie.url = "https://www.csfd.cz/film/9499-matrix/prehled/";
     }
 
-    // @Test
+    @Test
     public void shoudAcceptHttpUrl() {
         movie.url = "http://www.csfd.cz/film/9499-matrix/prehled/";
         assertTrue(cut.accepts(movie));
