@@ -9,7 +9,6 @@ import java.util.logging.Logger;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
-import javax.resource.spi.IllegalStateException;
 
 import com.zemiak.movies.config.ConfigurationProvider;
 import com.zemiak.movies.movie.Movie;
