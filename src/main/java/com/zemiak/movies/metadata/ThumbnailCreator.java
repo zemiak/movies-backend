@@ -18,8 +18,6 @@ public class ThumbnailCreator {
 
     private final String path = ConfigurationProvider.getPath();
     private final String imgPath = ConfigurationProvider.getImgPath();
-    private final String ffmpeg = ConfigurationProvider.getFFMpegThumbnailer();
-    private final Boolean developmentSystem = ConfigurationProvider.isDevelopmentSystem();
 
     @Inject MovieService service;
 
@@ -30,7 +28,7 @@ public class ThumbnailCreator {
                 .filter(movie -> null != movie)
                 .filter(movie -> !Paths.get(imgPath, "movie", movie.pictureFileName).toFile().exists())
                 .forEach(movie -> {
-                    WebMetadataReader reader = new WebMetadataReader(imgPath, path, ffmpeg, developmentSystem);
+                    WebMetadataReader reader = new WebMetadataReader(imgPath);
 
                     if (reader.processThumbnail(movie)) {
                         LOG.log(Level.FINE, "Generated a thumbnail {0}", movie.pictureFileName);

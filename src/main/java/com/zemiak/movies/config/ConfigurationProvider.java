@@ -7,7 +7,6 @@ import java.util.Map;
 /**
  * Needed ENV keys are listed below.
  *
- * BIN_PATH
  * MEDIA_PATH
  * EXTERNAL_URL
  * SYSTEM_NAME
@@ -27,10 +26,6 @@ public final class ConfigurationProvider {
         }
 
         return value;
-    }
-
-    private static Path getBinPath() {
-        return Paths.get(get("BIN_PATH"));
     }
 
     private static Path getBasePath() {
@@ -55,14 +50,6 @@ public final class ConfigurationProvider {
 
     public static String getMusicPath() {
         return Paths.get(getBasePath().toString(), "Music").toString();
-    }
-
-    public static String getMp4Tags() {
-        return Paths.get(getBinPath().toString(), "mp4tags").toString();
-    }
-
-    public static String getFFMpegThumbnailer() {
-        return Paths.get(getBinPath().toString(), "ffmpegthumbnailer").toString();
     }
 
     public static String getExternalURL() {

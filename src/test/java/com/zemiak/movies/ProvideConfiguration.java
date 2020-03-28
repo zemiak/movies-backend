@@ -18,7 +18,6 @@ public class ProvideConfiguration {
     public static void init() throws IOException {
         Map<String, String> config = new HashMap<>();
         config.put("MEDIA_PATH", MEDIA_PATH);
-        config.put("BIN_PATH", "/usr/bin");
         config.put("SYSTEM_NAME", "dev");
         config.put("MAIL_TO", "null@mailinator.com");
         ConfigurationProvider.setProvidedConfig(config);

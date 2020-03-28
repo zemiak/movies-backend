@@ -15,7 +15,7 @@ import com.zemiak.movies.scraper.WebMetadataReader;
 public class DescriptionsUpdater {
     private static final BatchLogger LOG = BatchLogger.getLogger(DescriptionsUpdater.class.getName());
 
-    private final WebMetadataReader reader = new WebMetadataReader(null, null, null, true);
+    private final WebMetadataReader reader = new WebMetadataReader(null);
     private final String path = ConfigurationProvider.getPath();
 
     @Inject MovieService service;

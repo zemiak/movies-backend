@@ -19,7 +19,7 @@ public class WebPageScraper {
     @Inject MovieService service;
 
     public void process(final List<String> files) {
-        WebMetadataReader reader = new WebMetadataReader(null, null, null, true);
+        WebMetadataReader reader = new WebMetadataReader(null);
 
         files.stream()
                 .map(fileName -> Paths.get(fileName).toFile().getAbsolutePath())

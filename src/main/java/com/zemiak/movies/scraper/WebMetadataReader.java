@@ -9,11 +9,10 @@ public class WebMetadataReader {
     private final IWebMetadataReader[] readers;
     private final String imgPath;
 
-    public WebMetadataReader(String imgPath, String path, String ffmpeg, boolean developmentSystem) {
+    public WebMetadataReader(String imgPath) {
         this.readers = new IWebMetadataReader[]{
             new Csfd(),
-            new Imdb(),
-            new GeneralMetadataReader(path, ffmpeg, developmentSystem)
+            new Imdb()
         };
 
         this.imgPath = imgPath;
