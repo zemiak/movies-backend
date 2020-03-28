@@ -1,4 +1,4 @@
-FROM raspbian/jessie
+FROM raspbian/stretch
 
 # Memory limit is in Megs
 ENV AB_ENABLED=jmx_exporter \
@@ -12,7 +12,15 @@ VOLUME ["/data"]
 HEALTHCHECK --interval=15s --timeout=2s \
  CMD curl --fail http://localhost:${QUARKUS_HTTP_PORT} || exit 1
 
-RUN apt update && apt -y install openjdk-7-jre-headless
+# install Java 11 from stretch-backports
+RUN apt update && apt -y install dirmngr && \
+    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E0B11894F66AEC98 && \
+    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 7638D0442B90D010 && \
+    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 8B48AD6246925553 && \
+    echo 'deb http://httpredir.debian.org/debian stretch-backports main contrib non-free' >/etc/apt/sources.list.d/debian-backports.list  && \
+    apt update && \
+    apt -y -t stretch-backports install openjdk-11-jre
+
 RUN adduser --force-badname --no-create-home --disabled-password u1001 && \
     adduser u1001 root && \
     mkdir -p ${AUTODEPLOY_FOLDER} && \
