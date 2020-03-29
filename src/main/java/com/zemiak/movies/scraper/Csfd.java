@@ -97,20 +97,9 @@ public class Csfd implements IWebMetadataReader {
 
     @Override
     public void processThumbnail(final Movie movie) {
-        Document doc = JsoupUtils.getMovieDocumentFromString(movie);
-        if (null == doc) {
+        String imageUrl = getImageUrl(movie);
+        if (null == imageUrl) {
             return;
-        }
-
-        Element poster = doc.select("img[class=film-poster]").first();
-        if (null == poster) {
-            LOG.log(Level.SEVERE, "Cannot read poster", null);
-            return;
-        }
-
-        String imageUrl = poster.attr("src");
-        if (! imageUrl.startsWith("http")) {
-            imageUrl = "http:" + imageUrl;
         }
 
         try {
@@ -119,6 +108,31 @@ public class Csfd implements IWebMetadataReader {
             LOG.log(Level.SEVERE, "Cannot fetch poster url {0} file name {1} error {2}",
                     new Object[]{imageUrl, imageFileName, ex});
         }
+    }
+
+    protected String getImageUrl(final Movie movie) {
+        Document doc = JsoupUtils.getMovieDocumentFromString(movie);
+        if (null == doc) {
+            return null;
+        }
+
+        Element poster = doc.select("img[class=film-poster]").first();
+        if (null == poster) {
+            LOG.log(Level.SEVERE, "Cannot read poster", null);
+            return null;
+        }
+
+        String imageUrl = poster.attr("src");
+        if (! imageUrl.startsWith("http")) {
+            imageUrl = "http:" + imageUrl;
+        }
+
+        if (imageUrl.contains("?")) {
+            int pos = imageUrl.indexOf('?');
+            imageUrl = imageUrl.substring(0, pos);
+        }
+
+        return imageUrl;
     }
 
     public void downloadFile(final String imageUrl, final String fileLocation) throws IOException {
