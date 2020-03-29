@@ -9,7 +9,7 @@ import com.zemiak.movies.batch.PrepareMovieFileList;
 public class MetadataService {
     @Inject NewMoviesCreator creator;
     @Inject DescriptionsUpdater descUpdater;
-    @Inject ThumbnailCreator thumbnails;
+    @Inject ThumbnailDownloader thumbnails;
     @Inject PrepareMovieFileList movieFileList;
     @Inject YearUpdater years;
     // @Inject WebPageScraper scraper;

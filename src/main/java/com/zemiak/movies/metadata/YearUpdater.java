@@ -27,7 +27,6 @@ public class YearUpdater {
                 .filter(movie -> null != movie)
                 .filter(movie -> null != movie.url && !movie.url.trim().isEmpty())
                 .filter(movie -> null == movie.year)
-                .filter(movie -> null != movie.year)
                 .forEach(movie -> {
                     final Integer year = reader.parseYear(movie);
                     if (null == year) {
@@ -39,6 +38,7 @@ public class YearUpdater {
 
                     LOG.log(Level.INFO, "... updated year in DB of " + movie.fileName + " to " + movie.year, movie.id);
 
+                    // wait 1s so we are not kicked out as scrapers
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException ex) {

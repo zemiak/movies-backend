@@ -13,8 +13,8 @@ import com.zemiak.movies.movie.MovieService;
 import com.zemiak.movies.scraper.WebMetadataReader;
 
 @Dependent
-public class ThumbnailCreator {
-    private static final BatchLogger LOG = BatchLogger.getLogger("ThumbnailCreator");
+public class ThumbnailDownloader {
+    private static final BatchLogger LOG = BatchLogger.getLogger("ThumbnailDownloader");
 
     private final String path = ConfigurationProvider.getPath();
     private final String imgPath = ConfigurationProvider.getImgPath();
@@ -31,9 +31,9 @@ public class ThumbnailCreator {
                     WebMetadataReader reader = new WebMetadataReader(imgPath);
 
                     if (reader.processThumbnail(movie)) {
-                        LOG.log(Level.FINE, "Generated a thumbnail {0}", movie.pictureFileName);
+                        LOG.log(Level.INFO, "Downloaded a thumbnail {0}", movie.pictureFileName);
                     } else {
-                        LOG.log(Level.SEVERE, "Error generating a thumbnail {0}", movie.pictureFileName);
+                        LOG.log(Level.SEVERE, "Error downloading a thumbnail {0}", movie.pictureFileName);
                     }
                 });
     }

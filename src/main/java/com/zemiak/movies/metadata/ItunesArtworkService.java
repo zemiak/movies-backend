@@ -28,7 +28,7 @@ public class ItunesArtworkService {
         target = ClientBuilder.newClient().target(URI);
     }
 
-    private JsonObject getMovieArtworkResultsJson(String movieName) {
+    protected JsonObject getMovieArtworkResultsJson(String movieName) {
         Response response = target
                 .queryParam("country", COUNTRY_US)
                 .queryParam("entity", ENTITY_MOVIE)
