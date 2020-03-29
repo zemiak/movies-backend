@@ -1,0 +1,8 @@
+#!/bin/sh
+
+IMAGE=movies-moviethumbnails
+VOLUME=/mnt/media/Movies:/movies
+VOLUME2=/mnt/media/Pictures/Movies/movie:/pictures
+DOCKER_MEMORY=72m
+XMX=64
+docker run -ti --rm -m ${DOCKER_MEMORY} -v ${VOLUME} -v ${VOLUME2} -e MEMORY_LIMIT=${XMX} -e PHOTOPATH=/data ${IMAGE}
