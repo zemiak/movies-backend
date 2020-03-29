@@ -87,18 +87,10 @@ public class Imdb implements IWebMetadataReader {
 
     @Override
     public void processThumbnail(Movie movie) {
-        Document doc = JsoupUtils.getMovieDocumentFromString(movie);
-        if (null == doc) {
+        String imageUrl = getImageUrl(movie);
+        if (null == imageUrl) {
             return;
         }
-
-        Element poster = doc.select("div[class=poster]>a>img").first();
-        if (null == poster) {
-            LOG.log(Level.SEVERE, "Cannot read poster", null);
-            return;
-        }
-
-        String imageUrl = poster.attr("src");
 
         try {
             new Csfd().downloadFile(imageUrl, imageFileName);
@@ -106,6 +98,22 @@ public class Imdb implements IWebMetadataReader {
             LOG.log(Level.SEVERE, "Cannot fetch poster url {0} file name {1} error {2}",
                     new Object[]{imageUrl, imageFileName, ex});
         }
+    }
+
+    protected String getImageUrl(final Movie movie) {
+        Document doc = JsoupUtils.getMovieDocumentFromString(movie);
+        if (null == doc) {
+            return null;
+        }
+
+        // <link rel='image_src' href="https://m.media-amazon.com/images/M/MV5BNzQzOTk3OTAtNDQ0Zi00ZTVkLWI0MTEtMDllZjNkYzNjNTc4L2ltYWdlXkEyXkFqcGdeQXVyNjU0OTQ0OTY@._V1_UY1200_CR84,0,630,1200_AL_.jpg">
+        Element link = doc.select("link[rel=image_src]").first();
+        if (null == link) {
+            LOG.log(Level.SEVERE, "Cannot read link", null);
+            return null;
+        }
+
+        return link.attr("href");
     }
 
     @Override
