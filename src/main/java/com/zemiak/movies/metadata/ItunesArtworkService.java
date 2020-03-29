@@ -1,45 +1,51 @@
 package com.zemiak.movies.metadata;
 
 import java.io.InputStream;
-import java.util.Arrays;
+import java.io.StringReader;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.zemiak.movies.scraper.ItunesArtwork;
 
+import org.eclipse.microprofile.rest.client.RestClientBuilder;
+
 public class ItunesArtworkService {
-    private static final String URI = "http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/wa/wsSearch";
+    private static final String URL_STRING = "http://ax.itunes.apple.com";
     private static final String COUNTRY_US = "us";
     private static final String ENTITY_MOVIE = "movie";
-    WebTarget target;
-    private static final List<Integer> DIMENSIONS = Arrays.asList(2048, 1024, 600, 100);
-
-    public ItunesArtworkService() {
-        target = ClientBuilder.newClient().target(URI);
-    }
 
     protected JsonObject getMovieArtworkResultsJson(String movieName) {
-        Response response = target
-                .queryParam("country", COUNTRY_US)
-                .queryParam("entity", ENTITY_MOVIE)
-                .queryParam("term", movieName)
-                .request(MediaType.APPLICATION_JSON).get();
+        ItunesArtworkRestClient client = getRestClient();
+        Response response = client.wsSearch(COUNTRY_US, ENTITY_MOVIE, movieName);
 
         if (! Response.Status.Family.SUCCESSFUL.equals(response.getStatusInfo().getFamily())) {
             throw new IllegalStateException("Response was: " + response.getStatus() + " not Success");
         }
 
-        return response.readEntity(JsonObject.class);
+        String body = response.readEntity(String.class);
+        return Json.createReader(new StringReader(body)).readObject();
+    }
+
+    private ItunesArtworkRestClient getRestClient() {
+        URL url;
+
+        try {
+            url = new URL(URL_STRING);
+        } catch (MalformedURLException e) {
+            throw new RuntimeException("URL invalid: " + URL_STRING);
+        }
+
+        return RestClientBuilder.newBuilder().baseUrl(url).build(ItunesArtworkRestClient.class);
     }
 
     public Set<ItunesArtwork> getMovieArtworkResults(String movieName) {
@@ -57,7 +63,13 @@ public class ItunesArtworkService {
         String url = artwork.getArtworkUrl100();
         url = url.replace("100x100", String.format("%dx%d", dimension, dimension));
 
-        Response response = ClientBuilder.newClient().target(url).request().get();
+        WebTarget target = ClientBuilder.newClient().target(url);
+        Response response = target.request().head();
+        if (! Response.Status.Family.SUCCESSFUL.equals(response.getStatusInfo().getFamily())) {
+            return null;
+        }
+
+        response = target.request().get();
         if (! Response.Status.Family.SUCCESSFUL.equals(response.getStatusInfo().getFamily())) {
             return null;
         }
@@ -66,10 +78,6 @@ public class ItunesArtworkService {
     }
 
     public InputStream getMovieArtwork(ItunesArtwork artwork) {
-        return DIMENSIONS.stream()
-                .map(dimension -> getMovieArtworkWithDimension(artwork, dimension))
-                .filter(Objects::nonNull)
-                .findFirst()
-                .orElse(null);
+        return getMovieArtworkWithDimension(artwork, 1024);
     }
 }
