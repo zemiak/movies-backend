@@ -1,8 +1,6 @@
 package com.zemiak.movies.serie;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Observes;
@@ -26,9 +24,9 @@ import javax.ws.rs.core.Response.Status;
 import com.zemiak.movies.batch.CacheClearEvent;
 import com.zemiak.movies.genre.GenreRepository;
 import com.zemiak.movies.movie.Movie;
-import com.zemiak.movies.strings.Encodings;
 
 import io.quarkus.hibernate.orm.panache.Panache;
+import io.quarkus.panache.common.Parameters;
 import io.quarkus.panache.common.Sort;
 
 @RequestScoped
@@ -74,6 +72,15 @@ public class SerieService {
     }
 
     @GET
+    @Path("by-genre/{id}")
+    public List<Serie> getGenreSeries(@PathParam("id") @NotNull Long id) {
+        return repo.find("genreId = :genreId",
+            Sort.ascending("displayOrder"),
+            Parameters.with("genreId", id))
+            .list();
+    }
+
+    @GET
     @Path("{id}")
     public Serie find(@PathParam("id") @NotNull final Long id) {
         Serie entity = repo.findById(id);
@@ -101,33 +108,5 @@ public class SerieService {
 
     public void clearCache(@Observes final CacheClearEvent event) {
         Panache.getEntityManager().getEntityManagerFactory().getCache().evictAll();
-    }
-
-    @GET
-    @Path("search/{pattern}")
-    public List<Serie> getByExpression(@PathParam("pattern") @NotNull final String text) {
-        List<Serie> res = new ArrayList<>();
-        String textAscii = Encodings.toAscii(text.trim().toLowerCase());
-
-        /**
-         * TODO: optimize findAll() - either set page and size or do the filtering with SQL
-         *
-         * https://quarkus.io/guides/hibernate-orm-panache
-         *
-         * "You should only use list and stream methods if your table contains small enough data sets.
-         * For larger data sets you can use the find method equivalents, which return a PanacheQuery
-         * on which you can do paging"
-         */
-        Stream<Serie> stream = Serie.streamAll();
-        stream.map(entry -> (Serie) entry).forEach(entry -> {
-            String name = (null == entry.name ? ""
-                    : Encodings.toAscii(entry.name.trim().toLowerCase()));
-            if (name.contains(textAscii)) {
-                res.add(entry);
-            }
-        });
-        stream.close();
-
-        return res;
     }
 }

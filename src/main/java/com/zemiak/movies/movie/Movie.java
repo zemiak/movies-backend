@@ -118,6 +118,16 @@ public class Movie extends PanacheEntityBase implements Comparable<Movie> {
         return toJson(this);
     }
 
+    public JsonObject toGuiJson() {
+        JsonObjectBuilder builder = NullAwareJsonObjectBuilder.create()
+            .add("type", "movie")
+            .add("title", this.name)
+            .add("url", "/movies/browse?id=" + id)
+            .add("thumbnail", "/movies/thumbnail?id=" + id);
+
+        return builder.build();
+    }
+
     public void copyFrom(Movie entity) {
         this.id = entity.id;
         this.name = entity.name;

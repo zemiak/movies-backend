@@ -20,6 +20,8 @@ import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
 @Entity
 public class Serie extends PanacheEntityBase implements Comparable<Serie> {
+    public static final Long ID_NONE = 0l;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
@@ -66,6 +68,16 @@ public class Serie extends PanacheEntityBase implements Comparable<Serie> {
 
     public JsonObject toJson() {
         return toJson(this);
+    }
+
+    public JsonObject toGuiJson() {
+        JsonObjectBuilder builder = NullAwareJsonObjectBuilder.create()
+            .add("type", "folder")
+            .add("title", this.name)
+            .add("url", "/series/browse?id=" + id)
+            .add("thumbnail", "/series/thumbnail?id=" + id);
+
+        return builder.build();
     }
 
     public Serie() {

@@ -12,8 +12,8 @@ import java.util.List;
 import javax.ws.rs.core.Response.Status;
 
 import com.zemiak.movies.AssuredRequests;
+import com.zemiak.movies.GuiDTO;
 import com.zemiak.movies.ProvideConfiguration;
-import com.zemiak.movies.movie.Movie;
 
 import org.junit.jupiter.api.Test;
 
@@ -36,7 +36,7 @@ public class UpdateMoviesSchedulerTest {
         String name = "HelloWorld1";
         Files.write(Paths.get(MOVIES_FOLDER + "/Movies/new/" + name + ".mp4"), "Hello".getBytes());
         given().when().get(ENDPOINT).then().statusCode(Status.NO_CONTENT.getStatusCode());
-        List<Movie> movies = req.get("/movies/search/" + URLEncoder.encode(name, "UTF-8")).jsonPath().getList("$", Movie.class);
+        List<GuiDTO> movies = req.get("/movies/search/" + URLEncoder.encode(name, "UTF-8")).jsonPath().getList("$", GuiDTO.class);
         assertEquals(1, movies.size(), "New file can be found in DB");
     }
 
@@ -45,7 +45,7 @@ public class UpdateMoviesSchedulerTest {
         String name = "HelloWorld2";
         Files.write(Paths.get(MOVIES_FOLDER + "/Movies/new/" + name + ".m4v"), "Hello".getBytes());
         given().when().get(ENDPOINT).then().statusCode(Status.NO_CONTENT.getStatusCode());
-        List<Movie> movies = req.get("/movies/search/" + URLEncoder.encode(name, "UTF-8")).jsonPath().getList("$", Movie.class);
+        List<GuiDTO> movies = req.get("/movies/search/" + URLEncoder.encode(name, "UTF-8")).jsonPath().getList("$", GuiDTO.class);
         assertEquals(1, movies.size(), "New file can be found in DB");
     }
 }

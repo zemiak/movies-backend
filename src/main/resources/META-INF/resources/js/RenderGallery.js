@@ -32,7 +32,7 @@ export class RenderGallery extends HTMLElement {
     getFolder() {
         var folder = window.location.hash;
         if ("" == folder || "#" == folder) {
-            folder = "";
+            folder = "/ui/root";
         }
 
         if (folder.startsWith("#")) {

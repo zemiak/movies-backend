@@ -1,13 +1,15 @@
 export class Cache {
+    cacheKey = "_com_zemiak_movies_cache";
+
     constructor() {
-        const cache = window.localStorage.getItem("nasphotos.cache");
+        const cache = window.localStorage.getItem("this.cacheKey");
         if (! cache) {
-            window.localStorage.setItem("nasphotos.cache", JSON.stringify({}));
+            window.localStorage.setItem("this.cacheKey", JSON.stringify({}));
         }
     }
 
     get(key) {
-        const cache = JSON.parse(window.localStorage.getItem("nasphotos.cache"));
+        const cache = JSON.parse(window.localStorage.getItem("this.cacheKey"));
         if (key in cache) {
             return cache[key];
         }
@@ -16,21 +18,21 @@ export class Cache {
     }
 
     set(key, value) {
-        const cache = JSON.parse(window.localStorage.getItem("nasphotos.cache"));
+        const cache = JSON.parse(window.localStorage.getItem("this.cacheKey"));
         cache[key] = value;
-        window.localStorage.setItem("nasphotos.cache", JSON.stringify(cache));
+        window.localStorage.setItem("this.cacheKey", JSON.stringify(cache));
     }
 
     contains(key) {
-        const cache = JSON.parse(window.localStorage.getItem("nasphotos.cache"));
+        const cache = JSON.parse(window.localStorage.getItem("this.cacheKey"));
         return (key in cache);
     }
 
     remove(key) {
-        const cache = JSON.parse(window.localStorage.getItem("nasphotos.cache"));
+        const cache = JSON.parse(window.localStorage.getItem("this.cacheKey"));
         if (key in cache) {
             delete cache[key];
         }
-        window.localStorage.setItem("nasphotos.cache", JSON.stringify(cache));
+        window.localStorage.setItem("this.cacheKey", JSON.stringify(cache));
     }
 }

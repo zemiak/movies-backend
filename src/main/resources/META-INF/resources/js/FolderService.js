@@ -16,22 +16,6 @@ export class FolderService {
         return changedPort.split('#')[0];
     }
 
-    getBaseDownloadUri() {
-        return this.getBaseUri() + "backend/download/?path=";
-    }
-
-    getBaseDownloadThumbnailUri() {
-        return this.getBaseUri() + "backend/thumbnail/?path=";
-    }
-
-    getBaseVideoStreamingUrl() {
-        return this.getBaseUri() + "backend/streaming/";
-    }
-
-    getFolderFetchUri(name) {
-        return this.getBaseUri() + "backend/browse/?path=" + name;
-    }
-
     async fetchFolder(name) {
         if (! this.cache.contains(name)) {
             var uri = this.getFolderFetchUri(name);

@@ -14,6 +14,7 @@ import javax.json.JsonObject;
 import javax.ws.rs.core.Response.Status;
 
 import com.zemiak.movies.AssuredRequests;
+import com.zemiak.movies.GuiDTO;
 import com.zemiak.movies.strings.DateFormatter;
 
 import org.junit.jupiter.api.Test;
@@ -106,9 +107,9 @@ public class MovieServiceTest {
     @Test
     public void search() throws UnsupportedEncodingException {
         String text = "vezi";
-        List<Movie> movies = req.get("/movies/search/" + URLEncoder.encode(text, "UTF-8")).jsonPath().getList("$", Movie.class);
+        List<GuiDTO> movies = req.get("/movies/search/" + URLEncoder.encode(text, "UTF-8")).jsonPath().getList("$", GuiDTO.class);
         assertFalse(movies.isEmpty());
-        assertEquals("Kde vezi ten vlkodlak", movies.get(0).name, "One Kde vezi ten vlkodlak should be found");
+        assertEquals("Kde vezi ten vlkodlak", movies.get(0).title, "One Kde vezi ten vlkodlak should be found");
     }
 
     @Test
@@ -165,7 +166,7 @@ public class MovieServiceTest {
     @Test
     public void searchMustReturnEmptyListOnNonExistingCriteria() throws UnsupportedEncodingException {
         String text = "Does Not Exist";
-        List<Movie> movies = req.get("/movies/search/" + URLEncoder.encode(text, "UTF-8")).jsonPath().getList("$", Movie.class);
+        List<GuiDTO> movies = req.get("/movies/search/" + URLEncoder.encode(text, "UTF-8")).jsonPath().getList("$", GuiDTO.class);
         assertTrue(movies.isEmpty());
     }
 }

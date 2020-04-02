@@ -12,8 +12,10 @@ import javax.inject.Inject;
 import com.zemiak.movies.batch.RefreshStatistics;
 import com.zemiak.movies.batch.logs.BatchLogger;
 import com.zemiak.movies.config.ConfigurationProvider;
+import com.zemiak.movies.genre.Genre;
 import com.zemiak.movies.movie.Movie;
 import com.zemiak.movies.movie.MovieService;
+import com.zemiak.movies.serie.Serie;
 
 @Dependent
 public class InfuseMovieWriter {
@@ -74,16 +76,16 @@ public class InfuseMovieWriter {
 
     private void makeRecentlyAdded() {
         service.getRecentlyAdded().stream().forEach(movie -> {
-            movie.genreId = -1l;
-            movie.serieId = 0l;
+            movie.genreId = Genre.ID_RECENTLY_ADDED;
+            movie.serieId = Serie.ID_NONE;
             makeMovieLinkNoException(movie);
         });
     }
 
     private void makeNewReleases() {
         service.getNewReleases().stream().forEach(movie -> {
-            movie.genreId = -2l;
-            movie.serieId = 0l;
+            movie.genreId = Genre.ID_FRESH;
+            movie.serieId = Serie.ID_NONE;
             makeMovieLinkNoException(movie);
         });
     }

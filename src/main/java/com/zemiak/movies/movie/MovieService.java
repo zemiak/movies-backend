@@ -7,7 +7,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.stream.Stream;
 
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Observes;
@@ -29,13 +28,9 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import com.zemiak.movies.batch.CacheClearEvent;
-import com.zemiak.movies.genre.Genre;
-import com.zemiak.movies.serie.Serie;
-import com.zemiak.movies.strings.Encodings;
 
 import io.quarkus.hibernate.orm.panache.Panache;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
-import io.quarkus.panache.common.Parameters;
 import io.quarkus.panache.common.Sort;
 
 @RequestScoped
@@ -103,67 +98,6 @@ public class MovieService {
         Panache.getEntityManager().getEntityManagerFactory().getCache().evictAll();
     }
 
-    @GET
-    @Path("search/{pattern}")
-    public List<Movie> getByExpression(@PathParam("pattern") @NotNull final String text) {
-        List<Movie> res = new ArrayList<>();
-        String textAscii = Encodings.toAscii(text.trim().toLowerCase());
-
-        /**
-         * TODO: optimize findAll() - either set page and size or do the filtering with SQL
-         *
-         * https://quarkus.io/guides/hibernate-orm-panache
-         *
-         * "You should only use list and stream methods if your table contains small enough data sets.
-         * For larger data sets you can use the find method equivalents, which return a PanacheQuery
-         * on which you can do paging"
-         */
-        Stream<Movie> stream = Movie.streamAll();
-        stream.map(e -> (Movie) e).forEach(entry -> {
-            String name = null == entry.name ? ""
-                    : Encodings.toAscii(entry.name.trim().toLowerCase());
-            if (name.contains(textAscii)) {
-                res.add(entry);
-            }
-        });
-        stream.close();
-
-        return res;
-    }
-
-    @GET
-    @Path("new")
-    public List<Movie> getNewMovies() {
-        return Movie.find("genre = :valueNew OR genre IS NULL",
-            Sort.ascending("genre", "serie", "displayOrder"),
-            Parameters.with("valueNew", Genre.findById(0)))
-            .list();
-    }
-
-    @GET
-    @Path("by-serie/{id}")
-    public List<Movie> getSerieMovies(@PathParam("id") @NotNull Long id) {
-        return Movie.find("serie = :valueNew OR serie IS NULL",
-            Sort.ascending("displayOrder"),
-            Parameters.with("valueNew", Serie.findById(id)))
-            .list();
-    }
-
-    @GET
-    @Path("by-genre/{id}")
-    public List<Movie> getGenreMovies(@PathParam("id") @NotNull Long id) {
-        return Movie.find("genre = :valueNew OR genre IS NULL",
-            Sort.ascending("displayOrder"),
-            Parameters.with("valueNew", Genre.findById(id)))
-            .list();
-    }
-
-    @GET
-    @Path("last/{count}")
-    public List<Movie> getLastMovies(@PathParam("count") @NotNull Integer count) {
-        return Movie.findAll(Sort.descending("id")).page(0, count).list();
-    }
-
     public Movie findByFilename(final String fileNameStart) {
         String fileName = removeFileSeparatorFromStartIfNeeded(fileNameStart);
 
@@ -185,22 +119,6 @@ public class MovieService {
         movie.persist();
 
         return movie;
-    }
-
-    public List<Movie> getNewReleases() {
-        Calendar cal = new GregorianCalendar();
-        cal.setTime(new Date());
-
-        List<Movie> movies = new ArrayList<>();
-        // TODO: limit to 50 results
-        Movie.findAll(Sort.ascending("genreId", "serieId", "displayOrder")).stream().map(e -> (Movie) e)
-                .filter((movie) -> (null != movie.year && movie.year >= (cal.get(Calendar.YEAR) - 3)))
-                .forEach((movie) -> {
-                    movies.add(movie);
-                });
-        Collections.sort(movies, (Movie o1, Movie o2) -> o1.year.compareTo(o2.year) * -1);
-
-        return movies;
     }
 
     private class Counter {
@@ -235,5 +153,22 @@ public class MovieService {
 
     public static String removeFileSeparatorFromStartIfNeeded(String relative) {
         return !relative.startsWith(File.separator) ? relative : relative.substring(1);
+    }
+
+    public List<Movie> getNewReleases() {
+        Calendar cal = new GregorianCalendar();
+        cal.setTime(new Date());
+
+        List<Movie> movies = new ArrayList<>();
+
+        // TODO: limit to 50 results
+        Movie.findAll(Sort.ascending("genreId", "serieId", "displayOrder")).stream().map(e -> (Movie) e)
+                .filter((movie) -> (null != movie.year && movie.year >= (cal.get(Calendar.YEAR) - 3)))
+                .forEach((movie) -> {
+                    movies.add(movie);
+                });
+        Collections.sort(movies, (Movie o1, Movie o2) -> o1.year.compareTo(o2.year) * -1);
+
+        return movies;
     }
 }

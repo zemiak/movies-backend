@@ -1,91 +1,98 @@
-.page {
-    width: 100%;
+.wrapper > bread-crumbs {
+    font-size: 2rem;
+    max-width: 65rem;
+    margin: 0 auto;
+    padding: 0 1rem;
 }
 
-.serie-box {
-    width: 165px;
-    height: 167px;
-    margin-left: 4%;
-    float: left;
-    border: 1px black;
-    text-shadow:5px 5px 10px black;
+.video-box {
+    padding-top: 18px;
+    width: 192px;
 }
 
-.serie-box > a > p {
-    width: 165px;
-    font-size: 75%;
+.image-box {
+    width: 192px;
+}
+
+.folder-box {
+    width: 192px;
+}
+
+/*
+  AUTO GRID
+  Set the minimum item size with `--auto-grid-min-size` and you'll
+  get a fully responsive grid with no media queries.
+*/
+.auto-grid {
+    --auto-grid-min-size: 10rem;
+  }
+
+.auto-grid > * {
+    max-width: 400px;
+}
+
+.auto-grid > * + * {
+    margin-top: 1rem;
+}
+
+@supports(display: grid) {
+    .auto-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(var(--auto-grid-min-size), 1fr));
+        grid-gap: 1rem;
+    }
+
+    .auto-grid > * {
+        max-width: unset;
+    }
+
+    .auto-grid > * + * {
+        margin-top: unset;
+    }
+}
+
+/*
+  WRAPPER
+  A utility with a max width that contains child elements and horizontal centers them
+*/
+.wrapper {
+    max-width: 65rem;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+/* Presentational styles */
+body {
+    background: #efefef;
+    padding: 1rem 0;
+    line-height: 1.4;
+    font-family: sans-serif;
+}
+
+li {
+    padding: 0.5rem 0.5rem;
     text-align: center;
+    font-size: 1rem;
 }
 
-.serie-box > a > img {
-    width:152px;
-    height:114px;
+ul {
+    list-style-type: none;
 }
 
-.genre-box {
-    width: 165px;
-    height: 167px;
-    margin-left: 4%;
-    float: left;
-    text-shadow:5px 5px 10px black;
+
+/* Loading Indicator */
+
+.spinner-hidden {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: none;
 }
 
-.genre-box > a > p {
-    width: 165px;
-    font-size: 75%;
-    text-align: center;
-}
-
-.genre-box > a > img {
-    width:152px;
-    height:114px;
-}
-
-/**
- * One item (box)
- */
-.movie-box {
-    width: 132px;
-    height: 227px;
-    margin-left: 4px;
-    float: left;
-}
-
-/**
- * a label inside the item
- */
-.movie-box > a > label {
-    width: 132px;
-    text-align: center;
-    font-size: 75%;
-    color: black;
-}
-
-/**
- * IMG inside the item
- */
-.movie-box > a > img {
-    width:119px;
-    height:172px;
-}
-
-/**
- * Foundation elements
- */
-.small-panel {
-    padding-bottom: 0px;
-}
-
-a.item.small-icon-anchor {
-    padding: 5px;
-}
-
-.icon-bar > * i.small-icon {
-    font-size: 1em;
-}
-
-i.fi-arrow-left.movies-back-icon {
-    font-size: 1.25em; 
-    vertical-align: top; 
-    color: green;
+.spinner-visible {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }

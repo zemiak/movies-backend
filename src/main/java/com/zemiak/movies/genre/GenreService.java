@@ -100,10 +100,4 @@ public class GenreService {
     public void clearCache(@Observes CacheClearEvent event) {
         Panache.getEntityManager().getEntityManagerFactory().getCache().evictAll();
     }
-
-    @GET
-    @Path("search/{pattern}")
-    public List<Genre> getByExpression(@PathParam("pattern") @NotNull final String pattern) {
-        return repo.find("UPPER(name) LIKE ?1", "%" + pattern.toUpperCase() + "%").list();
-    }
 }

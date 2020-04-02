@@ -20,6 +20,11 @@ import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
 @Entity
 public class Genre extends PanacheEntityBase implements Comparable<Genre> {
+    public static final Long ID_NONE = 0L;
+    public static final Long ID_FRESH = -1L;
+    public static final Long ID_UNASSIGNED = -2L;
+    public static final Long ID_RECENTLY_ADDED = -3L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
@@ -114,6 +119,16 @@ public class Genre extends PanacheEntityBase implements Comparable<Genre> {
         return builder.build();
     }
 
+    public JsonObject toGuiJson() {
+        JsonObjectBuilder builder = NullAwareJsonObjectBuilder.create()
+            .add("type", "folder")
+            .add("title", this.name)
+            .add("url", "/genres/browse?id=" + id)
+            .add("thumbnail", "/genres/thumbnail?id=" + id);
+
+        return builder.build();
+    }
+
     @Override
     public int compareTo(Genre o) {
         if (null == displayOrder && null != o.displayOrder) {
@@ -137,5 +152,26 @@ public class Genre extends PanacheEntityBase implements Comparable<Genre> {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public static JsonObject getFreshGenre() {
+        Genre g = new Genre();
+        g.id = Genre.ID_FRESH;
+        g.name = "Fresh";
+        return g.toGuiJson();
+    }
+
+    public static JsonObject getUnassignedGenre() {
+        Genre g = new Genre();
+        g.id = Genre.ID_UNASSIGNED;
+        g.name = "New";
+        return g.toGuiJson();
+    }
+
+    public static JsonObject getRecentlyAddedGenre() {
+        Genre g = new Genre();
+        g.id = Genre.ID_RECENTLY_ADDED;
+        g.name = "New";
+        return g.toGuiJson();
     }
 }

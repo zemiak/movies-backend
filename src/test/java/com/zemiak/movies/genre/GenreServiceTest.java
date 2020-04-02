@@ -14,6 +14,7 @@ import javax.json.JsonObject;
 import javax.ws.rs.core.Response.Status;
 
 import com.zemiak.movies.AssuredRequests;
+import com.zemiak.movies.GuiDTO;
 import com.zemiak.movies.strings.DateFormatter;
 
 import org.junit.jupiter.api.Test;
@@ -100,9 +101,9 @@ public class GenreServiceTest {
     @Test
     public void search() throws UnsupportedEncodingException {
         String text = "On";
-        List<Genre> genres = req.get("/genres/search/" + URLEncoder.encode(text, "UTF-8")).jsonPath().getList("$", Genre.class);
+        List<GuiDTO> genres = req.get("/genres/search/" + URLEncoder.encode(text, "UTF-8")).jsonPath().getList("$", GuiDTO.class);
         assertFalse(genres.isEmpty());
-        assertEquals("None", genres.get(0).name, "One None should be found");
+        assertEquals("None", genres.get(0).title, "One None should be found");
     }
 
     @Test
@@ -156,7 +157,7 @@ public class GenreServiceTest {
     @Test
     public void searchMustReturnEmptyListOnNonExistingCriteria() throws UnsupportedEncodingException {
         String text = "Does Not Exist";
-        List<Genre> genres = req.get("/genres/search/" + URLEncoder.encode(text, "UTF-8")).jsonPath().getList("$", Genre.class);
+        List<GuiDTO> genres = req.get("/genres/search/" + URLEncoder.encode(text, "UTF-8")).jsonPath().getList("$", GuiDTO.class);
         assertTrue(genres.isEmpty());
     }
 

@@ -14,6 +14,7 @@ import javax.json.JsonObject;
 import javax.ws.rs.core.Response.Status;
 
 import com.zemiak.movies.AssuredRequests;
+import com.zemiak.movies.GuiDTO;
 import com.zemiak.movies.strings.DateFormatter;
 
 import org.junit.jupiter.api.Test;
@@ -101,9 +102,9 @@ public class SerieServiceTest {
     @Test
     public void search() throws UnsupportedEncodingException {
         String text = "not";
-        List<Serie> series = req.get("/series/search/" + URLEncoder.encode(text, "UTF-8")).jsonPath().getList("$", Serie.class);
+        List<GuiDTO> series = req.get("/series/search/" + URLEncoder.encode(text, "UTF-8")).jsonPath().getList("$", GuiDTO.class);
         assertFalse(series.isEmpty());
-        assertEquals("Not defined", series.get(0).name, "One Not defined should be found");
+        assertEquals("Not defined", series.get(0).title, "One Not defined should be found");
     }
 
     @Test
@@ -160,7 +161,7 @@ public class SerieServiceTest {
     @Test
     public void searchMustReturnEmptyListOnNonExistingCriteria() throws UnsupportedEncodingException {
         String text = "Does Not Exist";
-        List<Serie> series = req.get("/series/search/" + URLEncoder.encode(text, "UTF-8")).jsonPath().getList("$", Serie.class);
+        List<GuiDTO> series = req.get("/series/search/" + URLEncoder.encode(text, "UTF-8")).jsonPath().getList("$", GuiDTO.class);
         assertTrue(series.isEmpty());
     }
 
