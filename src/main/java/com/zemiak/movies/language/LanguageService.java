@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Observes;
-import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -33,13 +32,10 @@ import io.quarkus.panache.common.Sort;
 @Produces(MediaType.APPLICATION_JSON)
 @Transactional
 public class LanguageService {
-    @Inject
-    LanguageRepository repo;
-
     @GET
     @Path("all")
     public List<Language> all() {
-        return repo.listAll(Sort.by("displayOrder"));
+        return Language.listAll(Sort.by("displayOrder"));
     }
 
     @POST
@@ -58,7 +54,7 @@ public class LanguageService {
             throw new WebApplicationException(Response.status(Status.NOT_ACCEPTABLE).entity("ID not specified").build());
         }
 
-        Language findEntity = repo.findById(entity.id);
+        Language findEntity = Language.findById(entity.id);
         if (null == findEntity) {
             throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("ID not found" + entity.id).build());
         }
@@ -69,7 +65,7 @@ public class LanguageService {
     @GET
     @Path("{id}")
     public Language find(@PathParam("id") @NotNull Long id) {
-        Language entity = repo.findById(id);
+        Language entity = Language.findById(id);
         if (null == entity) {
             throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("ID not found: " + String.valueOf(id)).build());
         }
@@ -80,7 +76,7 @@ public class LanguageService {
     @DELETE
     @Path("{id}")
     public void remove(@PathParam("id") @NotNull Long id) {
-        Language entity = repo.findById(id);
+        Language entity = Language.findById(id);
         if (null == entity) {
             throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("ID not found: " + String.valueOf(id)).build());
         }
@@ -95,7 +91,7 @@ public class LanguageService {
     @GET
     @Path("{code}/code")
     public Language findByCode(@PathParam("code") @NotNull String code) {
-        Language entity = repo.find("code", code).firstResult();
+        Language entity = Language.find("code", code).firstResult();
         if (null == entity) {
             throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("Code not found: " + String.valueOf(code)).build());
         }
@@ -110,6 +106,6 @@ public class LanguageService {
     @GET
     @Path("search/{pattern}")
     public List<Language> getByExpression(@PathParam("pattern") @NotNull final String pattern) {
-        return repo.find("UPPER(name) LIKE ?1", "%" + pattern.toUpperCase() + "%").list();
+        return Language.find("UPPER(name) LIKE ?1", "%" + pattern.toUpperCase() + "%").list();
     }
 }

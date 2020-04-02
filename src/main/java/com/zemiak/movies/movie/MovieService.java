@@ -10,7 +10,6 @@ import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Observes;
-import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -39,13 +38,10 @@ import io.quarkus.panache.common.Sort;
 @Produces(MediaType.APPLICATION_JSON)
 @Transactional
 public class MovieService {
-    @Inject
-    MovieRepository repo;
-
     @GET
     @Path("all")
     public List<Movie> all() {
-        return repo.listAll(Sort.ascending("displayOrder"));
+        return Movie.listAll(Sort.ascending("displayOrder"));
     }
 
     @POST
@@ -64,7 +60,7 @@ public class MovieService {
             throw new WebApplicationException(Response.status(Status.NOT_ACCEPTABLE).entity("ID not specified").build());
         }
 
-        Movie findEntity = repo.findById(entity.id);
+        Movie findEntity = Movie.findById(entity.id);
         if (null == findEntity) {
             throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("ID not found" + entity.id).build());
         }
@@ -75,7 +71,7 @@ public class MovieService {
     @GET
     @Path("{id}")
     public Movie find(@PathParam("id") @NotNull Long id) {
-        Movie entity = repo.findById(id);
+        Movie entity = Movie.findById(id);
         if (null == entity) {
             throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("ID not found: " + String.valueOf(id)).build());
         }
@@ -86,7 +82,7 @@ public class MovieService {
     @DELETE
     @Path("{id}")
     public void remove(@PathParam("id") @NotNull Long id) {
-        Movie entity = repo.findById(id);
+        Movie entity = Movie.findById(id);
         if (null == entity) {
             throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("ID not found: " + String.valueOf(id)).build());
         }

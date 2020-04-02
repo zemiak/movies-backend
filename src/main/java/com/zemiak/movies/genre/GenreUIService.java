@@ -33,9 +33,6 @@ public class GenreUIService {
     GenreService genres;
 
     @Inject
-    GenreRepository genresRepo;
-
-    @Inject
     SerieService series;
 
     @Inject
@@ -53,9 +50,10 @@ public class GenreUIService {
     @GET
     @Path("search/{pattern}")
     public List<JsonObject> getByExpression(@PathParam("pattern") @NotNull final String pattern) {
-        return genresRepo.find("UPPER(name) LIKE ?1", "%" + pattern.toUpperCase() + "%")
+        return Genre.find("UPPER(name) LIKE ?1", "%" + pattern.toUpperCase() + "%")
                 .list()
                 .stream()
+                .map(e -> (Genre) e)
                 .map(Genre::toGuiJson)
                 .collect(Collectors.toList());
     }

@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Observes;
-import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -22,7 +21,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import com.zemiak.movies.batch.CacheClearEvent;
-import com.zemiak.movies.genre.GenreRepository;
 import com.zemiak.movies.movie.Movie;
 
 import io.quarkus.hibernate.orm.panache.Panache;
@@ -35,16 +33,10 @@ import io.quarkus.panache.common.Sort;
 @Produces(MediaType.APPLICATION_JSON)
 @Transactional
 public class SerieService {
-    @Inject
-    SerieRepository repo;
-
-    @Inject
-    GenreRepository genreRepo;
-
     @GET
     @Path("all")
     public List<Serie> all() {
-        return repo.listAll(Sort.ascending("displayOrder"));
+        return Serie.listAll(Sort.ascending("displayOrder"));
     }
 
     @POST
@@ -63,7 +55,7 @@ public class SerieService {
             throw new WebApplicationException(Response.status(Status.NOT_ACCEPTABLE).entity("ID not specified").build());
         }
 
-        Serie findEntity = repo.findById(entity.id);
+        Serie findEntity = Serie.findById(entity.id);
         if (null == findEntity) {
             throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("ID not found" + entity.id).build());
         }
@@ -74,7 +66,7 @@ public class SerieService {
     @GET
     @Path("by-genre/{id}")
     public List<Serie> getGenreSeries(@PathParam("id") @NotNull Long id) {
-        return repo.find("genreId = :genreId",
+        return Serie.find("genreId = :genreId",
             Sort.ascending("displayOrder"),
             Parameters.with("genreId", id))
             .list();
@@ -83,7 +75,7 @@ public class SerieService {
     @GET
     @Path("{id}")
     public Serie find(@PathParam("id") @NotNull final Long id) {
-        Serie entity = repo.findById(id);
+        Serie entity = Serie.findById(id);
         if (null == entity) {
             throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("ID not found: " + String.valueOf(id)).build());
         }
@@ -94,7 +86,7 @@ public class SerieService {
     @DELETE
     @Path("{id}")
     public void remove(@PathParam("id") @NotNull final Long id) {
-        Serie entity = repo.findById(id);
+        Serie entity = Serie.findById(id);
         if (null == entity) {
             throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("ID not found: " + String.valueOf(id)).build());
         }

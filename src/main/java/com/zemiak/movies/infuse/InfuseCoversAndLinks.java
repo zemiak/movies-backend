@@ -12,10 +12,8 @@ import javax.inject.Inject;
 
 import com.zemiak.movies.config.ConfigurationProvider;
 import com.zemiak.movies.movie.Movie;
-import com.zemiak.movies.movie.MovieRepository;
 import com.zemiak.movies.movie.MovieService;
 import com.zemiak.movies.serie.Serie;
-import com.zemiak.movies.serie.SerieRepository;
 import com.zemiak.movies.strings.Encodings;
 
 @Dependent
@@ -35,12 +33,6 @@ public class InfuseCoversAndLinks {
     @Inject
     InfuseMetadataWriter metadata;
 
-    @Inject
-    MovieRepository movieRepo;
-
-    @Inject
-    SerieRepository serieRepo;
-
     public void createGenreAndSerieCovers() {
         service.all().stream().forEach(movie -> {
             if (null != movie.genreId) {
@@ -55,7 +47,7 @@ public class InfuseCoversAndLinks {
 
     public boolean createLink(Movie movie, String movieName, int order) throws IOException {
         String discriminator = 0 == order ? "" : "_" + order;
-        Serie serie = serieRepo.findById(movie.serieId);
+        Serie serie = Serie.findById(movie.serieId);
         Path linkName;
 
         if (null == serie || serie.isEmpty()) {
@@ -98,7 +90,7 @@ public class InfuseCoversAndLinks {
     }
 
     private void createSerieCover(Movie movie) {
-        Serie serie = serieRepo.findById(movie.serieId);
+        Serie serie = Serie.findById(movie.serieId);
         Path link = Paths.get(infuseLinkPath,
                     Encodings.deAccent(getGenreName(movie)),
                     Encodings.deAccent(serie.name),
@@ -111,8 +103,8 @@ public class InfuseCoversAndLinks {
     private void createGenreCover(Movie movie) {
         Path link = Paths.get(infuseLinkPath,
                     Encodings.deAccent(getGenreName(movie)),
-                    "folder." + getFileExt(movieRepo.getGenrePictureFileName(movie)));
-        Path existing = Paths.get(imgPath, "genre", movieRepo.getGenrePictureFileName(movie));
+                    "folder." + getFileExt(movie.getGenrePictureFileName()));
+        Path existing = Paths.get(imgPath, "genre", movie.getGenrePictureFileName());
 
         createSymbolicLink(link, existing);
     }
@@ -136,7 +128,7 @@ public class InfuseCoversAndLinks {
     }
 
     private String getGenreName(Movie movie) {
-        String name = movieRepo.getGenreName(movie);
+        String name = movie.getGenreName();
         if ("Children".equals(name)) {
             name = "0-Children";
         }

@@ -14,8 +14,10 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.zemiak.movies.genre.Genre;
 import com.zemiak.movies.scraper.Csfd;
 import com.zemiak.movies.scraper.Imdb;
+import com.zemiak.movies.serie.Serie;
 import com.zemiak.movies.strings.NullAwareJsonObjectBuilder;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
@@ -192,7 +194,12 @@ public class Movie extends PanacheEntityBase implements Comparable<Movie> {
 
     @JsonIgnore
     public boolean isEmptySerie() {
-        return null == serieId || serieId == 0;
+        return null == serieId || serieId == 0l;
+    }
+
+    @JsonIgnore
+    public boolean isEmptyGenre() {
+        return null == genreId || genreId == 0;
     }
 
     @Override
@@ -217,5 +224,25 @@ public class Movie extends PanacheEntityBase implements Comparable<Movie> {
         movie.created = LocalDateTime.now();
 
         return movie;
+    }
+
+    @JsonIgnore
+    public String getSerieName() {
+        return isEmptySerie() ? "None" : ((Serie) Serie.findById(this.serieId)).name;
+    }
+
+    @JsonIgnore
+    public String getGenreName() {
+        return isEmptyGenre() ? "None" : ((Genre) Genre.findById(this.genreId)).name;
+    }
+
+    @JsonIgnore
+    public String getGenrePictureFileName() {
+        if (null == genreId) {
+            return "null.jpg";
+        }
+
+        Genre genre = Genre.findById(this.genreId);
+        return null == genre ? "null.jpg" : genre.pictureFileName;
     }
 }
