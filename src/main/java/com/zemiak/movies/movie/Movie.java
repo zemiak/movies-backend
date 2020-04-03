@@ -194,12 +194,12 @@ public class Movie extends PanacheEntityBase implements Comparable<Movie> {
 
     @JsonIgnore
     public boolean isEmptySerie() {
-        return null == serieId || serieId == 0l;
+        return null == serieId || serieId == Serie.ID_NONE;
     }
 
     @JsonIgnore
     public boolean isEmptyGenre() {
-        return null == genreId || genreId == 0;
+        return null == genreId || genreId == Genre.ID_NONE;
     }
 
     @Override
@@ -228,12 +228,22 @@ public class Movie extends PanacheEntityBase implements Comparable<Movie> {
 
     @JsonIgnore
     public String getSerieName() {
-        return isEmptySerie() ? "None" : ((Serie) Serie.findById(this.serieId)).name;
+        if (isEmptySerie()) {
+            return "None";
+        }
+
+        Serie serie = Serie.findById(this.serieId);
+        return null == serie ? "Serie " + this.serieId + " not found" : serie.name;
     }
 
     @JsonIgnore
     public String getGenreName() {
-        return isEmptyGenre() ? "None" : ((Genre) Genre.findById(this.genreId)).name;
+        if (isEmptyGenre()) {
+            return "None";
+        }
+
+        Genre genre = Genre.findById(this.genreId);
+        return null == genre ? "Genre " + this.serieId + " not found" : genre.name;
     }
 
     @JsonIgnore
