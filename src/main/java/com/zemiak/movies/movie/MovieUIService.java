@@ -1,5 +1,7 @@
 package com.zemiak.movies.movie;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -7,7 +9,6 @@ import java.util.stream.Stream;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.json.JsonObject;
 import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
@@ -19,6 +20,7 @@ import javax.ws.rs.core.MediaType;
 
 import com.zemiak.movies.genre.Genre;
 import com.zemiak.movies.strings.Encodings;
+import com.zemiak.movies.ui.GuiDTO;
 
 import io.quarkus.panache.common.Parameters;
 import io.quarkus.panache.common.Sort;
@@ -34,8 +36,8 @@ public class MovieUIService {
 
     @GET
     @Path("search/{pattern}")
-    public List<JsonObject> getByExpression(@PathParam("pattern") @NotNull final String text) {
-        List<JsonObject> res = new ArrayList<>();
+    public List<GuiDTO> getByExpression(@PathParam("pattern") @NotNull final String text) {
+        List<GuiDTO> res = new ArrayList<>();
         String textAscii = Encodings.toAscii(text.trim().toLowerCase());
 
         /**
@@ -52,7 +54,7 @@ public class MovieUIService {
             String name = null == entry.name ? ""
                     : Encodings.toAscii(entry.name.trim().toLowerCase());
             if (name.contains(textAscii)) {
-                res.add(entry.toGuiJson());
+                res.add(entry.toDto());
             }
         });
         stream.close();
@@ -60,32 +62,33 @@ public class MovieUIService {
         return res;
     }
 
-    public List<JsonObject> getRecentlyAddedMovies() {
-        return Movie.findAll(Sort.descending("id")).page(0, 50).list().stream().map(e -> (Movie) e).map(Movie::toGuiJson).collect(Collectors.toList());
+    public List<GuiDTO> getRecentlyAddedMovies() {
+        return Movie.findAll(Sort.descending("id")).page(0, 50).list().stream().map(e -> (Movie) e).map(Movie::toDto).collect(Collectors.toList());
     }
 
-    public List<JsonObject> getFreshMovies() {
-        return movies.getNewReleases().stream().map(Movie::toGuiJson).collect(Collectors.toList());
+    public List<GuiDTO> getFreshMovies() {
+        int year = LocalDateTime.now().get(ChronoField.YEAR);
+        return movies.getNewReleases(year).stream().map(Movie::toDto).collect(Collectors.toList());
     }
 
-    public List<JsonObject> getSerieMovies(final Long id) {
+    public List<GuiDTO> getSerieMovies(final Long id) {
         return Movie.find("serieId = :serieId",
             Sort.ascending("displayOrder"),
             Parameters.with("serieId", id))
-            .list().stream().map(e -> (Movie) e).map(Movie::toGuiJson).collect(Collectors.toList());
+            .list().stream().map(e -> (Movie) e).map(Movie::toDto).collect(Collectors.toList());
     }
 
-    public List<JsonObject> getGenreMovies(final Long id) {
+    public List<GuiDTO> getGenreMovies(final Long id) {
         return Movie.find("genreId = :genreId",
             Sort.ascending("displayOrder"),
             Parameters.with("genreId", id))
-            .list().stream().map(e -> (Movie) e).map(Movie::toGuiJson).collect(Collectors.toList());
+            .list().stream().map(e -> (Movie) e).map(Movie::toDto).collect(Collectors.toList());
     }
 
-    public List<JsonObject> getUnassignedMovies() {
+    public List<GuiDTO> getUnassignedMovies() {
         return Movie.find("genreId = :genreId OR genreId IS NULL",
             Sort.ascending("displayOrder"),
             Parameters.with("genreId", Genre.ID_NONE))
-            .list().stream().map(e -> (Movie) e).map(Movie::toGuiJson).collect(Collectors.toList());
+            .list().stream().map(e -> (Movie) e).map(Movie::toDto).collect(Collectors.toList());
     }
 }

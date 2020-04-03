@@ -2,10 +2,7 @@ package com.zemiak.movies.movie;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
@@ -151,15 +148,12 @@ public class MovieService {
         return !relative.startsWith(File.separator) ? relative : relative.substring(1);
     }
 
-    public List<Movie> getNewReleases() {
-        Calendar cal = new GregorianCalendar();
-        cal.setTime(new Date());
-
+    public List<Movie> getNewReleases(int year) {
         List<Movie> movies = new ArrayList<>();
 
         // TODO: limit to 50 results
         Movie.findAll(Sort.ascending("genreId", "serieId", "displayOrder")).stream().map(e -> (Movie) e)
-                .filter((movie) -> (null != movie.year && movie.year >= (cal.get(Calendar.YEAR) - 3)))
+                .filter((movie) -> (null != movie.year && movie.year >= (year - 3)))
                 .forEach((movie) -> {
                     movies.add(movie);
                 });

@@ -19,6 +19,7 @@ import com.zemiak.movies.scraper.Csfd;
 import com.zemiak.movies.scraper.Imdb;
 import com.zemiak.movies.serie.Serie;
 import com.zemiak.movies.strings.NullAwareJsonObjectBuilder;
+import com.zemiak.movies.ui.GuiDTO;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
@@ -120,14 +121,8 @@ public class Movie extends PanacheEntityBase implements Comparable<Movie> {
         return toJson(this);
     }
 
-    public JsonObject toGuiJson() {
-        JsonObjectBuilder builder = NullAwareJsonObjectBuilder.create()
-            .add("type", "movie")
-            .add("title", this.name)
-            .add("url", "/movies/browse?id=" + id)
-            .add("thumbnail", "/movies/thumbnail?id=" + id);
-
-        return builder.build();
+    public GuiDTO toDto() {
+        return new GuiDTO("movie", this.name, "/movies/browse?id=" + id, "/movies/thumbnail?id=" + id);
     }
 
     public void copyFrom(Movie entity) {

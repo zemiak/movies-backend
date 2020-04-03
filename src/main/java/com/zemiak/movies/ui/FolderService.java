@@ -1,12 +1,10 @@
-package com.zemiak.movies.folders;
+package com.zemiak.movies.ui;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonObject;
 import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.GET;
@@ -32,19 +30,19 @@ public class FolderService {
 
     @GET
     @Path("root")
-    public JsonArray getGenres() {
+    public List<GuiDTO> getGenres() {
         return genres.getRootItems();
     }
 
     @GET
     @Path("search")
-    public JsonArray getSearchItems(@NotNull @QueryParam("q") final String query) {
-        var results = new ArrayList<JsonObject>();
+    public List<GuiDTO> getSearchItems(@NotNull @QueryParam("q") final String query) {
+        var results = new ArrayList<GuiDTO>();
 
         results.addAll(genres.getByExpression(query));
         results.addAll(series.getByExpression(query));
         results.addAll(movies.getByExpression(query));
 
-        return Json.createArrayBuilder(results).build();
+        return results;
     }
 }

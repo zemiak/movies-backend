@@ -15,6 +15,7 @@ import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.zemiak.movies.strings.NullAwareJsonObjectBuilder;
+import com.zemiak.movies.ui.GuiDTO;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
@@ -70,14 +71,8 @@ public class Serie extends PanacheEntityBase implements Comparable<Serie> {
         return toJson(this);
     }
 
-    public JsonObject toGuiJson() {
-        JsonObjectBuilder builder = NullAwareJsonObjectBuilder.create()
-            .add("type", "folder")
-            .add("title", this.name)
-            .add("url", "/series/browse?id=" + id)
-            .add("thumbnail", "/series/thumbnail?id=" + id);
-
-        return builder.build();
+    public GuiDTO toDto() {
+        return new GuiDTO("folder", this.name, "/series/browse?id=" + id, "/series/thumbnail?id=" + id);
     }
 
     public Serie() {

@@ -6,9 +6,6 @@ import java.util.stream.Stream;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonObject;
 import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
@@ -21,6 +18,7 @@ import javax.ws.rs.core.MediaType;
 
 import com.zemiak.movies.movie.MovieUIService;
 import com.zemiak.movies.strings.Encodings;
+import com.zemiak.movies.ui.GuiDTO;
 
 @RequestScoped
 @Path("series")
@@ -33,14 +31,14 @@ public class SerieUIService {
 
     @GET
     @Path("browse")
-    public JsonArray getItemsForUI(@NotNull @QueryParam("id") final Long id) {
-        return Json.createArrayBuilder(movies.getSerieMovies(id)).build();
+    public List<GuiDTO> getItemsForUI(@NotNull @QueryParam("id") final Long id) {
+        return movies.getSerieMovies(id);
     }
 
     @GET
     @Path("search/{pattern}")
-    public List<JsonObject> getByExpression(@PathParam("pattern") @NotNull final String text) {
-        List<JsonObject> res = new ArrayList<>();
+    public List<GuiDTO> getByExpression(@PathParam("pattern") @NotNull final String text) {
+        List<GuiDTO> res = new ArrayList<>();
         String textAscii = Encodings.toAscii(text.trim().toLowerCase());
 
         /**
@@ -57,7 +55,7 @@ public class SerieUIService {
             String name = (null == entry.name ? ""
                     : Encodings.toAscii(entry.name.trim().toLowerCase()));
             if (name.contains(textAscii)) {
-                res.add(entry.toGuiJson());
+                res.add(entry.toDto());
             }
         });
         stream.close();

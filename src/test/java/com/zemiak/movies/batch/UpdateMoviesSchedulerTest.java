@@ -12,8 +12,8 @@ import java.util.List;
 import javax.ws.rs.core.Response.Status;
 
 import com.zemiak.movies.AssuredRequests;
-import com.zemiak.movies.GuiDTO;
 import com.zemiak.movies.ProvideConfiguration;
+import com.zemiak.movies.ui.GuiDTO;
 
 import org.junit.jupiter.api.Test;
 

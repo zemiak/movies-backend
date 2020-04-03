@@ -2,6 +2,8 @@ package com.zemiak.movies.infuse;
 
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoField;
 import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
@@ -83,7 +85,8 @@ public class InfuseMovieWriter {
     }
 
     private void makeNewReleases() {
-        service.getNewReleases().stream().forEach(movie -> {
+        int year = LocalDateTime.now().get(ChronoField.YEAR);
+        service.getNewReleases(year).stream().forEach(movie -> {
             movie.genreId = Genre.ID_FRESH;
             movie.serieId = Serie.ID_NONE;
             makeMovieLinkNoException(movie);

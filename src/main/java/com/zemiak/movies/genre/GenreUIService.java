@@ -6,9 +6,6 @@ import java.util.stream.Collectors;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonObject;
 import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
@@ -22,6 +19,7 @@ import javax.ws.rs.core.MediaType;
 import com.zemiak.movies.movie.MovieUIService;
 import com.zemiak.movies.serie.Serie;
 import com.zemiak.movies.serie.SerieService;
+import com.zemiak.movies.ui.GuiDTO;
 
 @RequestScoped
 @Path("genres")
@@ -38,29 +36,29 @@ public class GenreUIService {
     @Inject
     MovieUIService movies;
 
-    public JsonArray getRootItems() {
-        List<JsonObject> root = genres.all().stream().map(Genre::toGuiJson).collect(Collectors.toList());
+    public List<GuiDTO> getRootItems() {
+        List<GuiDTO> root = genres.all().stream().map(Genre::toDto).collect(Collectors.toList());
         root.add(Genre.getFreshGenre());
         root.add(Genre.getRecentlyAddedGenre());
         root.add(Genre.getUnassignedGenre());
 
-        return Json.createArrayBuilder(root).build();
+        return root;
     }
 
     @GET
     @Path("search/{pattern}")
-    public List<JsonObject> getByExpression(@PathParam("pattern") @NotNull final String pattern) {
+    public List<GuiDTO> getByExpression(@PathParam("pattern") @NotNull final String pattern) {
         return Genre.find("UPPER(name) LIKE ?1", "%" + pattern.toUpperCase() + "%")
                 .list()
                 .stream()
                 .map(e -> (Genre) e)
-                .map(Genre::toGuiJson)
+                .map(Genre::toDto)
                 .collect(Collectors.toList());
     }
 
     @GET
     @Path("browse")
-    public JsonArray getItemsForUI(@NotNull @QueryParam("id") final Long id) {
+    public List<GuiDTO> getItemsForUI(@NotNull @QueryParam("id") final Long id) {
         if (Genre.ID_FRESH == id) {
             return getFreshMovies();
         }
@@ -73,22 +71,22 @@ public class GenreUIService {
             return getRecentlyAddedMovies();
         }
 
-        var results = new ArrayList<JsonObject>();
-        results.addAll(series.getGenreSeries(id).stream().map(Serie::toGuiJson).collect(Collectors.toList()));
+        var results = new ArrayList<GuiDTO>();
+        results.addAll(series.getGenreSeries(id).stream().map(Serie::toDto).collect(Collectors.toList()));
         results.addAll(movies.getGenreMovies(id));
 
-        return Json.createArrayBuilder(results).build();
+        return results;
     }
 
-    private JsonArray getUnassignedMovies() {
-        return Json.createArrayBuilder(movies.getUnassignedMovies()).build();
+    private List<GuiDTO> getUnassignedMovies() {
+        return movies.getUnassignedMovies();
     }
 
-    private JsonArray getRecentlyAddedMovies() {
-        return Json.createArrayBuilder(movies.getRecentlyAddedMovies()).build();
+    private List<GuiDTO> getRecentlyAddedMovies() {
+        return movies.getRecentlyAddedMovies();
     }
 
-    private JsonArray getFreshMovies() {
-        return Json.createArrayBuilder(movies.getFreshMovies()).build();
+    private List<GuiDTO> getFreshMovies() {
+        return movies.getFreshMovies();
     }
 }

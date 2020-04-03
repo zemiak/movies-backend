@@ -14,8 +14,8 @@ import javax.json.JsonObject;
 import javax.ws.rs.core.Response.Status;
 
 import com.zemiak.movies.AssuredRequests;
-import com.zemiak.movies.GuiDTO;
 import com.zemiak.movies.strings.DateFormatter;
+import com.zemiak.movies.ui.GuiDTO;
 
 import org.junit.jupiter.api.Test;
 

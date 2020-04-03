@@ -15,6 +15,7 @@ import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.zemiak.movies.strings.NullAwareJsonObjectBuilder;
+import com.zemiak.movies.ui.GuiDTO;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
@@ -119,14 +120,8 @@ public class Genre extends PanacheEntityBase implements Comparable<Genre> {
         return builder.build();
     }
 
-    public JsonObject toGuiJson() {
-        JsonObjectBuilder builder = NullAwareJsonObjectBuilder.create()
-            .add("type", "folder")
-            .add("title", this.name)
-            .add("url", "/genres/browse?id=" + id)
-            .add("thumbnail", "/genres/thumbnail?id=" + id);
-
-        return builder.build();
+    public GuiDTO toDto() {
+        return new GuiDTO("folder", this.name, "/genres/browse?id=" + id, "/genres/thumbnail?id=" + id);
     }
 
     @Override
@@ -154,24 +149,24 @@ public class Genre extends PanacheEntityBase implements Comparable<Genre> {
         this.id = id;
     }
 
-    public static JsonObject getFreshGenre() {
+    public static GuiDTO getFreshGenre() {
         Genre g = new Genre();
         g.id = Genre.ID_FRESH;
         g.name = "Fresh";
-        return g.toGuiJson();
+        return g.toDto();
     }
 
-    public static JsonObject getUnassignedGenre() {
+    public static GuiDTO getUnassignedGenre() {
         Genre g = new Genre();
         g.id = Genre.ID_UNASSIGNED;
         g.name = "New";
-        return g.toGuiJson();
+        return g.toDto();
     }
 
-    public static JsonObject getRecentlyAddedGenre() {
+    public static GuiDTO getRecentlyAddedGenre() {
         Genre g = new Genre();
         g.id = Genre.ID_RECENTLY_ADDED;
         g.name = "New";
-        return g.toGuiJson();
+        return g.toDto();
     }
 }
