@@ -1,5 +1,8 @@
 package com.zemiak.movies.genre;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoField;
 import java.util.ArrayList;
@@ -17,6 +20,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import com.zemiak.movies.movie.MovieUIService;
 import com.zemiak.movies.serie.Serie;
@@ -56,6 +61,30 @@ public class GenreUIService {
                 .map(e -> (Genre) e)
                 .map(Genre::toDto)
                 .collect(Collectors.toList());
+    }
+
+    @GET
+    @Path("thumbnail")
+    public Response getThumbnail(@QueryParam("id") final Long id) {
+        var e = find(id);
+        String fileName = e.pictureFileName;
+
+        if (null == fileName) {
+            return Response.status(Status.NOT_FOUND).entity("Thumbnail for " + id + " not yet created").build();
+        }
+
+        FileInputStream stream;
+        try {
+            stream = new FileInputStream(new File(fileName));
+        } catch (FileNotFoundException e1) {
+            return Response.status(Status.NOT_FOUND).entity("Thumbnail for " + id + " not found " + fileName).build();
+        }
+
+        return Response.ok(stream).build();
+    }
+
+    protected Genre find(final Long id) {
+        return genres.find(id);
     }
 
     @GET

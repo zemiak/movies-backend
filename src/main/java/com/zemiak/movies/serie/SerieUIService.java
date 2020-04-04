@@ -1,5 +1,8 @@
 package com.zemiak.movies.serie;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
@@ -15,6 +18,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import com.zemiak.movies.movie.MovieUIService;
 import com.zemiak.movies.strings.Encodings;
@@ -28,6 +33,9 @@ import com.zemiak.movies.ui.GuiDTO;
 public class SerieUIService {
     @Inject
     MovieUIService movies;
+
+    @Inject
+    SerieService series;
 
     @GET
     @Path("browse")
@@ -61,5 +69,29 @@ public class SerieUIService {
         stream.close();
 
         return res;
+    }
+
+    @GET
+    @Path("thumbnail")
+    public Response getThumbnail(@QueryParam("id") final Long id) {
+        var e = find(id);
+        String fileName = e.pictureFileName;
+
+        if (null == fileName) {
+            return Response.status(Status.NOT_FOUND).entity("Thumbnail for " + id + " not yet created").build();
+        }
+
+        FileInputStream stream;
+        try {
+            stream = new FileInputStream(new File(fileName));
+        } catch (FileNotFoundException e1) {
+            return Response.status(Status.NOT_FOUND).entity("Thumbnail for " + id + " not found " + fileName).build();
+        }
+
+        return Response.ok(stream).build();
+    }
+
+    protected Serie find(final Long id) {
+        return series.find(id);
     }
 }

@@ -1,5 +1,6 @@
 package com.zemiak.movies.metadata;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.net.MalformedURLException;
@@ -11,6 +12,7 @@ import java.util.stream.Collectors;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
+import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
@@ -28,7 +30,7 @@ public class ItunesArtworkService {
         ItunesArtworkRestClient client = getRestClient();
         Response response = client.wsSearch(COUNTRY_US, ENTITY_MOVIE, movieName);
 
-        if (! Response.Status.Family.SUCCESSFUL.equals(response.getStatusInfo().getFamily())) {
+        if (!Response.Status.Family.SUCCESSFUL.equals(response.getStatusInfo().getFamily())) {
             throw new IllegalStateException("Response was: " + response.getStatus() + " not Success");
         }
 
@@ -59,25 +61,40 @@ public class ItunesArtworkService {
         return entries.stream().map(ItunesArtwork::mapFromEntry).collect(Collectors.toSet());
     }
 
-    public InputStream getMovieArtworkWithDimension(ItunesArtwork artwork, int dimension) {
+    public byte[] getMovieArtworkWithDimension(ItunesArtwork artwork, int dimension) {
         String url = artwork.getArtworkUrl100();
         url = url.replace("100x100", String.format("%dx%d", dimension, dimension));
 
-        WebTarget target = ClientBuilder.newClient().target(url);
+        Client client = ClientBuilder.newClient();
+        WebTarget target = client.target(url);
         Response response = target.request().head();
-        if (! Response.Status.Family.SUCCESSFUL.equals(response.getStatusInfo().getFamily())) {
+        if (!Response.Status.Family.SUCCESSFUL.equals(response.getStatusInfo().getFamily())) {
+            client.close();
             return null;
         }
 
         response = target.request().get();
-        if (! Response.Status.Family.SUCCESSFUL.equals(response.getStatusInfo().getFamily())) {
+        if (!Response.Status.Family.SUCCESSFUL.equals(response.getStatusInfo().getFamily())) {
+            client.close();
             return null;
         }
 
-        return response.readEntity(InputStream.class);
+        InputStream stream = response.readEntity(InputStream.class);
+        
+        byte[] res;
+        try {
+            res = stream.readAllBytes();
+        } catch (IOException e) {
+            // pass
+            res = null;
+        } finally {
+            client.close();
+        }
+
+        return res;
     }
 
-    public InputStream getMovieArtwork(ItunesArtwork artwork) {
+    public byte[] getMovieArtwork(ItunesArtwork artwork) {
         return getMovieArtworkWithDimension(artwork, 1024);
     }
 }

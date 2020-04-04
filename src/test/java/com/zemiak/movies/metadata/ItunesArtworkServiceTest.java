@@ -47,7 +47,7 @@ public class ItunesArtworkServiceTest {
     }
 
     @Test
-    public void fetchArtwork() throws IOException {
+    public void fetchArtwork() {
         JsonObject data = cut.getMovieArtworkResultsJson("Matrix");
         JsonArray entries = data.getJsonArray("results");
         assertFalse(entries.isEmpty(), "Results not empty");
@@ -57,13 +57,11 @@ public class ItunesArtworkServiceTest {
         assertNotNull(first.getArtworkUrl100(), "URL must not be null");
         assertFalse(first.getArtworkUrl100().isBlank(), "URL must not be empty");
 
-        InputStream stream = cut.getMovieArtwork(first);
-        assertNotNull(stream, "Stream must not be null");
+        byte[] bytes = cut.getMovieArtwork(first);
+        assertNotNull(bytes, "Stream must not be null");
 
         int streamLength;
-        streamLength = stream.readAllBytes().length;
+        streamLength = bytes.length;
         assertTrue(streamLength > KB_128, "Stream must contain data, but it contains only # of bytes: " + streamLength);
-
-        stream.close();
     }
 }
