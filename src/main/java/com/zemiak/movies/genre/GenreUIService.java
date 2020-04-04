@@ -1,5 +1,7 @@
 package com.zemiak.movies.genre;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -87,6 +89,7 @@ public class GenreUIService {
     }
 
     private List<GuiDTO> getFreshMovies() {
-        return movies.getFreshMovies();
+        int year = LocalDateTime.now().get(ChronoField.YEAR);
+        return movies.getFreshMovies(year);
     }
 }

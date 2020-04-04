@@ -36,7 +36,7 @@ public class GenreUIServiceTest {
     public void getRootItemsContainsAllGenres() {
         List<GuiDTO> root = req.get("/ui/root").jsonPath().getList("$", GuiDTO.class);
         List<Genre> genres = req.get("/genres/all").jsonPath().getList("$", Genre.class);
-        assertEquals(root.size(), genres.size(), "Root genres are all genres, size must be the same");
+        assertEquals(root.size(), genres.size() + 3, "Root genres are all genres, size must be the same. Artificial: unassigned, fresh, recently added");
     }
 
     @Test

@@ -1,7 +1,5 @@
 package com.zemiak.movies.movie;
 
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -66,8 +64,7 @@ public class MovieUIService {
         return Movie.findAll(Sort.descending("id")).page(0, 50).list().stream().map(e -> (Movie) e).map(Movie::toDto).collect(Collectors.toList());
     }
 
-    public List<GuiDTO> getFreshMovies() {
-        int year = LocalDateTime.now().get(ChronoField.YEAR);
+    public List<GuiDTO> getFreshMovies(int year) {
         return movies.getNewReleases(year).stream().map(Movie::toDto).collect(Collectors.toList());
     }
 
