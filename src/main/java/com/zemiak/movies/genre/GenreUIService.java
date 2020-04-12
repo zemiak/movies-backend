@@ -90,15 +90,15 @@ public class GenreUIService {
     @GET
     @Path("browse")
     public List<GuiDTO> getItemsForUI(@NotNull @QueryParam("id") final Long id) {
-        if (Genre.ID_FRESH == id) {
+        if (Genre.ID_FRESH.equals(id)) {
             return getFreshMovies();
         }
 
-        if (Genre.ID_UNASSIGNED == id) {
+        if (Genre.ID_UNASSIGNED.equals(id)) {
             return getUnassignedMovies();
         }
 
-        if (Genre.ID_RECENTLY_ADDED == id) {
+        if (Genre.ID_RECENTLY_ADDED.equals(id)) {
             return getRecentlyAddedMovies();
         }
 

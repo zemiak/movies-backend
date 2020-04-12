@@ -1,10 +1,8 @@
 import { html, render } from "./lib/lit-html.js";
 
 export class TemplateService {
-    constructor(url, thumbnailUrl, videoUrl) {
-        this.imageDownloadBaseUrl = url;
-        this.imageDownloadThumbnailBaseUrl = thumbnailUrl;
-        this.videoStreamingUrl = videoUrl;
+    constructor(url) {
+        this.baseUrl = url;
     }
 
     renderGallery(data, element) {
@@ -13,7 +11,7 @@ export class TemplateService {
         plainHtml = plainHtml + this.header() + "\n";
 
         this.folders = false;
-        data.items.forEach(item => {plainHtml = plainHtml + this.element(item)});
+        data.forEach(item => {plainHtml = plainHtml + this.element(item)});
 
         plainHtml = plainHtml + this.footer() + "\n";
 
@@ -43,7 +41,7 @@ export class TemplateService {
     }
 
     element(item) {
-        if ("folder" === item.type) {
+        if ("genre" === item.type || "serie" === item.type) {
             return this.renderFolder(item);
         }
 
@@ -55,41 +53,41 @@ export class TemplateService {
     }
 
     renderPicture(item) {
-        const imageUrl = this.imageDownloadBaseUrl + item.path;
-        const imageThumbnailUrl = this.imageDownloadThumbnailBaseUrl + item.path;
+        const detailUrl = item.url;
+        const thumbnailUrl = item.thumbnail;
 
         return `
         <li>
-            <a href="${imageUrl}" data-type="image" class="glightbox" data-gallery="gallery1">
-                <img src="${imageThumbnailUrl}" class="image-box" alt="${item.title}">
+            <a href="${detailUrl}" data-type="image" class="glightbox" data-gallery="gallery1">
+                <img src="${thumbnailUrl}" class="image-box" alt="${item.title}">
             </a>
         </li>
 `;
     }
 
     renderVideo(item) {
-        const videoUrl = this.videoStreamingUrl + item.path;
-        const videoThumbnailUrl = this.imageDownloadThumbnailBaseUrl + item.path;
+        const detailUrl = item.url;
+        const thumbnailUrl = item.thumbnail;
 
         return `
         <li>
             <video controls class="video-box">
-                <source src="${videoUrl}" type="video/mp4"">
-                <a href="${videoUrl}"><img src="${videoThumbnailUrl}" class="video-box" /></a>
+                <source src="${detailUrl}" type="video/mp4"">
+                <a href="${detailUrl}"><img src="${thumbnailUrl}" class="video-box" /></a>
             </video>
         </li>
 `;
     }
 
     renderFolder(item) {
-        const imageThumbnailUrl = this.imageDownloadThumbnailBaseUrl + item.path;
+        const thumbnailUrl = item.thumbnail;
 
         this.folders = true;
 
         return `
         <li>
             <a href="#${item.path}">
-                <img src="${imageThumbnailUrl}" class="folder-box" alt="${item.title}">
+                <img src="${thumbnailUrl}" class="folder-box" alt="${item.title}">
             </a>
             <span>${item.title}</span>
         </li>

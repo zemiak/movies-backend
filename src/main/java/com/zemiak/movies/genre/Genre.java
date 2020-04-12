@@ -121,7 +121,7 @@ public class Genre extends PanacheEntityBase implements Comparable<Genre> {
     }
 
     public GuiDTO toDto() {
-        return new GuiDTO("folder", this.name, "/genres/browse?id=" + id, "/genres/thumbnail?id=" + id);
+        return new GuiDTO("genre", this.name, "/genres/browse?id=" + id, "/genres/thumbnail?id=" + id);
     }
 
     @Override
@@ -159,7 +159,7 @@ public class Genre extends PanacheEntityBase implements Comparable<Genre> {
     public static GuiDTO getUnassignedGenre() {
         Genre g = new Genre();
         g.id = Genre.ID_UNASSIGNED;
-        g.name = "New";
+        g.name = "Unassigned";
         return g.toDto();
     }
 

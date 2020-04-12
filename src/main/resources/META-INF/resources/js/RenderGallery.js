@@ -9,7 +9,7 @@ export class RenderGallery extends HTMLElement {
 
         this.service = new FolderService();
         this.spinner = new Spinner();
-        this.template = new TemplateService(this.service.getBaseDownloadUri(), this.service.getBaseDownloadThumbnailUri(), this.service.getBaseVideoStreamingUrl());
+        this.template = new TemplateService(this.service.getBaseUri());
         this.currentFolder = "";
     }
 
@@ -32,11 +32,15 @@ export class RenderGallery extends HTMLElement {
     getFolder() {
         var folder = window.location.hash;
         if ("" == folder || "#" == folder) {
-            folder = "/ui/root";
+            folder = "root";
         }
 
-        if (folder.startsWith("#")) {
-            folder = folder.substr(1);
+        if (folder.startsWith("#genre=")) {
+            folder = "g" + folder.substr(7);
+        }
+
+        if (folder.startsWith("#serie=")) {
+            folder = "s" + folder.substr(7);
         }
 
         return folder;
@@ -47,6 +51,8 @@ export class RenderGallery extends HTMLElement {
 
         const folder = e.detail;
         const data = this.service.getFolder(folder);
+
+        console.info("RenderGallery/onFolderData: going to render for event ", e, " data is ", data);
 
         this.template.renderGallery(data, this.gallery);
     }

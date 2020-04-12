@@ -72,7 +72,7 @@ public class Serie extends PanacheEntityBase implements Comparable<Serie> {
     }
 
     public GuiDTO toDto() {
-        return new GuiDTO("folder", this.name, "/series/browse?id=" + id, "/series/thumbnail?id=" + id);
+        return new GuiDTO("serie", this.name, "/series/browse?id=" + id, "/series/thumbnail?id=" + id);
     }
 
     public Serie() {
