@@ -21,6 +21,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import com.zemiak.movies.config.ConfigurationProvider;
 import com.zemiak.movies.movie.MovieUIService;
 import com.zemiak.movies.strings.Encodings;
 import com.zemiak.movies.ui.GuiDTO;
@@ -81,6 +82,8 @@ public class SerieUIService {
             return Response.status(Status.NOT_FOUND).entity("Thumbnail for " + id + " not yet created").build();
         }
 
+        fileName = ConfigurationProvider.getImgPath() + "/serie/" + fileName;
+
         FileInputStream stream;
         try {
             stream = new FileInputStream(new File(fileName));
@@ -88,7 +91,7 @@ public class SerieUIService {
             return Response.status(Status.NOT_FOUND).entity("Thumbnail for " + id + " not found " + fileName).build();
         }
 
-        return Response.ok(stream).build();
+        return Response.ok(stream).header("Content-Disposition", "attachment; filename=" + e.pictureFileName).build();
     }
 
     protected Serie find(final Long id) {

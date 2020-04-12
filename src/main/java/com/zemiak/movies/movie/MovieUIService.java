@@ -22,6 +22,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import com.zemiak.movies.config.ConfigurationProvider;
 import com.zemiak.movies.genre.Genre;
 import com.zemiak.movies.strings.Encodings;
 import com.zemiak.movies.ui.GuiDTO;
@@ -76,6 +77,7 @@ public class MovieUIService {
             return Response.status(Status.NOT_FOUND).entity("Thumbnail for " + id + " not yet created").build();
         }
 
+        fileName = ConfigurationProvider.getImgPath() + "/movie/" + fileName;
         FileInputStream stream;
         try {
             stream = new FileInputStream(new File(fileName));
@@ -83,7 +85,7 @@ public class MovieUIService {
             return Response.status(Status.NOT_FOUND).entity("Thumbnail for " + id + " not found " + fileName).build();
         }
 
-        return Response.ok(stream).build();
+        return Response.ok(stream).header("Content-Disposition", "attachment; filename=" + e.pictureFileName).build();
     }
 
     protected Movie find(final Long id) {

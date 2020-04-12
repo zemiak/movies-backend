@@ -23,6 +23,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import com.zemiak.movies.config.ConfigurationProvider;
 import com.zemiak.movies.movie.MovieUIService;
 import com.zemiak.movies.serie.Serie;
 import com.zemiak.movies.serie.SerieService;
@@ -45,9 +46,9 @@ public class GenreUIService {
 
     public List<GuiDTO> getRootItems() {
         List<GuiDTO> root = genres.all().stream().map(Genre::toDto).collect(Collectors.toList());
-        root.add(Genre.getFreshGenre());
-        root.add(Genre.getRecentlyAddedGenre());
-        root.add(Genre.getUnassignedGenre());
+        root.add(Genre.getFreshGenre().toDto());
+        root.add(Genre.getRecentlyAddedGenre().toDto());
+        root.add(Genre.getUnassignedGenre().toDto());
 
         return root;
     }
@@ -66,13 +67,14 @@ public class GenreUIService {
     @GET
     @Path("thumbnail")
     public Response getThumbnail(@QueryParam("id") final Long id) {
-        var e = find(id);
-        String fileName = e.pictureFileName;
+        Genre e = Genre.isArtificial(id) ? Genre.findArtificial(id) : find(id);
 
+        String fileName = e.pictureFileName;
         if (null == fileName) {
             return Response.status(Status.NOT_FOUND).entity("Thumbnail for " + id + " not yet created").build();
         }
 
+        fileName = ConfigurationProvider.getImgPath() + "/genre/" + fileName;
         FileInputStream stream;
         try {
             stream = new FileInputStream(new File(fileName));
@@ -80,7 +82,7 @@ public class GenreUIService {
             return Response.status(Status.NOT_FOUND).entity("Thumbnail for " + id + " not found " + fileName).build();
         }
 
-        return Response.ok(stream).build();
+        return Response.ok(stream).header("Content-Disposition", "attachment; filename=" + e.pictureFileName).build();
     }
 
     protected Genre find(final Long id) {

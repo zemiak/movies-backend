@@ -2,7 +2,7 @@ INSERT INTO genre (id, name, picture_file_name, display_order, protected, create
 INSERT INTO genre (id, name, picture_file_name, display_order, protected, created) VALUES (3, 'Children', 'children.png', 1, 0, NULL);
 INSERT INTO genre (id, name, picture_file_name, display_order, protected, created) VALUES (4, 'SF-Fantasy', 'sf.png', 2, 0, NULL);
 INSERT INTO genre (id, name, picture_file_name, display_order, protected, created) VALUES (15, 'Action', 'action.png', 5, 0, NULL);
-INSERT INTO genre (id, name, picture_file_name, display_order, protected, created) VALUES (16, 'Orphaned', 'orphaned.png', 7, 0, NULL);
+INSERT INTO genre (id, name, picture_file_name, display_order, protected, created) VALUES (16, 'Orphaned', 'notdefined.png', 7, 0, NULL);
 INSERT INTO language (id, code, name, picture_file_name, display_order, created) VALUES (0, 'en', 'English', NULL, 1, NULL);
 INSERT INTO language (id, code, name, picture_file_name, display_order, created) VALUES (1, 'sk', 'Slovak', NULL, 2, NULL);
 INSERT INTO language (id, code, name, picture_file_name, display_order, created) VALUES (2, 'de', 'German', NULL, 4, NULL);

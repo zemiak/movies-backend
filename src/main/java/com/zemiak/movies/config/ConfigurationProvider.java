@@ -4,6 +4,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
 
+import org.eclipse.microprofile.config.ConfigProvider;
+
 /**
  * Needed ENV keys are listed below.
  *
@@ -20,7 +22,7 @@ public final class ConfigurationProvider {
     }
 
     private static String get(String key) {
-        String value = null == providedConfig ? System.getenv(key) : providedConfig.get(key);
+        String value = null == providedConfig ? ConfigProvider.getConfig().getValue(key, String.class) : providedConfig.get(key);
         if (null == value || value.trim().isEmpty()) {
             throw new IllegalStateException("Missing configuration " + key);
         }
@@ -29,7 +31,7 @@ public final class ConfigurationProvider {
     }
 
     private static Path getBasePath() {
-        return Paths.get(get("MEDIA_PATH"));
+        return Paths.get(get("media.path"));
     }
 
     public static String getPhotoPath() {
@@ -53,15 +55,15 @@ public final class ConfigurationProvider {
     }
 
     public static String getExternalURL() {
-        return get("EXTERNAL_URL");
+        return get("external.url");
     }
 
     public static String getMailTo() {
-        return get("MAIL_TO");
+        return get("mail.to");
     }
 
     public static String getSystemName() {
-        return get("SYSTEM_NAME");
+        return get("system.name");
     }
 
     public static boolean isDevelopmentSystem() {

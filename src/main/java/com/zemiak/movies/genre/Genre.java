@@ -19,7 +19,7 @@ import com.zemiak.movies.ui.GuiDTO;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
-@Entity
+@Entity(name = "genre")
 public class Genre extends PanacheEntityBase implements Comparable<Genre> {
     public static final Long ID_NONE = 0L;
     public static final Long ID_FRESH = -1L;
@@ -149,24 +149,47 @@ public class Genre extends PanacheEntityBase implements Comparable<Genre> {
         this.id = id;
     }
 
-    public static GuiDTO getFreshGenre() {
+    public static Genre getFreshGenre() {
         Genre g = new Genre();
         g.id = Genre.ID_FRESH;
         g.name = "Fresh";
-        return g.toDto();
+        g.pictureFileName = "notdefined.png";
+        return g;
     }
 
-    public static GuiDTO getUnassignedGenre() {
+    public static Genre getUnassignedGenre() {
         Genre g = new Genre();
         g.id = Genre.ID_UNASSIGNED;
         g.name = "Unassigned";
-        return g.toDto();
+        g.pictureFileName = "notdefined.png";
+        return g;
     }
 
-    public static GuiDTO getRecentlyAddedGenre() {
+    public static Genre getRecentlyAddedGenre() {
         Genre g = new Genre();
         g.id = Genre.ID_RECENTLY_ADDED;
         g.name = "New";
-        return g.toDto();
+        g.pictureFileName = "notdefined.png";
+        return g;
+    }
+
+    public static boolean isArtificial(Long id) {
+        return ID_FRESH.equals(id) || ID_RECENTLY_ADDED.equals(id) || ID_UNASSIGNED.equals(id);
+    }
+
+    public static Genre findArtificial(Long id) {
+        if (ID_FRESH.equals(id)) {
+            return getFreshGenre();
+        }
+
+        if (ID_UNASSIGNED.equals(id)) {
+            return getUnassignedGenre();
+        }
+
+        if (ID_RECENTLY_ADDED.equals(id)) {
+            return getRecentlyAddedGenre();
+        }
+
+        throw new IllegalArgumentException("Unknown ID " + id);
     }
 }

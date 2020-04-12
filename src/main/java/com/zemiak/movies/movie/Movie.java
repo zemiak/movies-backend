@@ -23,7 +23,7 @@ import com.zemiak.movies.ui.GuiDTO;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
-@Entity
+@Entity(name = "movie")
 public class Movie extends PanacheEntityBase implements Comparable<Movie> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
