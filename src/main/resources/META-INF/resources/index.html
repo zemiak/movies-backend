@@ -5,7 +5,7 @@
     <title>Movies</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="css/bulma.css">
-    <script defer src="js/fontawesome.js"></script>
+    <script defer src="js/lib/fontawesome.js"></script>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/glightbox.css">
     <link rel="icon" type="image/png" sizes="128x128" href="/favicon.png">
@@ -25,15 +25,7 @@
                 <p>&nbsp;</p>
             </div>
 
-            <div class="level-item">
-                <nav class="breadcrumb" aria-label="breadcrumbs">
-                    <ul>
-                      <li><a href="#">Home</a></li>
-                      <li><a href="#">Children</a></li>
-                      <li class="is-active"><a href="#">Tom & Jerry</a></li>
-                    </ul>
-                  </nav>
-            </div>
+            <bread-crumbs></bread-crumbs>
         </div>
 
         <!-- Right side -->
@@ -54,24 +46,23 @@
         </div>
     </nav>
 
-    <!-- Gallery -->
-    <div id="gallery" class="wrapper"></div>
-    <render-gallery></render-gallery>
-    <light-box></light-box>
-
-    <img class="spinner-hidden" id="spinner" src="img/bluespinner.svg" />
-    <script src="config.js"></script>
-    <script src="app.js" type="module"></script>
-    <script src="js/lib/glightbox.js"></script>
+    <nav class="level">
+        <div class="level-item">
+            <div id="outlet"><root-view></root-view></div>
+        </div>
+    </nav>
 
     <nav class="level is-mobile">
         <div class="level-item">
-            <strong>Movies</strong> by <a href="https://github.com/zemiak">Zemiak</a>.
+            <strong>Movies</strong>&nbsp;by&nbsp;<a href="https://github.com/zemiak">Zemiak</a>.
         </div>
         <div class="level-item">
             <a href="#"><span class="fas fa-cog"></span> Admin</a>
         </div>
     </nav>
+
+    <script src="config.js"></script>
+    <script src="app.js" type="module"></script>
 </body>
 
 </html>

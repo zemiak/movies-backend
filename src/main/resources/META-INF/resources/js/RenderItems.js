@@ -1,14 +1,12 @@
 import { FolderService } from "./FolderService.js"
-import { Spinner } from "./Spinner.js";
 import { TemplateService } from "./TemplateService.js";
 
-export class RenderGallery extends HTMLElement {
+export class RenderItems extends HTMLElement {
     constructor() {
         super();
         this.gallery = document.querySelector("#gallery");
 
         this.service = new FolderService();
-        this.spinner = new Spinner();
         this.template = new TemplateService(this.service.getBaseUri());
         this.currentFolder = "";
     }
@@ -22,7 +20,6 @@ export class RenderGallery extends HTMLElement {
     render() {
         const folder = this.getFolder();
         if (! this.service.contains(folder)) {
-            this.spinner.show();
             this.service.fetchFolder(folder);
         } else {
             this.onFolderData({detail: folder});
@@ -47,14 +44,12 @@ export class RenderGallery extends HTMLElement {
     }
 
     onFolderData(e) {
-        this.spinner.hide();
-
         const folder = e.detail;
         const data = this.service.getFolder(folder);
 
-        console.info("RenderGallery/onFolderData: going to render for event ", e, " data is ", data);
+        console.info("RenderItems/onFolderData: going to render for event ", e, " data is ", data);
 
-        this.template.renderGallery(data, this.gallery);
+        this.template.renderItems(data, this.gallery);
     }
 
     onHashChange(e) {
@@ -62,4 +57,4 @@ export class RenderGallery extends HTMLElement {
     }
 }
 
-customElements.define("render-gallery", RenderGallery);
+customElements.define("render-items", RenderItems);

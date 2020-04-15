@@ -5,7 +5,7 @@ export class TemplateService {
         this.baseUrl = url;
     }
 
-    renderGallery(data, element) {
+    renderItems(data, element) {
         var plainHtml = "";
 
         plainHtml = plainHtml + this.header() + "\n";

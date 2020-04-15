@@ -1,5 +1,5 @@
 var request = new XMLHttpRequest();
-request.open('GET', '/config', false);  // `false` makes the request synchronous
+request.open('GET', "/config", false);  // `false` makes the request synchronous
 request.send(null);
 
 if (request.status !== 200) {

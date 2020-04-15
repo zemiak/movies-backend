@@ -1,7 +1,7 @@
 export class Cache {
-    cacheKey = "_com_zemiak_movies_cache";
-
     constructor() {
+        this.cacheKey = "_com_zemiak_movies_cache";
+        
         const cache = window.localStorage.getItem("this.cacheKey");
         if (! cache) {
             window.localStorage.setItem("this.cacheKey", JSON.stringify({}));

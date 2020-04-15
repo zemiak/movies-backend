@@ -18,30 +18,15 @@ export class BreadCrumbs extends HTMLElement {
     }
 
     render() {
-        var loc = window.location.href;
-        if (!loc.includes("#")) {
-            loc = "";
-        } else {
-            loc = loc.split('#')[1];
-        }
-
-        const decoded = decodeURIComponent(loc).replace(/\+/g, " ");
-        const pieces = decoded.split("/");
-
-        var html = this.renderItem("/#", "Roky");
-        if (pieces.length >= 1 && pieces[0] != "") {
-            html = html + "&nbsp;|&nbsp;" + this.renderItem("/#" + pieces[0], pieces[0]);
-        }
-
-        if (pieces.length >= 2 && pieces[1] != "") {
-            html = html + "&nbsp;|&nbsp;" + this.renderItem("/#" + pieces[0] + encodeURI("/" + pieces[1]), pieces[1]);
-        }
+        var html = '<div class="level-item"><nav class="breadcrumb" aria-label="breadcrumbs"><ul>';
+        html += this.renderItem({url: "/#", title: "Home"});
+        html += '</ul></nav></div>';
 
         this.innerHTML = html;
     }
 
-    renderItem(url, title) {
-        return `<a href="${url}">${title}</a>`;
+    renderItem(item) {
+        return `<li><a href="${item.url}">${item.title}</a></li>`;
     }
 }
 
