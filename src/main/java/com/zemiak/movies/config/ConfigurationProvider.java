@@ -15,6 +15,7 @@ import org.eclipse.microprofile.config.ConfigProvider;
  * MAIL_TO
  */
 public final class ConfigurationProvider {
+    public static final String MEDIA_PATH = "media.path";
     private static Map<String, String> providedConfig = null;
 
     public static void setProvidedConfig(Map<String, String> config) {
@@ -31,7 +32,7 @@ public final class ConfigurationProvider {
     }
 
     private static Path getBasePath() {
-        return Paths.get(get("media.path"));
+        return Paths.get(get(MEDIA_PATH));
     }
 
     public static String getPhotoPath() {

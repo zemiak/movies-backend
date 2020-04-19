@@ -1,4 +1,3 @@
-import { RenderItems } from "./js/RenderItems.js";
 import { BreadCrumbs } from "./js/BreadCrumbs.js";
 import { RootView } from "./js/root/RootView.js";
 import { GenreView } from "./js/genre/GenreView.js";

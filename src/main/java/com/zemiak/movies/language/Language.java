@@ -18,7 +18,7 @@ import com.zemiak.movies.strings.NullAwareJsonObjectBuilder;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
-@Entity(name = "language")
+@Entity
 public class Language extends PanacheEntityBase {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

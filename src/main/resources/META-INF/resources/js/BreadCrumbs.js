@@ -1,25 +1,25 @@
 export class BreadCrumbs extends HTMLElement {
+    constructor() {
+        super();
+        this.items = [{url: "/", title: "Home"}];
+    }
+
     connectedCallback() {
-        addEventListener("hashchange", e => this.onHashChange(e));
+        addEventListener(BreadCrumbs.eventName(), e => this.update(e));
         this.render();
     }
 
-    onHashChange(e) {
-        const newUrl = e.newURL;
-        var folder;
-
-        if (!newUrl.includes("#")) {
-            folder = "";
-        } else {
-            folder = window.location.href.split('#')[1];
-        }
-
+    update(event) {
+        console.log("BreadCrumbs: received event ", event);
+        this.items = event.data;
         this.render();
     }
 
     render() {
         var html = '<div class="level-item"><nav class="breadcrumb" aria-label="breadcrumbs"><ul>';
-        html += this.renderItem({url: "/#", title: "Home"});
+        this.items.forEach((item) => {
+            html = html + this.renderItem(item);
+        })
         html += '</ul></nav></div>';
 
         this.innerHTML = html;
@@ -27,6 +27,10 @@ export class BreadCrumbs extends HTMLElement {
 
     renderItem(item) {
         return `<li><a href="${item.url}">${item.title}</a></li>`;
+    }
+
+    static eventName() {
+        return "BreadCrumbs";
     }
 }
 

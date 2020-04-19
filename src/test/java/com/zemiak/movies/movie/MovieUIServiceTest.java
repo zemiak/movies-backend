@@ -9,12 +9,12 @@ import static org.mockito.Mockito.when;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
-import java.util.UUID;
 
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 
 import com.zemiak.movies.AssuredRequests;
+import com.zemiak.movies.ProvideConfiguration;
 import com.zemiak.movies.ui.GuiDTO;
 
 import org.junit.jupiter.api.Test;
@@ -99,12 +99,14 @@ public class MovieUIServiceTest {
     public void getThumbnail() throws IOException {
         var e = new Movie();
         e.name = "Test";
-        e.pictureFileName = "/tmp/thumb-" + UUID.randomUUID() + ".jpg";
+        e.pictureFileName = "none.jpg";
         ForbiddenJpg.write(e.pictureFileName);
 
         MovieUIService svc = mock(MovieUIService.class);
         when(svc.find(0l)).thenReturn(e);
         when(svc.getThumbnail(0l)).thenCallRealMethod();
+
+        ProvideConfiguration.init();
 
         Response r = svc.getThumbnail(0l);
         assertEquals(200, r.getStatus(), "Reply must be 200 OK, but is " + r.getStatus() + " - " + r.getEntity());

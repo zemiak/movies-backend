@@ -19,7 +19,7 @@ import com.zemiak.movies.ui.GuiDTO;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
-@Entity(name = "genre")
+@Entity
 public class Genre extends PanacheEntityBase implements Comparable<Genre> {
     public static final Long ID_NONE = 0L;
     public static final Long ID_FRESH = -1L;
