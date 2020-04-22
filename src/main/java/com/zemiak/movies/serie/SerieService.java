@@ -91,7 +91,7 @@ public class SerieService {
             throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("ID not found: " + String.valueOf(id)).build());
         }
 
-        if (Movie.find("serieId", entity.id).count() > 0) {
+        if (Movie.find("serieId", id).count() > 0) {
             throw new WebApplicationException(Response.status(Status.NOT_ACCEPTABLE).entity("They are movies existing with this language." + String.valueOf(id)).build());
         }
 

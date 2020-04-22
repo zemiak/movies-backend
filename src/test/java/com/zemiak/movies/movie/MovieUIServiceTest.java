@@ -28,7 +28,7 @@ public class MovieUIServiceTest {
     private static String FRESH_2019 = "Kde vezi ten vlkodlak";
     private static String RECENT_2020 = "Riddick: Dark Fury 3";
     private static String RECENT_2019 = "Riddick: Dark Fury 2";
-    private static Long SERIE_SCOOBYDOO = 30010l;
+    public static Long SERIE_SCOOBYDOO = 30010l;
     private static Long GENRE_SF = 4l;
     private static Long NON_EXISTING_ID = -42l;
 

@@ -14,6 +14,7 @@ import javax.json.JsonObject;
 import javax.ws.rs.core.Response.Status;
 
 import com.zemiak.movies.AssuredRequests;
+import com.zemiak.movies.movie.MovieUIServiceTest;
 import com.zemiak.movies.strings.DateFormatter;
 import com.zemiak.movies.ui.GuiDTO;
 
@@ -157,7 +158,7 @@ public class SerieServiceTest {
 
     @Test
     public void removeMustFailIfMoviesWithSerieExist() {
-        Long idThatIsReferencedInMoviesButNotInSeries = 30010l;
-        req.delete("/series/" + String.valueOf(idThatIsReferencedInMoviesButNotInSeries), Status.NOT_ACCEPTABLE.getStatusCode());
+        Long idThatIsReferencedInMovies = MovieUIServiceTest.SERIE_SCOOBYDOO;
+        req.delete("/series/" + String.valueOf(idThatIsReferencedInMovies), Status.NOT_ACCEPTABLE.getStatusCode());
     }
 }
