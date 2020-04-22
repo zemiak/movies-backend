@@ -57,6 +57,8 @@ public class MovieServiceTest {
         assertEquals(movie.getString("name"), entity.name, "Name must be the same as created");
         assertEquals(movie.getString("created"), DateFormatter.format(entity.created).toString(), "created must be the same as created");
         assertEquals(movie.getString("pictureFileName"), entity.pictureFileName, "pictureFileName must be the same as created");
+
+        req.delete("/movies/" + String.valueOf(id), Status.NO_CONTENT.getStatusCode());
     }
 
     @Test
