@@ -159,6 +159,8 @@ public class SerieServiceTest {
     @Test
     public void removeMustFailIfMoviesWithSerieExist() {
         Long idThatIsReferencedInMovies = MovieUIServiceTest.SERIE_SCOOBYDOO;
+        List<GuiDTO> movies = req.get("/series/browse?id=" + String.valueOf(idThatIsReferencedInMovies)).jsonPath().getList("$", GuiDTO.class);
+        assertEquals(4, movies.size(), "ScoobyDoo contains 4 episodes");
         req.delete("/series/" + String.valueOf(idThatIsReferencedInMovies), Status.NOT_ACCEPTABLE.getStatusCode());
     }
 }

@@ -82,7 +82,7 @@ public class SerieUIService {
             return Response.status(Status.NOT_FOUND).entity("Thumbnail for " + id + " not yet created").build();
         }
 
-        fileName = ConfigurationProvider.getImgPath() + "/serie/" + fileName;
+        fileName = ConfigurationProvider.getImgPath() + "/serie/"` + fileName;
 
         FileInputStream stream;
         try {
