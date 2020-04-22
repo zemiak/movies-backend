@@ -41,6 +41,7 @@ public class MovieServiceTest {
             .add("fileName", "hello-world.m4v")
             .add("created", DateFormatter.format(LocalDateTime.now().minusYears(20)))
             .add("pictureFileName", "u-a.jpg")
+            .add("year", 2010)
             .add("genre", 0l)
             .build();
     }
