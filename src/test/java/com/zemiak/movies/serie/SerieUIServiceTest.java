@@ -8,11 +8,15 @@ import static org.mockito.Mockito.when;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.List;
 
 import javax.ws.rs.core.Response;
 
+import com.zemiak.movies.AssuredRequests;
 import com.zemiak.movies.ProvideConfiguration;
 import com.zemiak.movies.movie.ForbiddenJpg;
+import com.zemiak.movies.movie.MovieUIServiceTest;
+import com.zemiak.movies.ui.GuiDTO;
 
 import org.junit.jupiter.api.Test;
 
@@ -20,6 +24,12 @@ import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
 public class SerieUIServiceTest {
+    AssuredRequests req;
+
+    public SerieUIServiceTest() {
+        req = new AssuredRequests();
+    }
+
     @Test
     public void getThumbnail() throws IOException {
         var e = new Serie();
@@ -41,4 +51,9 @@ public class SerieUIServiceTest {
 
         assertTrue(ForbiddenJpg.equalsTo(new String(stream.readAllBytes()), e.pictureFileName), "Must return our thumbnail data");
     }
+
+    public void scoobyDooHas4Movies() {
+        List<GuiDTO> movies = req.get("/series/browse?id=" + String.valueOf(MovieUIServiceTest.SERIE_SCOOBYDOO)).jsonPath().getList("$", GuiDTO.class);
+    }
+
 }
