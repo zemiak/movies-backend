@@ -35,16 +35,19 @@ public class SerieServiceTest {
         assertFalse(series.isEmpty(), "Series are not empty");
     }
 
+    private JsonObject getHelloWorldSerie() {
+        return Json.createObjectBuilder()
+        .add("name", "Hello, World")
+        .add("fileName", "hello-world.m4v")
+        .add("created", DateFormatter.format(LocalDateTime.now().minusYears(20)))
+        .add("pictureFileName", "u-a.jpg")
+        .add("genre", 0l)
+        .build();
+    }
+
     @Test
     public void create() {
-        JsonObject serie = Json.createObjectBuilder()
-            .add("name", "Hello, World")
-            .add("fileName", "hello-world.m4v")
-            .add("created", DateFormatter.format(LocalDateTime.now()))
-            .add("pictureFileName", "u-a.jpg")
-            .add("genre", 0l)
-            .build();
-
+        JsonObject serie = getHelloWorldSerie();
         Long id = req.post("/series", serie).as(Long.class);
         assertTrue(null != id, "Create serie returns ID");
 
@@ -65,14 +68,7 @@ public class SerieServiceTest {
 
     @Test
     public void remove() {
-        JsonObject serie = Json.createObjectBuilder()
-            .add("name", "Hello, World")
-            .add("fileName", "hello-world.m4v")
-            .add("created", DateFormatter.format(LocalDateTime.now()))
-            .add("pictureFileName", "u-a.jpg")
-            .add("genre", 0l)
-            .build();
-
+        JsonObject serie = getHelloWorldSerie();
         Long id = req.post("/series", serie).as(Long.class);
         assertTrue(null != id, "Create serie returns ID");
 
@@ -113,7 +109,7 @@ public class SerieServiceTest {
             .add("id", 42)
             .add("name", "Hello, World")
             .add("fileName", "hello-world.m4v")
-            .add("created", DateFormatter.format(LocalDateTime.now()))
+            .add("created", DateFormatter.format(LocalDateTime.now().minusYears(20)))
             .add("pictureFileName", "u-a.jpg")
             .add("genre", 0l)
             .build();
@@ -122,13 +118,7 @@ public class SerieServiceTest {
 
     @Test
     public void updateMustFailIfIDIsEmpty() {
-        JsonObject serie = Json.createObjectBuilder()
-            .add("name", "Hello, World")
-            .add("fileName", "hello-world.m4v")
-            .add("created", DateFormatter.format(LocalDateTime.now()))
-            .add("pictureFileName", "u-a.jpg")
-            .add("genre", 0l)
-            .build();
+        JsonObject serie = getHelloWorldSerie();
         req.put("/series", serie, Status.NOT_ACCEPTABLE.getStatusCode());
     }
 
@@ -151,7 +141,7 @@ public class SerieServiceTest {
             .add("id", id)
             .add("name", "Hello, World")
             .add("fileName", "hello-world.m4v")
-            .add("created", DateFormatter.format(LocalDateTime.now()))
+            .add("created", DateFormatter.format(LocalDateTime.now().minusYears(20)))
             .add("pictureFileName", "u-a.jpg")
             .add("genre", 0l)
             .build();

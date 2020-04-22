@@ -46,8 +46,8 @@ public class MovieUIServiceTest {
         List<GuiDTO> movies = cut.getFreshMovies(TESTING_YEAR);
         assertNotNull(movies, "Movies must not be null");
         assertEquals(2, movies.size(), "Fresh movie list contains 2 items");
-        assertEquals(movies.get(0).title, FRESH_2020, "The first movie is from 2020");
-        assertEquals(movies.get(1).title, FRESH_2019, "The first movie is from 2019");
+        assertEquals(FRESH_2020, movies.get(0).title, "The first movie is from 2020");
+        assertEquals(FRESH_2019, movies.get(1).title, "The first movie is from 2019");
     }
 
     @Test
@@ -55,8 +55,8 @@ public class MovieUIServiceTest {
         List<GuiDTO> movies = cut.getRecentlyAddedMovies();
         assertNotNull(movies, "Movies must not be null");
         assertTrue(movies.size() > 1, "Fresh movie list contains 2 items");
-        assertEquals(movies.get(0).title, RECENT_2020, "The first movie is from 2020");
-        assertEquals(movies.get(1).title, RECENT_2019, "The first movie is from 2019");
+        assertEquals(RECENT_2020, movies.get(0).title, "The first movie is from 2020");
+        assertEquals(RECENT_2019, movies.get(1).title, "The first movie is from 2019");
     }
 
     @Test

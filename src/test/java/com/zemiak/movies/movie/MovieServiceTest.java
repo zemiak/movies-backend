@@ -35,16 +35,19 @@ public class MovieServiceTest {
         assertFalse(movies.isEmpty(), "Movies are not empty");
     }
 
-    @Test
-    public void create() {
-        JsonObject movie = Json.createObjectBuilder()
+    private JsonObject getHelloWorldMovie() {
+        return Json.createObjectBuilder()
             .add("name", "Hello, World")
             .add("fileName", "hello-world.m4v")
-            .add("created", DateFormatter.format(LocalDateTime.now()))
+            .add("created", DateFormatter.format(LocalDateTime.now().minusYears(20)))
             .add("pictureFileName", "u-a.jpg")
             .add("genre", 0l)
             .build();
+    }
 
+    @Test
+    public void create() {
+        JsonObject movie = getHelloWorldMovie();
         Long id = req.post("/movies", movie).as(Long.class);
         assertTrue(null != id, "Create movie returns ID");
 
@@ -65,14 +68,7 @@ public class MovieServiceTest {
 
     @Test
     public void remove() {
-        JsonObject movie = Json.createObjectBuilder()
-            .add("name", "Hello, World")
-            .add("fileName", "hello-world.m4v")
-            .add("created", DateFormatter.format(LocalDateTime.now()))
-            .add("pictureFileName", "u-a.jpg")
-            .add("genre", 0l)
-            .build();
-
+        JsonObject movie = getHelloWorldMovie();
         Long id = req.post("/movies", movie).as(Long.class);
         assertTrue(null != id, "Create movie returns ID");
 
@@ -118,7 +114,7 @@ public class MovieServiceTest {
             .add("id", 42)
             .add("name", "Hello, World")
             .add("fileName", "hello-world.m4v")
-            .add("created", DateFormatter.format(LocalDateTime.now()))
+            .add("created", DateFormatter.format(LocalDateTime.now().minusYears(20)))
             .add("pictureFileName", "u-a.jpg")
             .add("genre", 0l)
             .build();
@@ -127,13 +123,7 @@ public class MovieServiceTest {
 
     @Test
     public void updateMustFailIfIDIsEmpty() {
-        JsonObject movie = Json.createObjectBuilder()
-            .add("name", "Hello, World")
-            .add("fileName", "hello-world.m4v")
-            .add("created", DateFormatter.format(LocalDateTime.now()))
-            .add("pictureFileName", "u-a.jpg")
-            .add("genre", 0l)
-            .build();
+        JsonObject movie = getHelloWorldMovie();
         req.put("/movies", movie, Status.NOT_ACCEPTABLE.getStatusCode());
     }
 
@@ -156,7 +146,7 @@ public class MovieServiceTest {
             .add("id", id)
             .add("name", "Hello, World")
             .add("fileName", "hello-world.m4v")
-            .add("created", DateFormatter.format(LocalDateTime.now()))
+            .add("created", DateFormatter.format(LocalDateTime.now().minusYears(20)))
             .add("pictureFileName", "u-a.jpg")
             .add("genre", 0l)
             .build();

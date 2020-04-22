@@ -34,16 +34,19 @@ public class LanguageServiceTest {
         assertFalse(languages.isEmpty(), "Languages are not empty");
     }
 
+    private JsonObject getHelloWorldLanguage() {
+        return Json.createObjectBuilder()
+        .add("name", "Hello, World")
+        .add("fileName", "hello-world.m4v")
+        .add("code", "ua")
+        .add("created", DateFormatter.format(LocalDateTime.now().minusYears(20)).toString())
+        .add("pictureFileName", "u-a.jpg")
+        .build();
+    }
+
     @Test
     public void create() {
-        JsonObject language = Json.createObjectBuilder()
-            .add("name", "Hello, World")
-            .add("fileName", "hello-world.m4v")
-            .add("code", "ua")
-            .add("created", DateFormatter.format(LocalDateTime.now()).toString())
-            .add("pictureFileName", "u-a.jpg")
-            .build();
-
+        JsonObject language = getHelloWorldLanguage();
         Long id = req.post("/languages", language).as(Long.class);
         assertTrue(null != id, "Create language returns ID");
 
@@ -64,14 +67,7 @@ public class LanguageServiceTest {
 
     @Test
     public void remove() {
-        JsonObject language = Json.createObjectBuilder()
-            .add("name", "Hello, World")
-            .add("fileName", "hello-world.m4v")
-            .add("code", "ua")
-            .add("created", DateFormatter.format(LocalDateTime.now()))
-            .add("pictureFileName", "u-a.jpg")
-            .build();
-
+        JsonObject language = getHelloWorldLanguage();
         Long id = req.post("/languages", language).as(Long.class);
         assertTrue(null != id, "Create language returns ID");
 
@@ -113,7 +109,7 @@ public class LanguageServiceTest {
             .add("code", "ua")
             .add("name", "Hello, World")
             .add("fileName", "hello-world.m4v")
-            .add("created", DateFormatter.format(LocalDateTime.now()))
+            .add("created", DateFormatter.format(LocalDateTime.now().minusYears(20)))
             .add("pictureFileName", "u-a.jpg")
             .build();
         req.post("/languages", language, Status.NOT_ACCEPTABLE.getStatusCode());
@@ -121,13 +117,7 @@ public class LanguageServiceTest {
 
     @Test
     public void updateMustFailIfIDIsEmpty() {
-        JsonObject language = Json.createObjectBuilder()
-            .add("name", "Hello, World")
-            .add("fileName", "hello-world.m4v")
-            .add("code", "ua")
-            .add("created", DateFormatter.format(LocalDateTime.now()))
-            .add("pictureFileName", "u-a.jpg")
-            .build();
+        JsonObject language = getHelloWorldLanguage();
         req.put("/languages", language, Status.NOT_ACCEPTABLE.getStatusCode());
     }
 
@@ -151,7 +141,7 @@ public class LanguageServiceTest {
             .add("code", "ua")
             .add("name", "Hello, World")
             .add("fileName", "hello-world.m4v")
-            .add("created", DateFormatter.format(LocalDateTime.now()))
+            .add("created", DateFormatter.format(LocalDateTime.now().minusYears(20)))
             .add("pictureFileName", "u-a.jpg")
             .build();
         req.put("/languages", language, Status.NOT_FOUND.getStatusCode());

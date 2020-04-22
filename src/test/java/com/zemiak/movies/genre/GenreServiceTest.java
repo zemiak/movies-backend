@@ -37,13 +37,7 @@ public class GenreServiceTest {
 
     @Test
     public void create() {
-        JsonObject genre = Json.createObjectBuilder()
-            .add("name", "Hello, World")
-            .add("fileName", "hello-world.m4v")
-            .add("created", DateFormatter.format(LocalDateTime.now()))
-            .add("pictureFileName", "hello-world.jpg")
-            .build();
-
+        JsonObject genre = getHelloWorldGenre();
         Long id = req.post("/genres", genre).as(Long.class);
         assertTrue(null != id, "Create genre returns ID");
 
@@ -67,18 +61,22 @@ public class GenreServiceTest {
 
     @Test
     public void remove() {
-        JsonObject genre = Json.createObjectBuilder()
-            .add("name", "Hello, World")
-            .add("fileName", "hello-world.m4v")
-            .add("created", DateFormatter.format(LocalDateTime.now()))
-            .add("pictureFileName", "hello-world.jpg")
-            .build();
+        JsonObject genre = getHelloWorldGenre();
 
         Long id = req.post("/genres", genre).as(Long.class);
         assertTrue(null != id, "Create genre returns ID");
 
         req.delete("/genres/" + String.valueOf(id), Status.NO_CONTENT.getStatusCode());
         req.get("/genres/" + String.valueOf(id), Status.NOT_FOUND.getStatusCode());
+    }
+
+    private JsonObject getHelloWorldGenre() {
+        return Json.createObjectBuilder()
+            .add("name", "Hello, World")
+            .add("fileName", "hello-world.m4v")
+            .add("created", DateFormatter.format(LocalDateTime.now().minusYears(20)))
+            .add("pictureFileName", "hello-world.jpg")
+            .build();
     }
 
     @Test
@@ -112,7 +110,7 @@ public class GenreServiceTest {
             .add("id", 42)
             .add("name", "Hello, World")
             .add("fileName", "hello-world.m4v")
-            .add("created", DateFormatter.format(LocalDateTime.now()))
+            .add("created", DateFormatter.format(LocalDateTime.now().minusYears(20)))
             .add("pictureFileName", "hello-world.jpg")
             .build();
         req.post("/genres", genre, Status.NOT_ACCEPTABLE.getStatusCode());
@@ -120,12 +118,7 @@ public class GenreServiceTest {
 
     @Test
     public void updateMustFailIfIDIsEmpty() {
-        JsonObject genre = Json.createObjectBuilder()
-            .add("name", "Hello, World")
-            .add("fileName", "hello-world.m4v")
-            .add("created", DateFormatter.format(LocalDateTime.now()))
-            .add("pictureFileName", "hello-world.jpg")
-            .build();
+        JsonObject genre = getHelloWorldGenre();
         req.put("/genres", genre, Status.NOT_ACCEPTABLE.getStatusCode());
     }
 
@@ -148,7 +141,7 @@ public class GenreServiceTest {
             .add("id", id)
             .add("name", "Hello, World")
             .add("fileName", "hello-world.m4v")
-            .add("created", DateFormatter.format(LocalDateTime.now()))
+            .add("created", DateFormatter.format(LocalDateTime.now().minusYears(20)))
             .add("pictureFileName", "hello-world.jpg")
             .build();
         req.put("/genres", genre, Status.NOT_FOUND.getStatusCode());
