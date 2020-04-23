@@ -30,7 +30,7 @@ public class SerieServiceTest {
         req = new AssuredRequests();
     }
 
-//    @Test
+    @Test
     public void all() {
         List<Serie> series = req.get("/series/all").jsonPath().getList("$", Serie.class);
         assertFalse(series.isEmpty(), "Series are not empty");
@@ -46,7 +46,7 @@ public class SerieServiceTest {
         .build();
     }
 
-//    @Test
+    @Test
     public void create() {
         JsonObject serie = getHelloWorldSerie();
         Long id = req.post("/series", serie).as(Long.class);
@@ -59,7 +59,7 @@ public class SerieServiceTest {
         assertEquals(serie.getString("pictureFileName"), entity.pictureFileName, "pictureFileName must be the same as created");
     }
 
-//    @Test
+    @Test
     public void find() {
         Long id = 0l;
         Serie entity = req.get("/series/" + String.valueOf(id)).jsonPath().getObject("$", Serie.class);
@@ -67,7 +67,7 @@ public class SerieServiceTest {
         assertEquals("Not defined", entity.name, "Name must be Not defined");
     }
 
-//    @Test
+    @Test
     public void remove() {
         JsonObject serie = getHelloWorldSerie();
         Long id = req.post("/series", serie).as(Long.class);
@@ -77,7 +77,7 @@ public class SerieServiceTest {
         req.get("/series/" + String.valueOf(id), Status.NOT_FOUND.getStatusCode());
     }
 
-//    @Test
+    @Test
     public void update() {
         Long id = 0l;
         Serie entity = req.get("/series/" + String.valueOf(id)).jsonPath().getObject("$", Serie.class);
@@ -96,7 +96,7 @@ public class SerieServiceTest {
         req.put("/series", entity.toJson(), Status.NO_CONTENT.getStatusCode());
     }
 
-//    @Test
+    @Test
     public void search() throws UnsupportedEncodingException {
         String text = "not";
         List<GuiDTO> series = req.get("/series/search/" + URLEncoder.encode(text, "UTF-8")).jsonPath().getList("$", GuiDTO.class);
@@ -104,7 +104,7 @@ public class SerieServiceTest {
         assertEquals("Not defined", series.get(0).title, "One Not defined should be found");
     }
 
-//    @Test
+    @Test
     public void createMustFailIfIDIsNotEmpty() {
         JsonObject serie = Json.createObjectBuilder()
             .add("id", 42)
@@ -117,25 +117,25 @@ public class SerieServiceTest {
         req.post("/series", serie, Status.NOT_ACCEPTABLE.getStatusCode());
     }
 
-//    @Test
+    @Test
     public void updateMustFailIfIDIsEmpty() {
         JsonObject serie = getHelloWorldSerie();
         req.put("/series", serie, Status.NOT_ACCEPTABLE.getStatusCode());
     }
 
-//    @Test
+    @Test
     public void findMustFailIfEntityDoesNotExist() {
         Long id = 42000l;
         req.get("/series/" + String.valueOf(id), Status.NOT_FOUND.getStatusCode());
     }
 
-//    @Test
+    @Test
     public void deleteMustFailIfEntityDoesNotExist() {
         Long id = 42000l;
         req.delete("/series/" + String.valueOf(id), Status.NOT_FOUND.getStatusCode());
     }
 
-//    @Test
+    @Test
     public void updateMustFailIfEntityDoesNotExist() {
         Long id = 42000l;
         JsonObject serie = Json.createObjectBuilder()
@@ -149,14 +149,14 @@ public class SerieServiceTest {
         req.put("/series", serie, Status.NOT_FOUND.getStatusCode());
     }
 
-//    @Test
+    @Test
     public void searchMustReturnEmptyListOnNonExistingCriteria() throws UnsupportedEncodingException {
         String text = "Does Not Exist";
         List<GuiDTO> series = req.get("/series/search/" + URLEncoder.encode(text, "UTF-8")).jsonPath().getList("$", GuiDTO.class);
         assertTrue(series.isEmpty());
     }
 
-//    @Test
+    @Test
     public void removeMustFailIfMoviesWithSerieExist() {
         Long idThatIsReferencedInMovies = MovieUIServiceTest.SERIE_SCOOBYDOO;
         List<GuiDTO> movies = req.get("/series/browse?id=" + String.valueOf(idThatIsReferencedInMovies)).jsonPath().getList("$", GuiDTO.class);
