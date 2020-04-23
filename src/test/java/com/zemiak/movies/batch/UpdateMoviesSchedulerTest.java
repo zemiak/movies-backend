@@ -34,12 +34,12 @@ public class UpdateMoviesSchedulerTest {
         System.err.println(ConfigurationProvider.getImgPath());
     }
 
-//    @Test
+   @Test
     public void imgPathContainsTestResourcesPath() {
         assertTrue(ConfigurationProvider.getPath().contains("src/test/resources/media"), "Test resource path");
     }
 
-//    @Test
+   @Test
     public void makeSureNewMP4WillGetImported() throws IOException {
         String name = "HelloWorld1";
         Files.write(Paths.get(ConfigurationProvider.getPath() + "/new/" + name + ".mp4"), "Hello".getBytes());
@@ -48,7 +48,7 @@ public class UpdateMoviesSchedulerTest {
         assertEquals(1, movies.size(), "New file can be found in DB");
     }
 
-//    @Test
+   @Test
     public void makeSureNewM4VWillGetImported() throws IOException {
         String name = "HelloWorld2";
         Files.write(Paths.get(ConfigurationProvider.getPath() + "/new/" + name + ".m4v"), "Hello".getBytes());

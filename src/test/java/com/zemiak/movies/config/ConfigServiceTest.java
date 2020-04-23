@@ -23,7 +23,7 @@ public class ConfigServiceTest {
         req = new AssuredRequests();
     }
 
-//    @Test
+   @Test
     public void thereIsPortInConfig() {
         String body = req.get("/config").body().asString();
 
