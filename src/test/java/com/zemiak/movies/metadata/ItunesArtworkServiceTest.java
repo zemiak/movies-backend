@@ -20,7 +20,7 @@ public class ItunesArtworkServiceTest {
         cut = new ItunesArtworkService();
     }
 
-//    @Test
+    @Test
     public void jsonDataNotEmpty() {
         JsonObject data = cut.getMovieArtworkResultsJson("Matrix");
         assertTrue(data.containsKey("results"), "Contains results key");
@@ -28,7 +28,7 @@ public class ItunesArtworkServiceTest {
         assertFalse(data.getInt("resultCount") == 0, "resultCount > 0");
     }
 
-//    @Test
+    @Test
     public void jsonDataContainsArtwork() {
         JsonObject data = cut.getMovieArtworkResultsJson("Matrix");
         JsonArray entries = data.getJsonArray("results");
@@ -43,7 +43,7 @@ public class ItunesArtworkServiceTest {
         assertFalse(first.getTrackName().isBlank(), "Track name must not be empty");
     }
 
-//    @Test
+    @Test
     public void fetchArtwork() {
         JsonObject data = cut.getMovieArtworkResultsJson("Matrix");
         JsonArray entries = data.getJsonArray("results");
