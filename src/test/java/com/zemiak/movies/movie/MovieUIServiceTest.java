@@ -59,7 +59,7 @@ public class MovieUIServiceTest {
         assertEquals(RECENT_2019, movies.get(1).title, "The first movie is from 2019");
     }
 
-    @Test
+//    @Test
     public void getSerieMoviesForScoobyDooContains4Episodes() {
         List<GuiDTO> movies = cut.getSerieMovies(SERIE_SCOOBYDOO);
         assertNotNull(movies, "Movies must not be null");
