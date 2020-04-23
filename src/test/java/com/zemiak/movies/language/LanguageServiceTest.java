@@ -28,7 +28,7 @@ public class LanguageServiceTest {
         req = new AssuredRequests();
     }
 
-//    @Test
+    @Test
     public void all() {
         List<Language> languages = req.get("/languages/all").jsonPath().getList("$", Language.class);
         assertFalse(languages.isEmpty(), "Languages are not empty");
@@ -44,7 +44,7 @@ public class LanguageServiceTest {
         .build();
     }
 
-//    @Test
+    @Test
     public void create() {
         JsonObject language = getHelloWorldLanguage();
         Long id = req.post("/languages", language).as(Long.class);
@@ -57,7 +57,7 @@ public class LanguageServiceTest {
         assertEquals(language.getString("pictureFileName"), entity.pictureFileName, "pictureFileName must be the same as created");
     }
 
-//    @Test
+    @Test
     public void find() {
         Long id = 0l;
         Language entity = req.get("/languages/" + String.valueOf(id)).jsonPath().getObject("$", Language.class);
@@ -65,7 +65,7 @@ public class LanguageServiceTest {
         assertEquals("English", entity.name, "Name must be English");
     }
 
-//    @Test
+    @Test
     public void remove() {
         JsonObject language = getHelloWorldLanguage();
         Long id = req.post("/languages", language).as(Long.class);
@@ -75,7 +75,7 @@ public class LanguageServiceTest {
         req.get("/languages/" + String.valueOf(id), Status.NOT_FOUND.getStatusCode());
     }
 
-//    @Test
+    @Test
     public void update() {
         Long id = 0l;
         Language entity = req.get("/languages/" + String.valueOf(id)).jsonPath().getObject("$", Language.class);
@@ -94,7 +94,7 @@ public class LanguageServiceTest {
         req.put("/languages", entity.toJson(), Status.NO_CONTENT.getStatusCode());
     }
 
-//    @Test
+    @Test
     public void search() throws UnsupportedEncodingException {
         String text = "On";
         List<Language> languages = req.get("/languages/search/" + URLEncoder.encode(text, "UTF-8")).jsonPath().getList("$", Language.class);
@@ -102,7 +102,7 @@ public class LanguageServiceTest {
         assertEquals("None", languages.get(0).name, "One None should be found");
     }
 
-//    @Test
+    @Test
     public void createMustFailIfIDIsNotEmpty() {
         JsonObject language = Json.createObjectBuilder()
             .add("id", 42)
@@ -115,25 +115,25 @@ public class LanguageServiceTest {
         req.post("/languages", language, Status.NOT_ACCEPTABLE.getStatusCode());
     }
 
-//    @Test
+    @Test
     public void updateMustFailIfIDIsEmpty() {
         JsonObject language = getHelloWorldLanguage();
         req.put("/languages", language, Status.NOT_ACCEPTABLE.getStatusCode());
     }
 
-//    @Test
+    @Test
     public void findMustFailIfEntityDoesNotExist() {
         Long id = 42000l;
         req.get("/languages/" + String.valueOf(id), Status.NOT_FOUND.getStatusCode());
     }
 
-//    @Test
+    @Test
     public void deleteMustFailIfEntityDoesNotExist() {
         Long id = 42000l;
         req.delete("/languages/" + String.valueOf(id), Status.NOT_FOUND.getStatusCode());
     }
 
-//    @Test
+    @Test
     public void updateMustFailIfEntityDoesNotExist() {
         Long id = 42000l;
         JsonObject language = Json.createObjectBuilder()
@@ -147,26 +147,26 @@ public class LanguageServiceTest {
         req.put("/languages", language, Status.NOT_FOUND.getStatusCode());
     }
 
-//    @Test
+    @Test
     public void searchMustReturnEmptyListOnNonExistingCriteria() throws UnsupportedEncodingException {
         String text = "Does Not Exist";
         List<Language> languages = req.get("/languages/search/" + URLEncoder.encode(text, "UTF-8")).jsonPath().getList("$", Language.class);
         assertTrue(languages.isEmpty());
     }
 
-//    @Test
+    @Test
     public void removeMustFailIfSeriesWithLanguageExist() {
         Long idThatIsReferencedInSeries = 0l;
         req.delete("/languages/" + String.valueOf(idThatIsReferencedInSeries), Status.NOT_ACCEPTABLE.getStatusCode());
     }
 
-//    @Test
+    @Test
     public void removeMustFailIfMoviesWithLanguageExist() {
         Long idThatIsReferencedInMoviesButNotInSeries = 13l;
         req.delete("/languages/" + String.valueOf(idThatIsReferencedInMoviesButNotInSeries), Status.NOT_ACCEPTABLE.getStatusCode());
     }
 
-//    @Test
+    @Test
     public void findByCode() {
         String code = "en";
         Language entity = req.get("/languages/" + String.valueOf(code) + "/code").jsonPath().getObject("$", Language.class);
@@ -174,7 +174,7 @@ public class LanguageServiceTest {
         assertEquals("English", entity.name, "Name must be English");
     }
 
-//    @Test
+    @Test
     public void findByCodeMustFailIfEntityDoesNotExist() {
         String code = "xy";
         req.get("/languages/" + String.valueOf(code) + "/code", Status.NOT_FOUND.getStatusCode());
