@@ -54,8 +54,9 @@ public class SerieUIServiceTest {
 
     @Test
     public void scoobyDooHas4Movies() {
-        List<GuiDTO> movies = req.get("/series/browse?id=" + String.valueOf(MovieUIServiceTest.SERIE_SCOOBYDOO)).jsonPath().getList("$", GuiDTO.class);
-        assertEquals(4, movies.size(), "ScoobyDoo contains 4 episodes");
+        String url = "/series/browse?id=" + String.valueOf(MovieUIServiceTest.SERIE_SCOOBYDOO);
+        List<GuiDTO> movies = req.get(url).jsonPath().getList("$", GuiDTO.class);
+        assertEquals(4, movies.size(), "ScoobyDoo contains 4 episodes: " + url);
     }
 
 }
