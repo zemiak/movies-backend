@@ -19,20 +19,20 @@ public class NullAwareJsonObjectBuilderTest {
         this.builder = NullAwareJsonObjectBuilder.create();
     }
 
-    @Test
+//    @Test
     public void testNotNullValue() {
         JsonObject data = this.builder.add("name", "John").build();
         assertEquals("John", data.getString("name"), "Name must be John");
     }
 
-    @Test
+//    @Test
     public void testNullValue() {
         String value = null;
         JsonObject data = this.builder.add("name", value).build();
         assertEquals(JsonValue.NULL, data.get("name"), "Null value must be null");
     }
 
-    @Test
+//    @Test
     public void testLanguageWithNulls() {
         Language entity = Language.create();
         entity.id = 0l;
@@ -55,7 +55,7 @@ public class NullAwareJsonObjectBuilderTest {
         assertEquals(JsonValue.NULL, data.get("pictureFileName"), "pictureFileName must be NULL");
     }
 
-    @Test
+//    @Test
     public void testLanguageWithNullsToJsonMethod() {
         Language entity = Language.create();
         entity.id = 0l;
