@@ -41,7 +41,7 @@ public class MovieUIServiceTest {
         req = new AssuredRequests();
     }
 
-//    @Test
+    @Test
     public void getFreshMoviesContainsTwoRecentMovies() {
         List<GuiDTO> movies = cut.getFreshMovies(TESTING_YEAR);
         assertNotNull(movies, "Movies must not be null");
@@ -50,7 +50,7 @@ public class MovieUIServiceTest {
         assertEquals(FRESH_2019, movies.get(1).title, "The first movie is from 2019");
     }
 
-//    @Test
+    @Test
     public void getRecentlyAddedMoviesContainsTwoRecentlyAdded() {
         List<GuiDTO> movies = cut.getRecentlyAddedMovies();
         assertNotNull(movies, "Movies must not be null");
@@ -66,28 +66,28 @@ public class MovieUIServiceTest {
         assertEquals(4, movies.size(), "ScoobyDoo contains 4 episodes: " + url);
     }
 
-//    @Test
+    @Test
     public void getSerieMoviesForUnknownContains0Episodes() {
         List<GuiDTO> movies = cut.getSerieMovies(NON_EXISTING_ID);
         assertNotNull(movies, "Movies must not be null");
         assertEquals(0, movies.size(), "Unknown contains 0 episodes");
     }
 
-//    @Test
+    @Test
     public void getGenreMoviesForSFContains2Movies() {
         List<GuiDTO> movies = cut.getGenreMovies(GENRE_SF);
         assertNotNull(movies, "Movies must not be null");
         assertEquals(2, movies.size(), "SF contains 2 movies");
     }
 
-//    @Test
+    @Test
     public void getGenreMoviesForUnknownContains0Episodes() {
         List<GuiDTO> movies = cut.getGenreMovies(NON_EXISTING_ID);
         assertNotNull(movies, "Movies must not be null");
         assertEquals(0, movies.size(), "Unknown contains 0 movies");
     }
 
-//    @Test
+    @Test
     public void getUnassignedMoviesForUnknownContains1Episode() {
         List<GuiDTO> movies = cut.getUnassignedMovies();
         assertNotNull(movies, "Movies must not be null");
@@ -95,7 +95,7 @@ public class MovieUIServiceTest {
         assertEquals(RECENT_2020, movies.get(0).title, "New Riddick is still unassigned");
     }
 
-//    @Test
+    @Test
     public void getThumbnail() throws IOException {
         var e = new Movie();
         e.name = "Test";

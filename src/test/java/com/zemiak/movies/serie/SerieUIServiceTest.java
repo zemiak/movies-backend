@@ -15,8 +15,6 @@ import javax.ws.rs.core.Response;
 import com.zemiak.movies.AssuredRequests;
 import com.zemiak.movies.ProvideConfiguration;
 import com.zemiak.movies.movie.ForbiddenJpg;
-import com.zemiak.movies.movie.MovieUIServiceTest;
-import com.zemiak.movies.ui.GuiDTO;
 
 import org.junit.jupiter.api.Test;
 
