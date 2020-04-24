@@ -52,7 +52,7 @@ public class SerieUIServiceTest {
         assertTrue(ForbiddenJpg.equalsTo(new String(stream.readAllBytes()), e.pictureFileName), "Must return our thumbnail data");
     }
 
-//    @Test
+    @Test
     public void scoobyDooHas4Movies() {
         String url = "/series/browse?id=" + String.valueOf(MovieUIServiceTest.SERIE_SCOOBYDOO);
         List<GuiDTO> movies = req.get(url).jsonPath().getList("$", GuiDTO.class);
