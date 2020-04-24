@@ -8,7 +8,6 @@ import static org.mockito.Mockito.when;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.List;
 
 import javax.ws.rs.core.Response;
 
