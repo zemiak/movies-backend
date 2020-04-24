@@ -59,13 +59,6 @@ public class MovieUIServiceTest {
         assertEquals(RECENT_2019, movies.get(1).title, "The first movie is from 2019");
     }
 
-//    @Test
-    public void getSerieMoviesForScoobyDooContains4Episodes() {
-        List<GuiDTO> movies = cut.getSerieMovies(SERIE_SCOOBYDOO);
-        assertNotNull(movies, "Movies must not be null");
-        assertEquals(4, movies.size(), "ScoobyDoo contains 4 episodes");
-    }
-
     @Test
     public void getSerieMoviesForScoobyDooContains4EpisodesBrowse() {
         String url = "/series/browse?id=" + String.valueOf(SERIE_SCOOBYDOO);
