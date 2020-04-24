@@ -59,7 +59,7 @@ public class MovieUIServiceTest {
         assertEquals(RECENT_2019, movies.get(1).title, "The first movie is from 2019");
     }
 
-    // @Test
+    @Test
     public void getSerieMoviesForScoobyDooContains4EpisodesBrowse() {
         String url = "/series/browse?id=" + String.valueOf(SERIE_SCOOBYDOO);
         List<GuiDTO> movies = req.get(url).jsonPath().getList("$", GuiDTO.class);

@@ -30,7 +30,7 @@ public class SerieUIServiceTest {
         req = new AssuredRequests();
     }
 
-//    @Test
+    @Test
     public void getThumbnail() throws IOException {
         var e = new Serie();
         e.name = "Test";
@@ -51,12 +51,4 @@ public class SerieUIServiceTest {
 
         assertTrue(ForbiddenJpg.equalsTo(new String(stream.readAllBytes()), e.pictureFileName), "Must return our thumbnail data");
     }
-
-    @Test
-    public void scoobyDooHas4Movies() {
-        String url = "/series/browse?id=" + String.valueOf(MovieUIServiceTest.SERIE_SCOOBYDOO);
-        List<GuiDTO> movies = req.get(url).jsonPath().getList("$", GuiDTO.class);
-        assertEquals(4, movies.size(), "ScoobyDoo contains 4 episodes: " + url);
-    }
-
 }
