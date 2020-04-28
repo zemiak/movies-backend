@@ -97,7 +97,7 @@ export class TemplateService {
     dispatchGalleryEvent() {
         const folderDataEvent = new CustomEvent(TemplateService.eventName(), {detail: {}, bubbles: true});
         dispatchEvent(folderDataEvent);
-        console.log("dispatchGalleryEvent ran");
+        console.log("TemplateService.dispatchGalleryEvent: fired");
     }
 
     static eventName() {

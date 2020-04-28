@@ -36,10 +36,11 @@ export class RestClientService {
 
     async fetchData() {
         const name = this.getCacheKeyName();
+        console.info("RestClientService.fetchData: key is " + name + ", exists? " + (this.cache.contains(name) ? "yes" : "no"));
 
         if (! this.cache.contains(name)) {
             const uri = this.getBaseUri() + this.getServicePath();
-            console.info("Fetching '" + uri + "' for name '" + name + "' ...");
+            console.info("RestClientService.fetchData: Fetching '" + uri + "' for name '" + name + "' ...");
 
             const response = await fetch(uri);
             const payload = await response.json();
@@ -53,6 +54,7 @@ export class RestClientService {
     dispatchDataEvent(data) {
         const folderDataEvent = new CustomEvent(this.getCustomEventName(), {detail: data, bubbles: true});
         dispatchEvent(folderDataEvent);
+        console.info("RestClientService.fetchData: dispatched event", folderDataEvent);
     }
 
     getData(key) {

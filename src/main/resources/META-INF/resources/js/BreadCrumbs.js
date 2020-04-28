@@ -10,7 +10,7 @@ export class BreadCrumbs extends HTMLElement {
     }
 
     update(event) {
-        console.log("BreadCrumbs: received event ", event);
+        console.log("BreadCrumbs.update: received event ", event);
         this.items = event.data;
         this.render();
     }

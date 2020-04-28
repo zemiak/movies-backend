@@ -16,22 +16,42 @@ export class RootView extends HTMLElement {
     }
 
     update(event) {
-        const e = new CustomEvent(BreadCrumbs.eventName(), [{url: "/", title: "Home"}])
-        console.log("Dispatched event ", e)
-        this.dispatchEvent(e);
+        console.log("RootView.update: Received event ", event);
 
-        this.data = this.service.getData(event.key);
+        const e = new CustomEvent(BreadCrumbs.eventName(), [{url: "/", title: "Home"}]);
+        this.dispatchEvent(e);
+        console.log("RootView.update: Dispatched event ", e);
+
+        this.data = this.service.getData(event.detail.key);
         this.render();
     }
 
     render() {
-        console.log("RootView.render");
+        console.log("RootView.render: running lit-html render");
         render(this.view(), this);
     }
 
     view() {
         // this.data == array of GuiDTO
-        return html`<h1>Root</h1>`;
+        console.log("RootView.view: data is", this.data);
+        const items = [];
+        this.data.forEach(item => {
+            console.log(item);
+            items.push(html`<div class="tile is-parent">
+            <div class="tile is-child box">
+                <a href="${item.url}">
+                    <figure class="image is-128x128">
+                        <img src="${item.thumbnail}">
+                    </figure>
+                </a>
+            </div>
+        </div>`);
+        });
+
+        return html`
+            <div class="tile is-ancestor">
+                ${items}
+            </div>`;
     }
 }
 
