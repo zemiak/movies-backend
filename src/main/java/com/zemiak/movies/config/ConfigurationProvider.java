@@ -32,7 +32,16 @@ public final class ConfigurationProvider {
     }
 
     private static Path getBasePath() {
-        return Paths.get(get(MEDIA_PATH));
+        var path = get(MEDIA_PATH);
+        if (! path.startsWith("*")) {
+            return Paths.get(path);
+        }
+
+        var cwdWithTarget = System.getProperty("user.dir");
+        var pos = cwdWithTarget.lastIndexOf("/");
+        var cwdWithoutTarget = cwdWithTarget.substring(0, pos);
+        var devMediaPath = Paths.get(cwdWithoutTarget, path.substring(1));
+        return devMediaPath;
     }
 
     public static String getPhotoPath() {

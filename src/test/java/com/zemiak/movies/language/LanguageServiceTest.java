@@ -72,7 +72,7 @@ public class LanguageServiceTest {
         assertTrue(null != id, "Create language returns ID");
 
         req.delete("/languages/" + String.valueOf(id), Status.NO_CONTENT.getStatusCode());
-        req.get("/languages/" + String.valueOf(id), Status.NOT_FOUND.getStatusCode());
+        req.get("/languages/" + String.valueOf(id), Status.GONE.getStatusCode());
     }
 
     @Test
@@ -124,13 +124,13 @@ public class LanguageServiceTest {
     @Test
     public void findMustFailIfEntityDoesNotExist() {
         Long id = 42000l;
-        req.get("/languages/" + String.valueOf(id), Status.NOT_FOUND.getStatusCode());
+        req.get("/languages/" + String.valueOf(id), Status.GONE.getStatusCode());
     }
 
     @Test
     public void deleteMustFailIfEntityDoesNotExist() {
         Long id = 42000l;
-        req.delete("/languages/" + String.valueOf(id), Status.NOT_FOUND.getStatusCode());
+        req.delete("/languages/" + String.valueOf(id), Status.GONE.getStatusCode());
     }
 
     @Test
@@ -144,7 +144,7 @@ public class LanguageServiceTest {
             .add("created", DateFormatter.format(LocalDateTime.now().minusYears(20)))
             .add("pictureFileName", "u-a.jpg")
             .build();
-        req.put("/languages", language, Status.NOT_FOUND.getStatusCode());
+        req.put("/languages", language, Status.GONE.getStatusCode());
     }
 
     @Test
@@ -177,6 +177,6 @@ public class LanguageServiceTest {
     @Test
     public void findByCodeMustFailIfEntityDoesNotExist() {
         String code = "xy";
-        req.get("/languages/" + String.valueOf(code) + "/code", Status.NOT_FOUND.getStatusCode());
+        req.get("/languages/" + String.valueOf(code) + "/code", Status.GONE.getStatusCode());
     }
 }

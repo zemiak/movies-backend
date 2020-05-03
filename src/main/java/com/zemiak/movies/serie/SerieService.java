@@ -57,7 +57,7 @@ public class SerieService {
 
         Serie findEntity = Serie.findById(entity.id);
         if (null == findEntity) {
-            throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("ID not found" + entity.id).build());
+            throw new WebApplicationException(Response.status(Status.GONE).entity("ID not found" + entity.id).build());
         }
 
         Panache.getEntityManager().merge(entity);
@@ -77,7 +77,7 @@ public class SerieService {
     public Serie find(@PathParam("id") @NotNull final Long id) {
         Serie entity = Serie.findById(id);
         if (null == entity) {
-            throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("ID not found: " + String.valueOf(id)).build());
+            throw new WebApplicationException(Response.status(Status.GONE).entity("ID not found: " + String.valueOf(id)).build());
         }
 
         return entity;
@@ -88,7 +88,7 @@ public class SerieService {
     public void remove(@PathParam("id") @NotNull final Long id) {
         Serie entity = Serie.findById(id);
         if (null == entity) {
-            throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("ID not found: " + String.valueOf(id)).build());
+            throw new WebApplicationException(Response.status(Status.GONE).entity("ID not found: " + String.valueOf(id)).build());
         }
 
         if (Movie.find("serieId", id).count() > 0) {

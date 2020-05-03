@@ -79,7 +79,7 @@ public class SerieUIService {
         String fileName = e.pictureFileName;
 
         if (null == fileName) {
-            return Response.status(Status.NOT_FOUND).entity("Thumbnail for " + id + " not yet created").build();
+            return Response.status(Status.GONE).entity("Thumbnail for " + id + " not yet created").build();
         }
 
         fileName = ConfigurationProvider.getImgPath() + "/serie/" + fileName;
@@ -88,7 +88,7 @@ public class SerieUIService {
         try {
             stream = new FileInputStream(new File(fileName));
         } catch (FileNotFoundException e1) {
-            return Response.status(Status.NOT_FOUND).entity("Thumbnail for " + id + " not found " + fileName).build();
+            return Response.status(Status.GONE).entity("Thumbnail for " + id + " not found " + fileName).build();
         }
 
         return Response.ok(stream).header("Content-Disposition", "attachment; filename=" + e.pictureFileName).build();

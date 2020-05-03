@@ -67,7 +67,7 @@ public class GenreServiceTest {
         assertTrue(null != id, "Create genre returns ID");
 
         req.delete("/genres/" + String.valueOf(id), Status.NO_CONTENT.getStatusCode());
-        req.get("/genres/" + String.valueOf(id), Status.NOT_FOUND.getStatusCode());
+        req.get("/genres/" + String.valueOf(id), Status.GONE.getStatusCode());
     }
 
     private JsonObject getHelloWorldGenre() {
@@ -125,13 +125,13 @@ public class GenreServiceTest {
     @Test
     public void findMustFailIfEntityDoesNotExist() {
         Long id = 42000l;
-        req.get("/genres/" + String.valueOf(id), Status.NOT_FOUND.getStatusCode());
+        req.get("/genres/" + String.valueOf(id), Status.GONE.getStatusCode());
     }
 
     @Test
     public void deleteMustFailIfEntityDoesNotExist() {
         Long id = 42000l;
-        req.delete("/genres/" + String.valueOf(id), Status.NOT_FOUND.getStatusCode());
+        req.delete("/genres/" + String.valueOf(id), Status.GONE.getStatusCode());
     }
 
     @Test
@@ -144,7 +144,7 @@ public class GenreServiceTest {
             .add("created", DateFormatter.format(LocalDateTime.now().minusYears(20)))
             .add("pictureFileName", "hello-world.jpg")
             .build();
-        req.put("/genres", genre, Status.NOT_FOUND.getStatusCode());
+        req.put("/genres", genre, Status.GONE.getStatusCode());
     }
 
     @Test

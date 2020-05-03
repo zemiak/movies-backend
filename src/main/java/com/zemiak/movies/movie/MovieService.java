@@ -59,7 +59,7 @@ public class MovieService {
 
         Movie findEntity = Movie.findById(entity.id);
         if (null == findEntity) {
-            throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("ID not found" + entity.id).build());
+            throw new WebApplicationException(Response.status(Status.GONE).entity("ID not found" + entity.id).build());
         }
 
         Panache.getEntityManager().merge(entity);
@@ -70,7 +70,7 @@ public class MovieService {
     public Movie find(@PathParam("id") @NotNull Long id) {
         Movie entity = Movie.findById(id);
         if (null == entity) {
-            throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("ID not found: " + String.valueOf(id)).build());
+            throw new WebApplicationException(Response.status(Status.GONE).entity("ID not found: " + String.valueOf(id)).build());
         }
 
         return entity;
@@ -81,7 +81,7 @@ public class MovieService {
     public void remove(@PathParam("id") @NotNull Long id) {
         Movie entity = Movie.findById(id);
         if (null == entity) {
-            throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("ID not found: " + String.valueOf(id)).build());
+            throw new WebApplicationException(Response.status(Status.GONE).entity("ID not found: " + String.valueOf(id)).build());
         }
 
         entity.delete();

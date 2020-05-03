@@ -69,9 +69,11 @@ public class GenreUIService {
     public Response getThumbnail(@QueryParam("id") final Long id) {
         Genre e = Genre.isArtificial(id) ? Genre.findArtificial(id) : find(id);
 
+        System.out.println();
+
         String fileName = e.pictureFileName;
         if (null == fileName) {
-            return Response.status(Status.NOT_FOUND).entity("Thumbnail for " + id + " not yet created").build();
+            return Response.status(Status.GONE).entity("Thumbnail for " + id + " not yet created").build();
         }
 
         fileName = ConfigurationProvider.getImgPath() + "/genre/" + fileName;
@@ -79,7 +81,7 @@ public class GenreUIService {
         try {
             stream = new FileInputStream(new File(fileName));
         } catch (FileNotFoundException e1) {
-            return Response.status(Status.NOT_FOUND).entity("Thumbnail for " + id + " not found " + fileName).build();
+            return Response.status(Status.GONE).entity("Thumbnail for " + id + " not found " + fileName ).build();
         }
 
         return Response.ok(stream).header("Content-Disposition", "attachment; filename=" + e.pictureFileName).build();

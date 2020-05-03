@@ -76,7 +76,7 @@ public class MovieServiceTest {
         assertTrue(null != id, "Create movie returns ID");
 
         req.delete("/movies/" + String.valueOf(id), Status.NO_CONTENT.getStatusCode());
-        req.get("/movies/" + String.valueOf(id), Status.NOT_FOUND.getStatusCode());
+        req.get("/movies/" + String.valueOf(id), Status.GONE.getStatusCode());
     }
 
     @Test
@@ -133,13 +133,13 @@ public class MovieServiceTest {
     @Test
     public void findMustFailIfEntityDoesNotExist() {
         Long id = 42000l;
-        req.get("/movies/" + String.valueOf(id), Status.NOT_FOUND.getStatusCode());
+        req.get("/movies/" + String.valueOf(id), Status.GONE.getStatusCode());
     }
 
     @Test
     public void deleteMustFailIfEntityDoesNotExist() {
         Long id = 42000l;
-        req.delete("/movies/" + String.valueOf(id), Status.NOT_FOUND.getStatusCode());
+        req.delete("/movies/" + String.valueOf(id), Status.GONE.getStatusCode());
     }
 
     @Test
@@ -153,7 +153,7 @@ public class MovieServiceTest {
             .add("pictureFileName", "u-a.jpg")
             .add("genre", 0l)
             .build();
-        req.put("/movies", movie, Status.NOT_FOUND.getStatusCode());
+        req.put("/movies", movie, Status.GONE.getStatusCode());
     }
 
     @Test

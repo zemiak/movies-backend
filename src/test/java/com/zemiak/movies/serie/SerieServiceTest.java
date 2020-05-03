@@ -74,7 +74,7 @@ public class SerieServiceTest {
         assertTrue(null != id, "Create serie returns ID");
 
         req.delete("/series/" + String.valueOf(id), Status.NO_CONTENT.getStatusCode());
-        req.get("/series/" + String.valueOf(id), Status.NOT_FOUND.getStatusCode());
+        req.get("/series/" + String.valueOf(id), Status.GONE.getStatusCode());
     }
 
     @Test
@@ -126,13 +126,13 @@ public class SerieServiceTest {
     @Test
     public void findMustFailIfEntityDoesNotExist() {
         Long id = 42000l;
-        req.get("/series/" + String.valueOf(id), Status.NOT_FOUND.getStatusCode());
+        req.get("/series/" + String.valueOf(id), Status.GONE.getStatusCode());
     }
 
     @Test
     public void deleteMustFailIfEntityDoesNotExist() {
         Long id = 42000l;
-        req.delete("/series/" + String.valueOf(id), Status.NOT_FOUND.getStatusCode());
+        req.delete("/series/" + String.valueOf(id), Status.GONE.getStatusCode());
     }
 
     @Test
@@ -146,7 +146,7 @@ public class SerieServiceTest {
             .add("pictureFileName", "u-a.jpg")
             .add("genre", 0l)
             .build();
-        req.put("/series", serie, Status.NOT_FOUND.getStatusCode());
+        req.put("/series", serie, Status.GONE.getStatusCode());
     }
 
     @Test

@@ -56,7 +56,7 @@ public class LanguageService {
 
         Language findEntity = Language.findById(entity.id);
         if (null == findEntity) {
-            throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("ID not found" + entity.id).build());
+            throw new WebApplicationException(Response.status(Status.GONE).entity("ID not found" + entity.id).build());
         }
 
         Panache.getEntityManager().merge(entity);
@@ -67,7 +67,7 @@ public class LanguageService {
     public Language find(@PathParam("id") @NotNull Long id) {
         Language entity = Language.findById(id);
         if (null == entity) {
-            throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("ID not found: " + String.valueOf(id)).build());
+            throw new WebApplicationException(Response.status(Status.GONE).entity("ID not found: " + String.valueOf(id)).build());
         }
 
         return entity;
@@ -78,7 +78,7 @@ public class LanguageService {
     public void remove(@PathParam("id") @NotNull Long id) {
         Language entity = Language.findById(id);
         if (null == entity) {
-            throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("ID not found: " + String.valueOf(id)).build());
+            throw new WebApplicationException(Response.status(Status.GONE).entity("ID not found: " + String.valueOf(id)).build());
         }
 
         if (Movie.find("languageId", entity.id).count() > 0 || Movie.find("originalLanguageId", entity.id).count() > 0 || Movie.find("subtitlesId", entity.id).count() > 0) {
@@ -93,7 +93,7 @@ public class LanguageService {
     public Language findByCode(@PathParam("code") @NotNull String code) {
         Language entity = Language.find("code", code).firstResult();
         if (null == entity) {
-            throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("Code not found: " + String.valueOf(code)).build());
+            throw new WebApplicationException(Response.status(Status.GONE).entity("Code not found: " + String.valueOf(code)).build());
         }
 
         return entity;

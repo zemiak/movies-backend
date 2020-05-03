@@ -37,19 +37,18 @@ export class RootView extends HTMLElement {
         const items = [];
         this.data.forEach(item => {
             console.log(item);
-            items.push(html`<div class="tile is-parent">
-            <div class="tile is-child box">
+            items.push(html`
+            <div class="column is-one-quarter">
                 <a href="${item.url}">
                     <figure class="image is-128x128">
-                        <img src="${item.thumbnail}">
+                        <img src="${item.thumbnail}" alt="${item.title}">
                     </figure>
                 </a>
-            </div>
-        </div>`);
+            </div>`);
         });
 
         return html`
-            <div class="tile is-ancestor">
+            <div class="columns is-multiline is-mobile is-centered">
                 ${items}
             </div>`;
     }
