@@ -1,6 +1,7 @@
 package com.zemiak.movies.movie;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -15,6 +16,7 @@ import javax.ws.rs.core.Response;
 
 import com.zemiak.movies.AssuredRequests;
 import com.zemiak.movies.ProvideConfiguration;
+import com.zemiak.movies.serie.Serie;
 import com.zemiak.movies.ui.GuiDTO;
 
 import org.junit.jupiter.api.Test;
@@ -30,6 +32,7 @@ public class MovieUIServiceTest {
     private static String RECENT_2019 = "Riddick: Dark Fury 2";
     public static Long SERIE_SCOOBYDOO = 30010l;
     private static Long GENRE_SF = 4l;
+    private static Long GENRE_CHILDREN = 3l;
     private static Long NON_EXISTING_ID = -42l;
 
     AssuredRequests req;
@@ -64,6 +67,16 @@ public class MovieUIServiceTest {
         String url = "/series/browse?id=" + String.valueOf(SERIE_SCOOBYDOO);
         List<GuiDTO> movies = req.get(url).jsonPath().getList("$", GuiDTO.class);
         assertEquals(4, movies.size(), "ScoobyDoo contains 4 episodes: " + url);
+    }
+
+    @Test
+    public void getGenreMoviesDoesNotContainSerieMoviesBecauseTheyBelongToSerie() {
+        assertFalse(cut.getGenreMovies(GENRE_CHILDREN)
+            .stream()
+            .map(dto -> { return (Movie) Movie.findById(dto.id);})
+            .filter(m -> null != m.serieId && m.serieId != Serie.ID_NONE)
+            .findAny()
+            .isPresent(), "Movie with a serie does not belong to a genre list");
     }
 
     @Test

@@ -24,6 +24,7 @@ import javax.ws.rs.core.Response.Status;
 
 import com.zemiak.movies.config.ConfigurationProvider;
 import com.zemiak.movies.genre.Genre;
+import com.zemiak.movies.serie.Serie;
 import com.zemiak.movies.strings.Encodings;
 import com.zemiak.movies.ui.GuiDTO;
 
@@ -108,7 +109,7 @@ public class MovieUIService {
     }
 
     public List<GuiDTO> getGenreMovies(final Long id) {
-        return Movie.find("genreId = :genreId",
+        return Movie.find("genreId = :genreId and (serieId = NULL or serieId = 0)",
             Sort.ascending("displayOrder"),
             Parameters.with("genreId", id))
             .list().stream().map(e -> (Movie) e).map(Movie::toDto).collect(Collectors.toList());
