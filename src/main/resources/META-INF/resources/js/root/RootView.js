@@ -1,6 +1,6 @@
-import { html, render } from "../lib/lit-html.js";
-import { RootService } from "./RootService.js";
-import { BreadCrumbs } from "../BreadCrumbs.js";
+import { html, render } from "/js/lib/lit-html.js";
+import { RootService } from "/js/root/RootService.js";
+import { BreadCrumbs } from "/js/BreadCrumbs.js";
 
 export class RootView extends HTMLElement {
     constructor() {
@@ -32,7 +32,6 @@ export class RootView extends HTMLElement {
     }
 
     view() {
-        console.log("RootView.view: data is", this.data);
         const items = [];
         this.data.forEach(item => {
             console.log(item);
@@ -41,13 +40,13 @@ export class RootView extends HTMLElement {
                 <div class="card">
                     <div class="card-image">
                         <figure class="image is-256x256">
-                            <a href="${item.url}">
+                            <a href="/${item.type}/${item.id}">
                                 <img class="is-rounded" src="${item.thumbnail}" alt="${item.title}">
                             </a>
                         </figure>
                     </div>
                     <footer class="card-footer">
-                        <a class="card-footer-item" href="${item.url}">
+                        <a class="card-footer-item" href="/${item.type}/${item.id}">
                             ${item.title}
                         </a>
                     </footer>

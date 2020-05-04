@@ -121,7 +121,7 @@ public class Genre extends PanacheEntityBase implements Comparable<Genre> {
     }
 
     public GuiDTO toDto() {
-        return new GuiDTO("genre", this.name, "/genres/browse?id=" + id, "/genres/thumbnail?id=" + id);
+        return new GuiDTO("genre", this.name, "/genres/browse?id=" + id, "/genres/thumbnail?id=" + id, id);
     }
 
     @Override

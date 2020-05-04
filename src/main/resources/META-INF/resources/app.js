@@ -14,9 +14,9 @@ const outlet = document.querySelector('#outlet');
 const router = new Router(outlet);
 router.setRoutes([
   {path: '/',     component: 'root-view'},
-  {path: '/genre',  component: 'genre-view'},
-  {path: '/serie',  component: 'serie-view'},
-  {path: '/movie',  component: 'movie-view'},
+  {path: '/genre/:id',  component: 'genre-view'},
+  {path: '/serie/:id',  component: 'serie-view'},
+  {path: '/movie/:id',  component: 'movie-view'},
   {path: '/about',  component: 'about-view'},
   {path: '/(.*)',  component: 'unknown-view'}
 ]);

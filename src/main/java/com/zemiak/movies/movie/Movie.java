@@ -122,7 +122,7 @@ public class Movie extends PanacheEntityBase implements Comparable<Movie> {
     }
 
     public GuiDTO toDto() {
-        return new GuiDTO("movie", this.name, "/stream/" + id, "/movies/thumbnail?id=" + id);
+        return new GuiDTO("movie", this.name, "/stream/" + id, "/movies/thumbnail?id=" + id, id);
     }
 
     public void copyFrom(Movie entity) {
