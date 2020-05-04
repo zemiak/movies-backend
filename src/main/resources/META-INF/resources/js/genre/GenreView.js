@@ -37,14 +37,21 @@ export class GenreView extends HTMLElement {
     view() {
         const items = [];
         this.data.forEach(item => {
-            console.log(item);
+            var imageCode = html`<img src="${item.thumbnail}" alt="${item.title}"></img>`;
+            var figureSize = "is-3by4";
+
+            if ("serie" === item.type) {
+                imageCode = html`<img class="is-rounded" src="${item.thumbnail}" alt="${item.title}"></img>`;
+                figureSize = "is-256x256";
+            }
+
             items.push(html`
             <div class="column is-one-quarter-tablet is-half-mobile">
                 <div class="card">
                     <div class="card-image">
-                        <figure class="image is-256x256">
+                        <figure class="image ${figureSize}">
                             <a href="/${item.type}/${item.id}">
-                                <img class="is-rounded" src="${item.thumbnail}" alt="${item.title}">
+                                ${imageCode}
                             </a>
                         </figure>
                     </div>
