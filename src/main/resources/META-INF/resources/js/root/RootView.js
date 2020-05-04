@@ -32,23 +32,31 @@ export class RootView extends HTMLElement {
     }
 
     view() {
-        // this.data == array of GuiDTO
         console.log("RootView.view: data is", this.data);
         const items = [];
         this.data.forEach(item => {
             console.log(item);
             items.push(html`
-            <div class="column is-one-quarter">
-                <a href="${item.url}">
-                    <figure class="image is-128x128">
-                        <img src="${item.thumbnail}" alt="${item.title}">
-                    </figure>
-                </a>
+            <div class="column is-one-quarter-tablet is-half-mobile">
+                <div class="card">
+                    <div class="card-image">
+                        <figure class="image is-256x256">
+                            <a href="${item.url}">
+                                <img class="is-rounded" src="${item.thumbnail}" alt="${item.title}">
+                            </a>
+                        </figure>
+                    </div>
+                    <footer class="card-footer">
+                        <a class="card-footer-item" href="${item.url}">
+                            ${item.title}
+                        </a>
+                    </footer>
+                </div>
             </div>`);
         });
 
         return html`
-            <div class="columns is-multiline is-mobile is-centered">
+            <div class="columns is-multiline is-mobile">
                 ${items}
             </div>`;
     }
