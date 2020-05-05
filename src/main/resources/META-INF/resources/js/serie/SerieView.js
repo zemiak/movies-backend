@@ -47,12 +47,13 @@ export class SerieView extends HTMLElement {
     }
 
     renderMovieItem(item) {
+        console.log(item);
         return html`
         <div class="column is-one-quarter-tablet is-half-mobile">
             <div class="card">
                 <div class="card-image">
                     <figure class="image is-3by4">
-                        <a href="/${item.type}/${item.id}">
+                        <a href="${item.url}">
                             <img src="${item.thumbnail}" alt="${item.title}"></img>
                         </a>
                     </figure>
@@ -68,3 +69,10 @@ export class SerieView extends HTMLElement {
 }
 
 customElements.define("serie-view", SerieView);
+
+/**
+ *                 <div class="card-content is-overlay has-text-centered">
+                    <i class="far fa-7x fa-play-circle" style="color: Dodgerblue; margin-top: 60%;"></i>
+                </div>
+
+ */
