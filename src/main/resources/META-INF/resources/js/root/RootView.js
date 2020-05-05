@@ -34,30 +34,33 @@ export class RootView extends HTMLElement {
     view() {
         const items = [];
         this.data.forEach(item => {
-            console.log(item);
-            items.push(html`
-            <div class="column is-one-quarter-tablet is-half-mobile">
-                <div class="card">
-                    <div class="card-image">
-                        <figure class="image is-256x256">
-                            <a href="/${item.type}/${item.id}">
-                                <img class="is-rounded" src="${item.thumbnail}" alt="${item.title}">
-                            </a>
-                        </figure>
-                    </div>
-                    <footer class="card-footer">
-                        <a class="card-footer-item" href="/${item.type}/${item.id}">
-                            ${item.title}
-                        </a>
-                    </footer>
-                </div>
-            </div>`);
+            items.push(this.renderGenreItem(item));
         });
 
         return html`
             <div class="columns is-multiline is-mobile">
                 ${items}
             </div>`;
+    }
+
+    renderGenreItem(item) {
+        return html`
+        <div class="column is-one-quarter-tablet is-half-mobile">
+            <div class="card">
+                <div class="card-image">
+                    <figure class="image is-256x256">
+                        <a href="/${item.type}/${item.id}">
+                            <img class="is-rounded" src="${item.thumbnail}" alt="${item.title}">
+                        </a>
+                    </figure>
+                </div>
+                <footer class="card-footer">
+                    <a class="card-footer-item" href="/${item.type}/${item.id}">
+                        ${item.title}
+                    </a>
+                </footer>
+            </div>
+        </div>`;
     }
 }
 

@@ -24,7 +24,6 @@ import javax.ws.rs.core.Response.Status;
 
 import com.zemiak.movies.config.ConfigurationProvider;
 import com.zemiak.movies.genre.Genre;
-import com.zemiak.movies.serie.Serie;
 import com.zemiak.movies.strings.Encodings;
 import com.zemiak.movies.ui.GuiDTO;
 

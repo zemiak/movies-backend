@@ -37,37 +37,33 @@ export class SerieView extends HTMLElement {
     view() {
         const items = [];
         this.data.forEach(item => {
-            var imageCode = html`<img src="${item.thumbnail}" alt="${item.title}"></img>`;
-            var figureSize = "is-3by4";
-
-            if ("serie" === item.type) {
-                imageCode = html`<img class="is-rounded" src="${item.thumbnail}" alt="${item.title}"></img>`;
-                figureSize = "is-256x256";
-            }
-
-            items.push(html`
-            <div class="column is-one-quarter-tablet is-half-mobile">
-                <div class="card">
-                    <div class="card-image">
-                        <figure class="image ${figureSize}">
-                            <a href="/${item.type}/${item.id}">
-                                ${imageCode}
-                            </a>
-                        </figure>
-                    </div>
-                    <footer class="card-footer">
-                        <a class="card-footer-item" href="/${item.type}/${item.id}">
-                            ${item.title}
-                        </a>
-                    </footer>
-                </div>
-            </div>`);
+            items.push(this.renderMovieItem(item));
         });
 
         return html`
             <div class="columns is-multiline is-mobile">
                 ${items}
             </div>`;
+    }
+
+    renderMovieItem(item) {
+        return html`
+        <div class="column is-one-quarter-tablet is-half-mobile">
+            <div class="card">
+                <div class="card-image">
+                    <figure class="image is-3by4">
+                        <a href="/${item.type}/${item.id}">
+                            <img src="${item.thumbnail}" alt="${item.title}"></img>
+                        </a>
+                    </figure>
+                </div>
+                <footer class="card-footer">
+                    <a class="card-footer-item" href="/${item.type}/${item.id}">
+                        ${item.title}
+                    </a>
+                </footer>
+            </div>
+        </div>`;
     }
 }
 

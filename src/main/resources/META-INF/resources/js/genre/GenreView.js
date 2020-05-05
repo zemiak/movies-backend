@@ -1,5 +1,6 @@
 import { html, render } from "/js/lib/lit-html.js";
 import { GenreService } from "/js/genre/GenreService.js";
+import { SerieView } from "/js/serie/SerieView.js";
 import { BreadCrumbs } from "/js/BreadCrumbs.js";
 
 export class GenreView extends HTMLElement {
@@ -7,6 +8,7 @@ export class GenreView extends HTMLElement {
         super();
         this.data = [];
         this.service = new GenreService();
+        this.serieView = new SerieView();
     }
 
     connectedCallback() {
@@ -37,37 +39,33 @@ export class GenreView extends HTMLElement {
     view() {
         const items = [];
         this.data.forEach(item => {
-            var imageCode = html`<img src="${item.thumbnail}" alt="${item.title}"></img>`;
-            var figureSize = "is-3by4";
-
-            if ("serie" === item.type) {
-                imageCode = html`<img class="is-rounded" src="${item.thumbnail}" alt="${item.title}"></img>`;
-                figureSize = "is-256x256";
-            }
-
-            items.push(html`
-            <div class="column is-one-quarter-tablet is-half-mobile">
-                <div class="card">
-                    <div class="card-image">
-                        <figure class="image ${figureSize}">
-                            <a href="/${item.type}/${item.id}">
-                                ${imageCode}
-                            </a>
-                        </figure>
-                    </div>
-                    <footer class="card-footer">
-                        <a class="card-footer-item" href="/${item.type}/${item.id}">
-                            ${item.title}
-                        </a>
-                    </footer>
-                </div>
-            </div>`);
+            items.push("serie" ===  item.type ? this.renderSerieItem(item) : this.serieView.renderMovieItem(item));
         });
 
         return html`
             <div class="columns is-multiline is-mobile">
                 ${items}
             </div>`;
+    }
+
+    renderSerieItem(item) {
+        return html`
+        <div class="column is-one-quarter-tablet is-half-mobile">
+            <div class="card">
+                <div class="card-image">
+                    <figure class="image is-256x256">
+                        <a href="/${item.type}/${item.id}">
+                            <img class="is-rounded" src="${item.thumbnail}" alt="${item.title}"></img>
+                        </a>
+                    </figure>
+                </div>
+                <footer class="card-footer">
+                    <a class="card-footer-item" href="/${item.type}/${item.id}">
+                        ${item.title}
+                    </a>
+                </footer>
+            </div>
+        </div>`;
     }
 }
 

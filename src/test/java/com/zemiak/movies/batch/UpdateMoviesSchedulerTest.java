@@ -30,8 +30,6 @@ public class UpdateMoviesSchedulerTest {
     public UpdateMoviesSchedulerTest() {
         req = new AssuredRequests();
         ProvideConfiguration.init();
-
-        System.err.println(ConfigurationProvider.getImgPath());
     }
 
    @Test
