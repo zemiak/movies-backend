@@ -70,18 +70,18 @@ public class StreamingServlet extends HttpServlet {
         (HttpServletRequest request, HttpServletResponse response, boolean content)
             throws IOException
     {
-        Integer movieId;
+        Long movieId;
 
         try {
-            movieId = Integer.valueOf(request.getPathInfo().substring(1));
+            movieId = Long.valueOf(request.getPathInfo().substring(1));
         } catch (NumberFormatException ex) {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, "Invalid movie ID number: " + request.getPathInfo());
+            response.sendError(HttpServletResponse.SC_GONE, "Invalid movie ID number: " + request.getPathInfo());
             return;
         }
 
         Movie movie = Movie.findById(movieId);
         if (null == movie) {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, "Movie ID not found: " + movieId);
+            response.sendError(HttpServletResponse.SC_GONE, "Movie ID not found: " + movieId);
             return;
         }
 
@@ -93,7 +93,7 @@ public class StreamingServlet extends HttpServlet {
         if (!file.exists()) {
             // Do your thing if the file appears to be non-existing.
             // Throw an exception, or send 404, or show default/warning page, or just ignore it.
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, "Movie file does not exist: " + requestedFile);
+            response.sendError(HttpServletResponse.SC_GONE, "Movie file does not exist: " + requestedFile);
             return;
         }
 
