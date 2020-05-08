@@ -15,6 +15,7 @@ import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.zemiak.movies.genre.Genre;
+import com.zemiak.movies.language.Language;
 import com.zemiak.movies.scraper.Csfd;
 import com.zemiak.movies.scraper.Imdb;
 import com.zemiak.movies.serie.Serie;
@@ -122,6 +123,11 @@ public class Movie extends PanacheEntityBase implements Comparable<Movie> {
     }
 
     public GuiDTO toDto() {
+        return getDto();
+    }
+
+    @JsonIgnore
+    public GuiDTO getDto() {
         return new GuiDTO("movie", this.name, "/stream/" + id, "/movies/thumbnail?id=" + id, id);
     }
 
@@ -249,5 +255,35 @@ public class Movie extends PanacheEntityBase implements Comparable<Movie> {
 
         Genre genre = Genre.findById(this.genreId);
         return null == genre ? "null.jpg" : genre.pictureFileName;
+    }
+
+    @JsonIgnore
+    public String getLanguageName() {
+        if (null == this.languageId) {
+            return "None";
+        }
+
+        Language lang = Language.findById(this.languageId);
+        return null == lang ? "None" : lang.name;
+    }
+
+    @JsonIgnore
+    public String getOriginalLanguageName() {
+        if (null == this.originalLanguageId) {
+            return "None";
+        }
+
+        Language lang = Language.findById(this.originalLanguageId);
+        return null == lang ? "None" : lang.name;
+    }
+
+    @JsonIgnore
+    public String getSubtitlesName() {
+        if (null == this.subtitlesId) {
+            return "None";
+        }
+
+        Language lang = Language.findById(this.subtitlesId);
+        return null == lang ? "None" : lang.name;
     }
 }

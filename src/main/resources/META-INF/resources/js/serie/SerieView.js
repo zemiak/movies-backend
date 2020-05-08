@@ -52,12 +52,10 @@ export class SerieView extends HTMLElement {
         <div class="column is-one-quarter-tablet is-half-mobile">
             <div class="card">
                 <div class="card-image">
-                    <figure class="image">
-                        <video controls src="${item.url}" poster="${item.thumbnail}">
-                            <a href="${item.url}">
-                                <img src="${item.thumbnail}" alt="${item.title}"></img>
-                            </a>
-                        </video>
+                    <figure class="image is-3by4">
+                        <a href="/${item.type}/${item.id}">
+                            <img src="${item.thumbnail}" alt="${item.title}"></img>
+                        </a>
                     </figure>
                 </div>
                 <footer class="card-footer">
