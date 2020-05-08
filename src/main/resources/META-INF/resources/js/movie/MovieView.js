@@ -68,6 +68,13 @@ export class MovieView extends HTMLElement {
         console.log(this.data);
         return html`<div class="columns is-centered">
         <div class="column">&nbsp;</div>
+        <div class="column is-half"><div class="card"><div class="card-content">
+        <div class="content">${this.data.description}</div></div></div></div>
+        <div class="column">&nbsp;</div>
+        </div>
+
+        <div class="columns is-centered">
+        <div class="column">&nbsp;</div>
         <div class="column">
             <div class="field">
                 <label class="label">Genre</label>
