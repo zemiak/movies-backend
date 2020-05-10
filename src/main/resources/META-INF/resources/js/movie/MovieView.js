@@ -65,11 +65,18 @@ export class MovieView extends HTMLElement {
     }
 
     renderDetails() {
-        console.log(this.data);
+        var desc;
+        if (null === this.data.description || undefined === this.data.description || this.data.description.trim().length === 0) {
+            desc = "";
+        } else {
+            desc = html`<div class="card"><div class="card-content"><div class="content">${this.data.description}</div></div></div>`;
+        }
+
         return html`<div class="columns is-centered">
         <div class="column">&nbsp;</div>
-        <div class="column is-half"><div class="card"><div class="card-content">
-        <div class="content">${this.data.description}</div></div></div></div>
+        <div class="column is-half">
+        ${desc}
+        </div>
         <div class="column">&nbsp;</div>
         </div>
 

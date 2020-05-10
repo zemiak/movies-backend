@@ -48,6 +48,8 @@ export class RestClientService {
 
             if (null !== key) {
                 this.cache.set(key, payload);
+            } else {
+                this.localCache = payload;
             }
         }
 
@@ -62,6 +64,10 @@ export class RestClientService {
 
     getData() {
         const key = this.getCacheKeyName();
+        if (null === key) {
+            return this.localCache;
+        }
+
         if (this.cache.contains(key)) {
             return this.cache.get(key);
         }
