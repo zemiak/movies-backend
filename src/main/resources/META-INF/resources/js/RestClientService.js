@@ -19,9 +19,9 @@ export class RestClientService {
         throw "Not Implemented";
     }
 
-    contains(name) {
-        const key = undefined === name ? name : this.getCacheKeyName();
-        return (undefined !== this.cache.get(key));
+    contains() {
+        const key = this.getCacheKeyName();
+        return null === key ? false : undefined !== this.cache.get(key);
     }
 
     getBaseUri() {
@@ -35,17 +35,20 @@ export class RestClientService {
     }
 
     async fetchData() {
-        const name = this.getCacheKeyName();
-        console.info("RestClientService.fetchData: key is " + name + ", exists? " + (this.cache.contains(name) ? "yes" : "no"));
+        const isCached = this.contains();
+        const key = this.getCacheKeyName();
+        console.info("RestClientService.fetchData: key is " + key + ", exists? " + (isCached ? "yes" : "no"));
 
-        if (! this.cache.contains(name)) {
+        if (! isCached) {
             const uri = this.getBaseUri() + this.getServicePath();
-            console.info("RestClientService.fetchData: Fetching '" + uri + "' for name '" + name + "' ...");
+            console.info("RestClientService.fetchData: Fetching '" + uri + "' for key '" + key + "' ...");
 
             const response = await fetch(uri);
             const payload = await response.json();
 
-            this.cache.set(name, payload);
+            if (null !== key) {
+                this.cache.set(key, payload);
+            }
         }
 
         this.dispatchDataEvent({"key": name});
@@ -57,7 +60,8 @@ export class RestClientService {
         console.info("RestClientService.fetchData: dispatched event", folderDataEvent);
     }
 
-    getData(key) {
+    getData() {
+        const key = this.getCacheKeyName();
         if (this.cache.contains(key)) {
             return this.cache.get(key);
         }
