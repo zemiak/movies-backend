@@ -32,4 +32,6 @@ target
 .DS_Store
 .mvn
 
+infuse
+
 ./src/test/resources/media/infuse/

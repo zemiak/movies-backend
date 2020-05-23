@@ -1,5 +1,5 @@
 import { Cache } from "./Cache.js";
-import { Config } from "./Config.js";
+import { Config } from "./config/Config.js";
 
 export class RestClientService {
     constructor() {
