@@ -22,11 +22,8 @@ export class GenreTableView extends HTMLElement {
         render(this.view(), this);
 
         let datatable = new DataTable("#genreTable", {
-            columns: ['Name', 'Position', 'Department'],
-            data: [
-                ['Tiger Nixon', 'System Architect', 'Tech'],
-                ['Garrett Winters', 'Accountant', '']
-            ]
+            columns: [{name: 'ID', id: "id", width: 128}, {name: 'Name', id: "name", width: 256}, {name: 'Order', id: "displayOrder", width: 128}],
+            data: this.data.map(o => [o.id, o.name, o.displayOrder])
         });
     }
 
