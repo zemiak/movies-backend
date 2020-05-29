@@ -1,20 +1,20 @@
 import { RestClientService } from "../RestClientService.js";
 
-export class GenreService extends RestClientService {
+export class LanguageTableService extends RestClientService {
     constructor() {
         super();
     }
 
     getCustomEventName() {
-        return "GenreService";
+        return "LanguageTableService";
     }
 
     getServicePath() {
-        return "/genres/browse?id=" + this.id;
+        return "/languages/all";
     }
 
     getCacheKeyName() {
-        return "_" + this.getCustomEventName() + "_" + this.id;
+        return "_" + this.getCustomEventName();
     }
 
     setId(id) {
