@@ -11,6 +11,7 @@ public class ProvideConfiguration {
         conf.put(ConfigurationProvider.MEDIA_PATH, Paths.get("", "src", "test", "resources", "media").toAbsolutePath().toString());
         conf.put("system.name", "test");
         conf.put("mail.to", "none@npreply");
+        conf.put("external.url", "http://localhost:8081");
         ConfigurationProvider.setProvidedConfig(conf);
     }
 }

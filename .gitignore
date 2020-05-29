@@ -35,3 +35,5 @@ target
 infuse
 
 ./src/test/resources/media/infuse/
+src/test/resources/media/infuse
+
