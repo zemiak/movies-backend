@@ -14,6 +14,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.zemiak.movies.config.ConfigurationProvider;
 import com.zemiak.movies.genre.Genre;
 import com.zemiak.movies.language.Language;
 import com.zemiak.movies.scraper.Csfd;
@@ -128,7 +129,7 @@ public class Movie extends PanacheEntityBase implements Comparable<Movie> {
 
     @JsonIgnore
     public GuiDTO getDto() {
-        return new GuiDTO("movie", this.name, "/stream/" + id, "/movies/thumbnail?id=" + id, id);
+        return new GuiDTO("movie", this.name, ConfigurationProvider.getExternalURL() + "/stream/" + id, ConfigurationProvider.getExternalURL() + "/movies/thumbnail?id=" + id, id);
     }
 
     public void copyFrom(Movie entity) {

@@ -1,3 +1,3 @@
 #!/bin/sh
 
-curl lenovo-server.local:8080/jobs/update-movies
+curl lenovo-server.local:8081/jobs/update-movies

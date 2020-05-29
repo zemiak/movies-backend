@@ -14,6 +14,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.zemiak.movies.config.ConfigurationProvider;
 import com.zemiak.movies.strings.NullAwareJsonObjectBuilder;
 import com.zemiak.movies.ui.GuiDTO;
 
@@ -121,7 +122,7 @@ public class Genre extends PanacheEntityBase implements Comparable<Genre> {
     }
 
     public GuiDTO toDto() {
-        return new GuiDTO("genre", this.name, "/genres/browse?id=" + id, "/genres/thumbnail?id=" + id, id);
+        return new GuiDTO("genre", this.name, ConfigurationProvider.getExternalURL() + "/browse?id=" + id, ConfigurationProvider.getExternalURL() + "/genres/thumbnail?id=" + id, id);
     }
 
     @Override

@@ -2,7 +2,7 @@ FROM arm32v7/adoptopenjdk:11-hotspot
 
 # Memory limit is in Megs
 ENV AB_ENABLED=jmx_exporter \
-    QUARKUS_HTTP_PORT=8080 \
+    QUARKUS_HTTP_PORT=8081 \
     MEMORY_LIMIT=128 \
     AUTODEPLOY_FOLDER=/deployments
 

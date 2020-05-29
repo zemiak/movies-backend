@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 
 // Copyright goes to https://github.com/kabir/blog-quarkus-ui-development
 
-@WebFilter(urlPatterns = "/*")
+// @WebFilter(urlPatterns = "/*")
 public class UIWildcardRouterFilter extends HttpFilter {
     private static final long serialVersionUID = -4916384192903966359L;
     private static final Pattern FILE_NAME_PATTERN = Pattern.compile(".*[.][a-zA-Z\\d]+");

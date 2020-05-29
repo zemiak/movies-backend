@@ -14,6 +14,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.zemiak.movies.config.ConfigurationProvider;
 import com.zemiak.movies.strings.NullAwareJsonObjectBuilder;
 import com.zemiak.movies.ui.GuiDTO;
 
@@ -72,7 +73,7 @@ public class Serie extends PanacheEntityBase implements Comparable<Serie> {
     }
 
     public GuiDTO toDto() {
-        return new GuiDTO("serie", this.name, "/series/browse?id=" + id, "/series/thumbnail?id=" + id, id);
+        return new GuiDTO("serie", this.name, ConfigurationProvider.getExternalURL() + "/series/browse?id=" + id, ConfigurationProvider.getExternalURL() + "/series/thumbnail?id=" + id, id);
     }
 
     public Serie() {
