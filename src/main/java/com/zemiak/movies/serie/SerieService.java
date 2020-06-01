@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Observes;
+import javax.json.Json;
+import javax.json.JsonObject;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -15,6 +17,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -22,6 +25,7 @@ import javax.ws.rs.core.Response.Status;
 
 import com.zemiak.movies.batch.CacheClearEvent;
 import com.zemiak.movies.movie.Movie;
+import com.zemiak.movies.ui.VaadingGridPagingResult;
 
 import io.quarkus.hibernate.orm.panache.Panache;
 import io.quarkus.panache.common.Parameters;
@@ -37,6 +41,19 @@ public class SerieService {
     @Path("all")
     public List<Serie> all() {
         return Serie.listAll(Sort.ascending("displayOrder"));
+    }
+
+    @GET
+    @Path("count")
+    public JsonObject count() {
+        long count = Serie.count();
+        return Json.createObjectBuilder().add("count", count).build();
+    }
+
+    @GET
+    @Path("items")
+    public VaadingGridPagingResult<Serie> getItems(@QueryParam("page") int page, @QueryParam("pageSize") int pageSize) {
+        return new VaadingGridPagingResult<>(Serie.count(), Serie.findAll(Sort.by("displayOrder")).page(page, pageSize).list());
     }
 
     @POST
