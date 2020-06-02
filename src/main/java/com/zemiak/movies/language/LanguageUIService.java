@@ -1,9 +1,11 @@
-package com.zemiak.movies.serie;
+package com.zemiak.movies.language;
 
 import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Observes;
+import javax.json.Json;
+import javax.json.JsonObject;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -15,6 +17,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -22,25 +25,38 @@ import javax.ws.rs.core.Response.Status;
 
 import com.zemiak.movies.batch.CacheClearEvent;
 import com.zemiak.movies.movie.Movie;
+import com.zemiak.movies.ui.VaadingGridPagingResult;
 
 import io.quarkus.hibernate.orm.panache.Panache;
-import io.quarkus.panache.common.Parameters;
 import io.quarkus.panache.common.Sort;
 
 @RequestScoped
-@Path("series")
+@Path("languages")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @Transactional
-public class SerieService {
+public class LanguageUIService {
     @GET
     @Path("all")
-    public List<Serie> all() {
-        return Serie.listAll(Sort.ascending("displayOrder"));
+    public List<Language> all() {
+        return Language.listAll(Sort.by("displayOrder"));
+    }
+
+    @GET
+    @Path("count")
+    public JsonObject count() {
+        long count = Language.count();
+        return Json.createObjectBuilder().add("count", count).build();
+    }
+
+    @GET
+    @Path("items")
+    public VaadingGridPagingResult<Language> getItems(@QueryParam("page") int page, @QueryParam("pageSize") int pageSize) {
+        return new VaadingGridPagingResult<>(Language.count(), Language.findAll(Sort.by("displayOrder")).page(page, pageSize).list());
     }
 
     @POST
-    public Long create(@Valid @NotNull Serie entity) {
+    public Long create(@Valid @NotNull Language entity) {
         if (null != entity.id) {
             throw new WebApplicationException(Response.status(Status.NOT_ACCEPTABLE).entity("ID specified").build());
         }
@@ -50,12 +66,12 @@ public class SerieService {
     }
 
     @PUT
-    public void update(@Valid @NotNull Serie entity) {
+    public void update(@Valid @NotNull Language entity) {
         if (null == entity.id) {
             throw new WebApplicationException(Response.status(Status.NOT_ACCEPTABLE).entity("ID not specified").build());
         }
 
-        Serie findEntity = Serie.findById(entity.id);
+        Language findEntity = Language.findById(entity.id);
         if (null == findEntity) {
             throw new WebApplicationException(Response.status(Status.GONE).entity("ID not found" + entity.id).build());
         }
@@ -64,18 +80,9 @@ public class SerieService {
     }
 
     @GET
-    @Path("by-genre/{id}")
-    public List<Serie> getGenreSeries(@PathParam("id") @NotNull Long id) {
-        return Serie.find("genreId = :genreId",
-            Sort.ascending("displayOrder"),
-            Parameters.with("genreId", id))
-            .list();
-    }
-
-    @GET
     @Path("{id}")
-    public Serie find(@PathParam("id") @NotNull final Long id) {
-        Serie entity = Serie.findById(id);
+    public Language find(@PathParam("id") @NotNull Long id) {
+        Language entity = Language.findById(id);
         if (null == entity) {
             throw new WebApplicationException(Response.status(Status.GONE).entity("ID not found: " + String.valueOf(id)).build());
         }
@@ -85,20 +92,37 @@ public class SerieService {
 
     @DELETE
     @Path("{id}")
-    public void remove(@PathParam("id") @NotNull final Long id) {
-        Serie entity = Serie.findById(id);
+    public void remove(@PathParam("id") @NotNull Long id) {
+        Language entity = Language.findById(id);
         if (null == entity) {
             throw new WebApplicationException(Response.status(Status.GONE).entity("ID not found: " + String.valueOf(id)).build());
         }
 
-        if (Movie.find("serieId", id).count() > 0) {
+        if (Movie.find("languageId", entity.id).count() > 0 || Movie.find("originalLanguageId", entity.id).count() > 0 || Movie.find("subtitlesId", entity.id).count() > 0) {
             throw new WebApplicationException(Response.status(Status.NOT_ACCEPTABLE).entity("They are movies existing with this language." + String.valueOf(id)).build());
         }
 
         entity.delete();
     }
 
-    public void clearCache(@Observes final CacheClearEvent event) {
+    @GET
+    @Path("{code}/code")
+    public Language findByCode(@PathParam("code") @NotNull String code) {
+        Language entity = Language.find("code", code).firstResult();
+        if (null == entity) {
+            throw new WebApplicationException(Response.status(Status.GONE).entity("Code not found: " + String.valueOf(code)).build());
+        }
+
+        return entity;
+    }
+
+    public void clearCache(@Observes CacheClearEvent event) {
         Panache.getEntityManager().getEntityManagerFactory().getCache().evictAll();
+    }
+
+    @GET
+    @Path("search/{pattern}")
+    public List<Language> getByExpression(@PathParam("pattern") @NotNull final String pattern) {
+        return Language.find("UPPER(name) LIKE ?1", "%" + pattern.toUpperCase() + "%").list();
     }
 }

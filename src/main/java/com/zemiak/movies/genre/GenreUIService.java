@@ -11,6 +11,8 @@ import java.util.stream.Collectors;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.json.Json;
+import javax.json.JsonObject;
 import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
@@ -28,6 +30,9 @@ import com.zemiak.movies.movie.MovieUIService;
 import com.zemiak.movies.serie.Serie;
 import com.zemiak.movies.serie.SerieService;
 import com.zemiak.movies.ui.GuiDTO;
+import com.zemiak.movies.ui.VaadingGridPagingResult;
+
+import io.quarkus.panache.common.Sort;
 
 @RequestScoped
 @Path("genres")
@@ -122,5 +127,18 @@ public class GenreUIService {
     private List<GuiDTO> getFreshMovies() {
         int year = LocalDateTime.now().get(ChronoField.YEAR);
         return movies.getFreshMovies(year);
+    }
+
+    @GET
+    @Path("count")
+    public JsonObject count() {
+        long count = Genre.count();
+        return Json.createObjectBuilder().add("count", count).build();
+    }
+
+    @GET
+    @Path("items")
+    public VaadingGridPagingResult<GenreUI> getItems(@QueryParam("page") int page, @QueryParam("pageSize") int pageSize) {
+        return new VaadingGridPagingResult<>(Genre.count(), Genre.findAll(Sort.by("displayOrder")).page(page, pageSize).stream().map(GenreUI::of).collect(Collectors.toList()));
     }
 }

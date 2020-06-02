@@ -10,6 +10,8 @@ import java.util.stream.Stream;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.json.Json;
+import javax.json.JsonObject;
 import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
@@ -26,6 +28,7 @@ import com.zemiak.movies.config.ConfigurationProvider;
 import com.zemiak.movies.genre.Genre;
 import com.zemiak.movies.strings.Encodings;
 import com.zemiak.movies.ui.GuiDTO;
+import com.zemiak.movies.ui.VaadingGridPagingResult;
 
 import io.quarkus.panache.common.Parameters;
 import io.quarkus.panache.common.Sort;
@@ -119,5 +122,18 @@ public class MovieUIService {
             Sort.ascending("displayOrder"),
             Parameters.with("genreId", Genre.ID_NONE))
             .list().stream().map(e -> (Movie) e).map(Movie::toDto).collect(Collectors.toList());
+    }
+
+    @GET
+    @Path("count")
+    public JsonObject count() {
+        long count = Movie.count();
+        return Json.createObjectBuilder().add("count", count).build();
+    }
+
+    @GET
+    @Path("items")
+    public VaadingGridPagingResult<MovieUI> getItems(@QueryParam("page") int page, @QueryParam("pageSize") int pageSize) {
+        return new VaadingGridPagingResult<>(Movie.count(), Movie.findAll(Sort.by("displayOrder")).page(page, pageSize).stream().map(MovieUI::of).collect(Collectors.toList()));
     }
 }

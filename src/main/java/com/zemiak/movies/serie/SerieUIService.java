@@ -5,10 +5,13 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.json.Json;
+import javax.json.JsonObject;
 import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
@@ -25,6 +28,9 @@ import com.zemiak.movies.config.ConfigurationProvider;
 import com.zemiak.movies.movie.MovieUIService;
 import com.zemiak.movies.strings.Encodings;
 import com.zemiak.movies.ui.GuiDTO;
+import com.zemiak.movies.ui.VaadingGridPagingResult;
+
+import io.quarkus.panache.common.Sort;
 
 @RequestScoped
 @Path("series")
@@ -96,5 +102,18 @@ public class SerieUIService {
 
     protected Serie find(final Long id) {
         return series.find(id);
+    }
+
+    @GET
+    @Path("count")
+    public JsonObject count() {
+        long count = Serie.count();
+        return Json.createObjectBuilder().add("count", count).build();
+    }
+
+    @GET
+    @Path("items")
+    public VaadingGridPagingResult<SerieUI> getItems(@QueryParam("page") int page, @QueryParam("pageSize") int pageSize) {
+        return new VaadingGridPagingResult<>(Serie.count(), Serie.findAll(Sort.by("displayOrder")).page(page, pageSize).stream().map(SerieUI::of).collect(Collectors.toList()));
     }
 }
