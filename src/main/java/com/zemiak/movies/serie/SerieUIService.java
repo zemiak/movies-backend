@@ -20,6 +20,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -115,5 +116,16 @@ public class SerieUIService {
     @Path("items")
     public VaadingGridPagingResult<SerieUI> getItems(@QueryParam("page") int page, @QueryParam("pageSize") int pageSize) {
         return new VaadingGridPagingResult<>(Serie.count(), Serie.findAll(Sort.by("displayOrder")).page(page, pageSize).stream().map(SerieUI::of).collect(Collectors.toList()));
+    }
+
+    @GET
+    @Path("detail/{id}")
+    public SerieDetail findDetail(@PathParam("id") @NotNull final Long id) {
+        Serie entity = Serie.findById(id);
+        if (null == entity) {
+            throw new WebApplicationException(Response.status(Status.GONE).entity("ID not found: " + String.valueOf(id)).build());
+        }
+
+        return SerieDetail.of(entity);
     }
 }
