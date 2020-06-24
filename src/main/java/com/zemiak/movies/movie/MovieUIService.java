@@ -20,6 +20,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -135,5 +136,16 @@ public class MovieUIService {
     @Path("items")
     public VaadingGridPagingResult<MovieUI> getItems(@QueryParam("page") int page, @QueryParam("pageSize") int pageSize) {
         return new VaadingGridPagingResult<>(Movie.count(), Movie.findAll(Sort.by("displayOrder")).page(page, pageSize).stream().map(MovieUI::of).collect(Collectors.toList()));
+    }
+
+    @GET
+    @Path("detail/{id}")
+    public MovieDetail findDetail(@PathParam("id") @NotNull final Long id) {
+        Movie entity = Movie.findById(id);
+        if (null == entity) {
+            throw new WebApplicationException(Response.status(Status.GONE).entity("ID not found: " + String.valueOf(id)).build());
+        }
+
+        return MovieDetail.of(entity);
     }
 }

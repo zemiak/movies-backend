@@ -22,8 +22,13 @@ public class MovieUI {
     public String subtitles;
 
     public static MovieUI of(PanacheEntityBase base) {
-        Movie entity = (Movie) base;
         MovieUI dto = new MovieUI();
+        MovieUI.copy(dto, base);
+        return dto;
+    }
+
+    public static MovieUI copy(MovieUI dto, PanacheEntityBase base) {
+        Movie entity = (Movie) base;
         dto.id = entity.id;
         dto.name = entity.name;
         dto.displayOrder = entity.displayOrder;
