@@ -128,4 +128,10 @@ public class SerieUIService {
 
         return SerieDetail.of(entity);
     }
+
+    @GET
+    @Path("detail/forNew")
+    public SerieDetail findDetailAdd() {
+        return SerieDetail.forNew();
+    }
 }

@@ -26,13 +26,9 @@ public class MovieDetail extends MovieUI  {
     public String originalName;
     public String description;
 
-	public static MovieDetail of(PanacheEntityBase base) {
+    public static MovieDetail forNew() {
         MovieDetail dto = new MovieDetail();
-        MovieUI.copy(dto, base);
 
-        Movie entity = (Movie) base;
-
-        dto.genreId = entity.genreId;
         dto.genres = new HashMap<>();
         Genre.streamAll(Sort.by("displayOrder"))
             .map(genreBase -> {return (Genre) genreBase;})
@@ -40,7 +36,6 @@ public class MovieDetail extends MovieUI  {
                 dto.genres.put(genre.id, genre.name);
             });
 
-        dto.serieId = entity.serieId;
         dto.series = new HashMap<>();
         dto.serieGenres = new HashMap<>();
         Serie.streamAll(Sort.by("displayOrder"))
@@ -50,9 +45,6 @@ public class MovieDetail extends MovieUI  {
                 dto.serieGenres.put(serie.id, serie.genreId);
             });
 
-        dto.languageId = entity.languageId;
-        dto.originalLanguageId = entity.originalLanguageId;
-        dto.subtitlesId = entity.subtitlesId;
         dto.languages = new HashMap<>();
         Language.streamAll(Sort.by("displayOrder"))
             .map(languageBase -> {return (Language) languageBase;})
@@ -60,9 +52,22 @@ public class MovieDetail extends MovieUI  {
                 dto.languages.put(language.id, language.name);
             });
 
+        return dto;
+    }
+
+	public static MovieDetail of(PanacheEntityBase base) {
+        MovieDetail dto = forNew();
+        MovieUI.copy(dto, base);
+
+        Movie entity = (Movie) base;
+        dto.genreId = entity.genreId;
+        dto.serieId = entity.serieId;
+        dto.languageId = entity.languageId;
+        dto.originalLanguageId = entity.originalLanguageId;
+        dto.subtitlesId = entity.subtitlesId;
         dto.originalName = entity.originalName;
         dto.description = entity.description;
-        
+
         return dto;
 	}
 }

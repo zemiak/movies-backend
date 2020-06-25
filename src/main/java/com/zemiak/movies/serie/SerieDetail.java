@@ -12,12 +12,8 @@ public class SerieDetail extends SerieUI  {
     public Long genreId;
     public Map<Long, String> genres;
 
-	public static SerieDetail of(PanacheEntityBase base) {
+    public static SerieDetail forNew() {
         SerieDetail dto = new SerieDetail();
-        SerieUI.copy(dto, base);
-
-        Serie entity = (Serie) base;
-        dto.genreId = entity.genreId;
 
         dto.genres = new HashMap<>();
         Genre.streamAll(Sort.by("displayOrder"))
@@ -25,6 +21,16 @@ public class SerieDetail extends SerieUI  {
             .forEach(genre -> {
                 dto.genres.put(genre.id, genre.name);
             });
+
+        return dto;
+    }
+
+	public static SerieDetail of(PanacheEntityBase base) {
+        SerieDetail dto = forNew();
+        SerieUI.copy(dto, base);
+
+        Serie entity = (Serie) base;
+        dto.genreId = entity.genreId;
 
         return dto;
 	}

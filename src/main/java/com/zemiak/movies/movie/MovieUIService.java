@@ -148,4 +148,10 @@ public class MovieUIService {
 
         return MovieDetail.of(entity);
     }
+
+    @GET
+    @Path("detail/forNew")
+    public MovieDetail findDetailAdd() {
+        return MovieDetail.forNew();
+    }
 }
