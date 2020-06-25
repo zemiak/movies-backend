@@ -12,7 +12,7 @@ public class SerieUI {
     public Integer displayOrder;
     public String genre;
     public LocalDateTime created;
-    public String tvShow;
+    public String tvShowText;
 
     public static void copy(SerieUI dto, PanacheEntityBase base) {
         Serie entity = (Serie) base;
@@ -21,7 +21,7 @@ public class SerieUI {
         dto.displayOrder = entity.displayOrder;
         dto.genre = ((Genre) Genre.findById(entity.genreId)).name;
         dto.created = entity.created;
-        dto.tvShow = entity.tvShow ? "Yes" : "";
+        dto.tvShowText = entity.tvShow ? "Yes" : "";
     }
 
     public static SerieUI of(PanacheEntityBase base) {

@@ -11,6 +11,7 @@ import io.quarkus.panache.common.Sort;
 public class SerieDetail extends SerieUI  {
     public Long genreId;
     public Map<Long, String> genres;
+    public Boolean tvShow;
 
     public static SerieDetail forNew() {
         SerieDetail dto = new SerieDetail();
@@ -31,6 +32,7 @@ public class SerieDetail extends SerieUI  {
 
         Serie entity = (Serie) base;
         dto.genreId = entity.genreId;
+        dto.tvShow = entity.tvShow;
 
         return dto;
 	}
