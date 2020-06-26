@@ -9,7 +9,7 @@ import javax.json.JsonObject;
 
 import com.zemiak.movies.scraper.ItunesArtwork;
 
-import org.junit.jupiter.api.Test;
+// import org.junit.jupiter.api.Test;
 
 public class ItunesArtworkServiceTest {
     private static int KB_128 = 128 * 1024;

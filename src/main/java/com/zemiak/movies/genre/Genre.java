@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
+import javax.json.bind.annotation.JsonbNillable;
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,7 +15,6 @@ import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.zemiak.movies.config.ConfigurationProvider;
 import com.zemiak.movies.strings.NullAwareJsonObjectBuilder;
 import com.zemiak.movies.ui.GuiDTO;
@@ -21,6 +22,7 @@ import com.zemiak.movies.ui.GuiDTO;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
 @Entity
+@JsonbNillable
 public class Genre extends PanacheEntityBase implements Comparable<Genre> {
     public static final Long ID_NONE = 0L;
     public static final Long ID_FRESH = -1L;
@@ -59,7 +61,6 @@ public class Genre extends PanacheEntityBase implements Comparable<Genre> {
     }
 
     public Genre() {
-        this.created = LocalDateTime.now();
     }
 
     public Genre(Long id) {
@@ -98,7 +99,7 @@ public class Genre extends PanacheEntityBase implements Comparable<Genre> {
         return true;
     }
 
-    @JsonIgnore
+    @JsonbTransient
     public boolean isEmpty() {
         return id == 0;
     }

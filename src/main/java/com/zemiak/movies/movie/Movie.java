@@ -5,6 +5,8 @@ import java.util.Objects;
 
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
+import javax.json.bind.annotation.JsonbNillable;
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,7 +15,6 @@ import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.zemiak.movies.config.ConfigurationProvider;
 import com.zemiak.movies.genre.Genre;
 import com.zemiak.movies.language.Language;
@@ -26,6 +27,7 @@ import com.zemiak.movies.ui.GuiDTO;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
 @Entity
+@JsonbNillable
 public class Movie extends PanacheEntityBase implements Comparable<Movie> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -85,7 +87,6 @@ public class Movie extends PanacheEntityBase implements Comparable<Movie> {
     public String webPage;
 
     public Movie() {
-        this.created = LocalDateTime.now();
     }
 
     public Movie(Long id) {
@@ -127,7 +128,7 @@ public class Movie extends PanacheEntityBase implements Comparable<Movie> {
         return getDto();
     }
 
-    @JsonIgnore
+    @JsonbTransient
     public GuiDTO getDto() {
         return new GuiDTO("movie", this.name, ConfigurationProvider.getExternalURL() + "/stream/" + id, ConfigurationProvider.getExternalURL() + "/movies/thumbnail?id=" + id, id);
     }
@@ -173,17 +174,17 @@ public class Movie extends PanacheEntityBase implements Comparable<Movie> {
         return "Movie{" + "id=" + id + ", name=" + name + '}';
     }
 
-    @JsonIgnore
+    @JsonbTransient
     public boolean isDescriptionEmpty() {
         return null == description || "".equals(description.trim()) || "''".equals(description.trim());
     }
 
-    @JsonIgnore
+    @JsonbTransient
     public boolean isUrlEmpty() {
         return null == url || "".equals(url.trim()) || "''".equals(url.trim());
     }
 
-    @JsonIgnore
+    @JsonbTransient
     public String getUrlFlag() {
         if (new Csfd().accepts(this)) {
             return "CSFD";
@@ -194,12 +195,12 @@ public class Movie extends PanacheEntityBase implements Comparable<Movie> {
         return "";
     }
 
-    @JsonIgnore
+    @JsonbTransient
     public boolean isEmptySerie() {
         return null == serieId || serieId == Serie.ID_NONE;
     }
 
-    @JsonIgnore
+    @JsonbTransient
     public boolean isEmptyGenre() {
         return null == genreId || genreId == Genre.ID_NONE;
     }
@@ -228,7 +229,7 @@ public class Movie extends PanacheEntityBase implements Comparable<Movie> {
         return movie;
     }
 
-    @JsonIgnore
+    @JsonbTransient
     public String getSerieName() {
         if (isEmptySerie()) {
             return "None";
@@ -238,7 +239,7 @@ public class Movie extends PanacheEntityBase implements Comparable<Movie> {
         return null == serie ? "Serie " + this.serieId + " not found" : serie.name;
     }
 
-    @JsonIgnore
+    @JsonbTransient
     public String getGenreName() {
         if (isEmptyGenre()) {
             return "None";
@@ -248,7 +249,7 @@ public class Movie extends PanacheEntityBase implements Comparable<Movie> {
         return null == genre ? "Genre " + this.serieId + " not found" : genre.name;
     }
 
-    @JsonIgnore
+    @JsonbTransient
     public String getGenrePictureFileName() {
         if (null == genreId) {
             return "null.jpg";
@@ -258,7 +259,7 @@ public class Movie extends PanacheEntityBase implements Comparable<Movie> {
         return null == genre ? "null.jpg" : genre.pictureFileName;
     }
 
-    @JsonIgnore
+    @JsonbTransient
     public String getLanguageName() {
         if (null == this.languageId) {
             return "None";
@@ -268,7 +269,7 @@ public class Movie extends PanacheEntityBase implements Comparable<Movie> {
         return null == lang ? "None" : lang.name;
     }
 
-    @JsonIgnore
+    @JsonbTransient
     public String getOriginalLanguageName() {
         if (null == this.originalLanguageId) {
             return "None";
@@ -278,7 +279,7 @@ public class Movie extends PanacheEntityBase implements Comparable<Movie> {
         return null == lang ? "None" : lang.name;
     }
 
-    @JsonIgnore
+    @JsonbTransient
     public String getSubtitlesName() {
         if (null == this.subtitlesId) {
             return "None";

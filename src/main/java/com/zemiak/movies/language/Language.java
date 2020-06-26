@@ -3,6 +3,8 @@ package com.zemiak.movies.language;
 import java.time.LocalDateTime;
 
 import javax.json.JsonObject;
+import javax.json.bind.annotation.JsonbNillable;
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,13 +14,13 @@ import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.zemiak.movies.strings.DateFormatter;
 import com.zemiak.movies.strings.NullAwareJsonObjectBuilder;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
 @Entity
+@JsonbNillable
 public class Language extends PanacheEntityBase {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -57,7 +59,6 @@ public class Language extends PanacheEntityBase {
     }
 
     public Language() {
-        this.created = LocalDateTime.now();
     }
 
     public Language(Long id) {
@@ -101,7 +102,7 @@ public class Language extends PanacheEntityBase {
         return name;
     }
 
-    @JsonIgnore
+    @JsonbTransient
     public boolean isNone() {
         return "  ".equals(code);
     }

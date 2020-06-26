@@ -11,7 +11,7 @@ import com.zemiak.movies.ProvideConfiguration;
 import com.zemiak.movies.movie.Movie;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+// import org.junit.jupiter.api.Test;
 
 public class ImdbTest {
     Imdb cut;

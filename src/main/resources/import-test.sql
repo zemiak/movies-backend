@@ -13,7 +13,7 @@ INSERT INTO language (id, code, name, picture_file_name, display_order, created)
 INSERT INTO language (id, code, name, picture_file_name, display_order, created) VALUES (7, 'es', 'Espanol', NULL, 8, NULL);
 INSERT INTO language (id, code, name, picture_file_name, display_order, created) VALUES (8, 'fr', 'France', NULL, 9, NULL);
 INSERT INTO language (id, code, name, picture_file_name, display_order, created) VALUES (9, 'pl', 'Polish', NULL, 10, NULL);
-INSERT INTO language (id, code, name, picture_file_name, display_order, created) VALUES (10, 'ar', 'Argentina', NULL, 11, NULL);
+INSERT INTO language (id, code, name, picture_file_name, display_order, created) VALUES (10, 'ar', 'Argentina', 'ar.jpg', 11, NULL);
 INSERT INTO language (id, code, name, picture_file_name, display_order, created) VALUES (11, '  ', 'None', NULL, 0, NULL);
 INSERT INTO language (id, code, name, picture_file_name, display_order, created) VALUES (12, 'cz', 'Czech', NULL, 3, NULL);
 INSERT INTO language (id, code, name, picture_file_name, display_order, created) VALUES (13, 'no', 'Norway', NULL, 9000, '2015-09-06 11:36:45.194');
