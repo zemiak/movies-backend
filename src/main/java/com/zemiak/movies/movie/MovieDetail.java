@@ -24,6 +24,10 @@ public class MovieDetail extends MovieUI  {
     public Map<Long, String> languages;
 
     public String originalName;
+    public String fileName;
+    public String url;
+    public String webPage;
+    public Integer year;
     public String description;
 
     public static MovieDetail forNew() {
@@ -67,6 +71,10 @@ public class MovieDetail extends MovieUI  {
         dto.subtitlesId = entity.subtitlesId;
         dto.originalName = entity.originalName;
         dto.description = entity.description;
+        dto.fileName = entity.fileName;
+        dto.url = entity.url;
+        dto.webPage = entity.webPage;
+        dto.year = entity.year;
 
         return dto;
 	}
