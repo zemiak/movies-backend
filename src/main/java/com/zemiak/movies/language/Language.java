@@ -3,6 +3,7 @@ package com.zemiak.movies.language;
 import java.time.LocalDateTime;
 
 import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import javax.json.bind.annotation.JsonbNillable;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Basic;
@@ -14,7 +15,6 @@ import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import com.zemiak.movies.strings.DateFormatter;
 import com.zemiak.movies.strings.NullAwareJsonObjectBuilder;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
@@ -48,14 +48,15 @@ public class Language extends PanacheEntityBase {
     public LocalDateTime created;
 
     public JsonObject toJson() {
-        return NullAwareJsonObjectBuilder.create()
+        JsonObjectBuilder builder = NullAwareJsonObjectBuilder.create()
             .add("id", this.id)
             .add("code", this.code)
             .add("name", this.name)
             .add("pictureFileName", this.pictureFileName)
-            .add("displayOrder", this.displayOrder)
-            .add("created", DateFormatter.format(this.created))
-            .build();
+            .add("displayOrder", this.displayOrder);
+        NullAwareJsonObjectBuilder.addDate(builder, "created", this.created);
+
+        return builder.build();
     }
 
     public Language() {
