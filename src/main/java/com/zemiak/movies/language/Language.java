@@ -15,6 +15,7 @@ import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.zemiak.movies.config.ConfigurationProvider;
 import com.zemiak.movies.strings.NullAwareJsonObjectBuilder;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
@@ -122,5 +123,9 @@ public class Language extends PanacheEntityBase {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getThumbnailUrl() {
+        return ConfigurationProvider.getExternalURL() + "/languages/thumbnail?id=" + this.id;
     }
 }

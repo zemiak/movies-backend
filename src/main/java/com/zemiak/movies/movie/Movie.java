@@ -288,4 +288,8 @@ public class Movie extends PanacheEntityBase implements Comparable<Movie> {
         Language lang = Language.findById(this.subtitlesId);
         return null == lang ? "None" : lang.name;
     }
+
+    public String getThumbnailUrl() {
+        return ConfigurationProvider.getExternalURL() + "/movies/thumbnail?id=" + this.id;
+    }
 }

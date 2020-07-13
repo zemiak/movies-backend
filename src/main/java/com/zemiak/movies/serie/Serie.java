@@ -150,4 +150,8 @@ public class Serie extends PanacheEntityBase implements Comparable<Serie> {
 
         return serie;
     }
+
+    public String getThumbnailUrl() {
+        return ConfigurationProvider.getExternalURL() + "/series/thumbnail?id=" + this.id;
+    }
 }

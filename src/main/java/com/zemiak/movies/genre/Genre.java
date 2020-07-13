@@ -126,6 +126,10 @@ public class Genre extends PanacheEntityBase implements Comparable<Genre> {
         return new GuiDTO("genre", this.name, ConfigurationProvider.getExternalURL() + "/browse?id=" + id, ConfigurationProvider.getExternalURL() + "/genres/thumbnail?id=" + id, id);
     }
 
+    public String getThumbnailUrl() {
+        return ConfigurationProvider.getExternalURL() + "/genres/thumbnail?id=" + this.id;
+    }
+
     @Override
     public int compareTo(Genre o) {
         if (null == displayOrder && null != o.displayOrder) {
