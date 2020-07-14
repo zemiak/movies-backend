@@ -3,6 +3,8 @@ package com.zemiak.movies.genre;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoField;
 import java.util.ArrayList;
@@ -17,6 +19,7 @@ import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -30,7 +33,10 @@ import com.zemiak.movies.movie.MovieUIService;
 import com.zemiak.movies.serie.Serie;
 import com.zemiak.movies.serie.SerieService;
 import com.zemiak.movies.ui.GuiDTO;
+import com.zemiak.movies.ui.MultipartBody;
 import com.zemiak.movies.ui.VaadingGridPagingResult;
+
+import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 
 import io.quarkus.panache.common.Sort;
 
@@ -61,12 +67,17 @@ public class GenreUIService {
     @GET
     @Path("search/{pattern}")
     public List<GuiDTO> getByExpression(@PathParam("pattern") @NotNull final String pattern) {
-        return Genre.find("UPPER(name) LIKE ?1", "%" + pattern.toUpperCase() + "%")
-                .list()
-                .stream()
-                .map(e -> (Genre) e)
-                .map(Genre::toDto)
-                .collect(Collectors.toList());
+        return Genre.find("UPPER(name) LIKE ?1", "%" + pattern.toUpperCase() + "%").list().stream().map(e -> (Genre) e)
+                .map(Genre::toDto).collect(Collectors.toList());
+    }
+
+    @POST
+    @Path("thumbnail")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public Response uploadThumbnail(@QueryParam("id") final Long id, @MultipartForm MultipartBody data)
+            throws URISyntaxException {
+        System.out.println("Genre " + id + ", got multipart " + data);
+        return Response.created(new URI(ConfigurationProvider.getExternalURL() + "/genres/thumbnail?id=" + id)).build();
     }
 
     @GET

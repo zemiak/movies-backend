@@ -128,4 +128,8 @@ public class Language extends PanacheEntityBase {
     public String getThumbnailUrl() {
         return ConfigurationProvider.getExternalURL() + "/languages/thumbnail?id=" + this.id;
     }
+
+    public void setThumbnailUrl(String url) {
+        // pass - so the JSONB does not complain
+    }
 }

@@ -130,6 +130,10 @@ public class Genre extends PanacheEntityBase implements Comparable<Genre> {
         return ConfigurationProvider.getExternalURL() + "/genres/thumbnail?id=" + this.id;
     }
 
+    public void setThumbnailUrl(String url) {
+        // pass - so the JSONB does not complain
+    }
+
     @Override
     public int compareTo(Genre o) {
         if (null == displayOrder && null != o.displayOrder) {
