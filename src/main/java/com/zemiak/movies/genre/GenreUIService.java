@@ -32,10 +32,12 @@ import com.zemiak.movies.config.ConfigurationProvider;
 import com.zemiak.movies.movie.MovieUIService;
 import com.zemiak.movies.serie.Serie;
 import com.zemiak.movies.serie.SerieService;
+import com.zemiak.movies.ui.FileUploadForm;
 import com.zemiak.movies.ui.GuiDTO;
 import com.zemiak.movies.ui.MultipartBody;
 import com.zemiak.movies.ui.VaadingGridPagingResult;
 
+import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 
 import io.quarkus.panache.common.Sort;
@@ -74,10 +76,10 @@ public class GenreUIService {
     @POST
     @Path("thumbnail")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public Response uploadThumbnail(@QueryParam("id") final Long id, @MultipartForm MultipartBody data)
+    public Response uploadThumbnail(@MultipartForm FileUploadForm form)
             throws URISyntaxException {
-        System.out.println("Genre " + id + ", got multipart " + data);
-        return Response.created(new URI(ConfigurationProvider.getExternalURL() + "/genres/thumbnail?id=" + id)).build();
+        System.out.println("Genre " + form.getId() + ", got multipart " + form.getFileData().length);
+        return Response.created(new URI(ConfigurationProvider.getExternalURL() + "/genres/thumbnail?id=" + form.getId())).build();
     }
 
     @GET
