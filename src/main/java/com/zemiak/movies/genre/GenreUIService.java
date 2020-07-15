@@ -3,8 +3,11 @@ package com.zemiak.movies.genre;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoField;
 import java.util.ArrayList;
@@ -76,9 +79,14 @@ public class GenreUIService {
     @POST
     @Path("thumbnail")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public Response uploadThumbnail(@MultipartForm FileUploadForm form)
-            throws URISyntaxException {
-        System.out.println("Genre " + form.getId() + ", got multipart " + form.getFileData().length);
+    public Response uploadThumbnail(@MultipartForm FileUploadForm form) throws URISyntaxException {
+        java.nio.file.Path path = Paths.get(ConfigurationProvider.getImgPath(), "genre", form.getId() + ".jpg");
+        try {
+            Files.write(path, form.getFileData());
+        } catch (IOException e) {
+            return Response.serverError().entity("Cannot write provided file").build();
+        }
+
         return Response.created(new URI(ConfigurationProvider.getExternalURL() + "/genres/thumbnail?id=" + form.getId())).build();
     }
 
