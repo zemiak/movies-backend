@@ -80,12 +80,19 @@ public class GenreUIService {
     @Path("thumbnail")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public Response uploadThumbnail(@MultipartForm FileUploadForm form) throws URISyntaxException {
+        Genre entity = Genre.findById(form.getId());
+        if (null == entity) {
+            return Response.status(Status.NOT_FOUND).entity("Provided movie not found").build();
+        }
+
         java.nio.file.Path path = Paths.get(ConfigurationProvider.getImgPath(), "genre", form.getId() + ".jpg");
         try {
             Files.write(path, form.getFileData());
         } catch (IOException e) {
             return Response.serverError().entity("Cannot write provided file").build();
         }
+
+        entity.pictureFileName = entity.getId() + ".jpg");
 
         return Response.created(new URI(ConfigurationProvider.getExternalURL() + "/genres/thumbnail?id=" + form.getId())).build();
     }
