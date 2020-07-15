@@ -92,7 +92,7 @@ public class GenreUIService {
             return Response.serverError().entity("Cannot write provided file").build();
         }
 
-        entity.pictureFileName = entity.getId() + ".jpg");
+        entity.pictureFileName = entity.getId() + ".jpg";
 
         return Response.created(new URI(ConfigurationProvider.getExternalURL() + "/genres/thumbnail?id=" + form.getId())).build();
     }
