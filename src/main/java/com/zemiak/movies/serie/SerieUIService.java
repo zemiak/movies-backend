@@ -58,18 +58,18 @@ public class SerieUIService {
         String textAscii = Encodings.toAscii(text.trim().toLowerCase());
 
         /**
-         * TODO: optimize findAll() - either set page and size or do the filtering with SQL
+         * TODO: optimize findAll() - either set page and size or do the filtering with
+         * SQL
          *
          * https://quarkus.io/guides/hibernate-orm-panache
          *
-         * "You should only use list and stream methods if your table contains small enough data sets.
-         * For larger data sets you can use the find method equivalents, which return a PanacheQuery
-         * on which you can do paging"
+         * "You should only use list and stream methods if your table contains small
+         * enough data sets. For larger data sets you can use the find method
+         * equivalents, which return a PanacheQuery on which you can do paging"
          */
         Stream<Serie> stream = Serie.streamAll();
         stream.map(entry -> (Serie) entry).forEach(entry -> {
-            String name = (null == entry.name ? ""
-                    : Encodings.toAscii(entry.name.trim().toLowerCase()));
+            String name = (null == entry.name ? "" : Encodings.toAscii(entry.name.trim().toLowerCase()));
             if (name.contains(textAscii)) {
                 res.add(entry.toDto());
             }
@@ -86,7 +86,7 @@ public class SerieUIService {
         String fileName = e.pictureFileName;
 
         if (null == fileName) {
-            return Response.status(Status.GONE).entity("Thumbnail for " + id + " not yet created").build();
+            return Response.status(Status.NOT_FOUND).entity("Thumbnail for " + id + " not yet created").build();
         }
 
         fileName = ConfigurationProvider.getImgPath() + "/serie/" + fileName;
@@ -95,7 +95,7 @@ public class SerieUIService {
         try {
             stream = new FileInputStream(new File(fileName));
         } catch (FileNotFoundException e1) {
-            return Response.status(Status.GONE).entity("Thumbnail for " + id + " not found " + fileName).build();
+            return Response.status(Status.NOT_FOUND).entity("Thumbnail for " + id + " not found " + fileName).build();
         }
 
         return Response.ok(stream).header("Content-Disposition", "attachment; filename=" + e.pictureFileName).build();
@@ -114,8 +114,10 @@ public class SerieUIService {
 
     @GET
     @Path("items")
-    public VaadingGridPagingResult<SerieUI> getItems(@QueryParam("page") int page, @QueryParam("pageSize") int pageSize) {
-        return new VaadingGridPagingResult<>(Serie.count(), Serie.findAll(Sort.by("displayOrder")).page(page, pageSize).stream().map(SerieUI::of).collect(Collectors.toList()));
+    public VaadingGridPagingResult<SerieUI> getItems(@QueryParam("page") int page,
+            @QueryParam("pageSize") int pageSize) {
+        return new VaadingGridPagingResult<>(Serie.count(), Serie.findAll(Sort.by("displayOrder")).page(page, pageSize)
+                .stream().map(SerieUI::of).collect(Collectors.toList()));
     }
 
     @GET
@@ -123,7 +125,8 @@ public class SerieUIService {
     public SerieDetail findDetail(@PathParam("id") @NotNull final Long id) {
         Serie entity = Serie.findById(id);
         if (null == entity) {
-            throw new WebApplicationException(Response.status(Status.GONE).entity("ID not found: " + String.valueOf(id)).build());
+            throw new WebApplicationException(
+                    Response.status(Status.NOT_FOUND).entity("ID not found: " + String.valueOf(id)).build());
         }
 
         return SerieDetail.of(entity);

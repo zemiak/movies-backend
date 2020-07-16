@@ -54,12 +54,14 @@ public class MovieService {
     @PUT
     public void update(@Valid @NotNull Movie entity) {
         if (null == entity.id) {
-            throw new WebApplicationException(Response.status(Status.NOT_ACCEPTABLE).entity("ID not specified").build());
+            throw new WebApplicationException(
+                    Response.status(Status.NOT_ACCEPTABLE).entity("ID not specified").build());
         }
 
         Movie findEntity = Movie.findById(entity.id);
         if (null == findEntity) {
-            throw new WebApplicationException(Response.status(Status.GONE).entity("ID not found" + entity.id).build());
+            throw new WebApplicationException(
+                    Response.status(Status.NOT_FOUND).entity("ID not found" + entity.id).build());
         }
 
         Panache.getEntityManager().merge(entity);
@@ -70,7 +72,8 @@ public class MovieService {
     public Movie find(@PathParam("id") @NotNull Long id) {
         Movie entity = Movie.findById(id);
         if (null == entity) {
-            throw new WebApplicationException(Response.status(Status.GONE).entity("ID not found: " + String.valueOf(id)).build());
+            throw new WebApplicationException(
+                    Response.status(Status.NOT_FOUND).entity("ID not found: " + String.valueOf(id)).build());
         }
 
         return entity;
@@ -81,7 +84,8 @@ public class MovieService {
     public void remove(@PathParam("id") @NotNull Long id) {
         Movie entity = Movie.findById(id);
         if (null == entity) {
-            throw new WebApplicationException(Response.status(Status.GONE).entity("ID not found: " + String.valueOf(id)).build());
+            throw new WebApplicationException(
+                    Response.status(Status.NOT_FOUND).entity("ID not found: " + String.valueOf(id)).build());
         }
 
         entity.delete();
@@ -132,10 +136,7 @@ public class MovieService {
         PanacheQuery<Movie> q = Movie.find("serieId", Sort.ascending("displayOrder"), movie.serieId);
         long count = q.count();
 
-        q.list().stream().map(e -> (Movie) e)
-                .peek(m -> i.inc())
-                .filter(m -> m.id.equals(movie.id))
-                .findFirst();
+        q.list().stream().map(e -> (Movie) e).peek(m -> i.inc()).filter(m -> m.id.equals(movie.id)).findFirst();
 
         return String.format("%0" + String.valueOf(count).length() + "d", i.get());
     }
@@ -153,8 +154,7 @@ public class MovieService {
 
         // TODO: limit to 50 results
         Movie.findAll(Sort.ascending("genreId", "serieId", "displayOrder")).stream().map(e -> (Movie) e)
-                .filter((movie) -> (null != movie.year && movie.year >= (year - 3)))
-                .forEach((movie) -> {
+                .filter((movie) -> (null != movie.year && movie.year >= (year - 3))).forEach((movie) -> {
                     movies.add(movie);
                 });
         Collections.sort(movies, (Movie o1, Movie o2) -> o1.year.compareTo(o2.year) * -1);

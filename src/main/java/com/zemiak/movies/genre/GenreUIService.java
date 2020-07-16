@@ -37,10 +37,8 @@ import com.zemiak.movies.serie.Serie;
 import com.zemiak.movies.serie.SerieService;
 import com.zemiak.movies.ui.FileUploadForm;
 import com.zemiak.movies.ui.GuiDTO;
-import com.zemiak.movies.ui.MultipartBody;
 import com.zemiak.movies.ui.VaadingGridPagingResult;
 
-import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 
 import io.quarkus.panache.common.Sort;
@@ -94,7 +92,9 @@ public class GenreUIService {
 
         entity.pictureFileName = entity.getId() + ".jpg";
 
-        return Response.created(new URI(ConfigurationProvider.getExternalURL() + "/genres/thumbnail?id=" + form.getId())).build();
+        return Response
+                .created(new URI(ConfigurationProvider.getExternalURL() + "/genres/thumbnail?id=" + form.getId()))
+                .build();
     }
 
     @GET
@@ -104,7 +104,7 @@ public class GenreUIService {
 
         String fileName = e.pictureFileName;
         if (null == fileName) {
-            return Response.status(Status.GONE).entity("Thumbnail for " + id + " not yet created").build();
+            return Response.status(Status.NOT_FOUND).entity("Thumbnail for " + id + " not yet created").build();
         }
 
         fileName = ConfigurationProvider.getImgPath() + "/genre/" + fileName;
@@ -112,7 +112,7 @@ public class GenreUIService {
         try {
             stream = new FileInputStream(new File(fileName));
         } catch (FileNotFoundException e1) {
-            return Response.status(Status.GONE).entity("Thumbnail for " + id + " not found " + fileName ).build();
+            return Response.status(Status.NOT_FOUND).entity("Thumbnail for " + id + " not found " + fileName).build();
         }
 
         return Response.ok(stream).header("Content-Disposition", "attachment; filename=" + e.pictureFileName).build();
@@ -166,7 +166,9 @@ public class GenreUIService {
 
     @GET
     @Path("items")
-    public VaadingGridPagingResult<GenreUI> getItems(@QueryParam("page") int page, @QueryParam("pageSize") int pageSize) {
-        return new VaadingGridPagingResult<>(Genre.count(), Genre.findAll(Sort.by("displayOrder")).page(page, pageSize).stream().map(GenreUI::of).collect(Collectors.toList()));
+    public VaadingGridPagingResult<GenreUI> getItems(@QueryParam("page") int page,
+            @QueryParam("pageSize") int pageSize) {
+        return new VaadingGridPagingResult<>(Genre.count(), Genre.findAll(Sort.by("displayOrder")).page(page, pageSize)
+                .stream().map(GenreUI::of).collect(Collectors.toList()));
     }
 }

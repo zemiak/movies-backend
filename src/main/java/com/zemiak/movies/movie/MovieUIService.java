@@ -78,7 +78,7 @@ public class MovieUIService {
         String fileName = e.pictureFileName;
 
         if (null == fileName) {
-            return Response.status(Status.GONE).entity("Thumbnail for " + id + " not yet created").build();
+            return Response.status(Status.NOT_FOUND).entity("Thumbnail for " + id + " not yet created").build();
         }
 
         fileName = ConfigurationProvider.getImgPath() + "/movie/" + fileName;
@@ -86,7 +86,7 @@ public class MovieUIService {
         try {
             stream = new FileInputStream(new File(fileName));
         } catch (FileNotFoundException e1) {
-            return Response.status(Status.GONE).entity("Thumbnail for " + id + " not found " + fileName).build();
+            return Response.status(Status.NOT_FOUND).entity("Thumbnail for " + id + " not found " + fileName).build();
         }
 
         return Response.ok(stream).header("Content-Disposition", "attachment; filename=" + e.pictureFileName).build();
@@ -97,7 +97,8 @@ public class MovieUIService {
     }
 
     public List<GuiDTO> getRecentlyAddedMovies() {
-        return Movie.findAll(Sort.descending("id")).page(0, 50).list().stream().map(e -> (Movie) e).map(Movie::toDto).collect(Collectors.toList());
+        return Movie.findAll(Sort.descending("id")).page(0, 50).list().stream().map(e -> (Movie) e).map(Movie::toDto)
+                .collect(Collectors.toList());
     }
 
     public List<GuiDTO> getFreshMovies(int year) {
@@ -105,24 +106,22 @@ public class MovieUIService {
     }
 
     public List<GuiDTO> getSerieMovies(final Long id) {
-        return Movie.find("serieId = :serieId",
-            Sort.ascending("displayOrder"),
-            Parameters.with("serieId", id))
-            .list().stream().map(e -> (Movie) e).map(Movie::toDto).collect(Collectors.toList());
+        return Movie.find("serieId = :serieId", Sort.ascending("displayOrder"), Parameters.with("serieId", id)).list()
+                .stream().map(e -> (Movie) e).map(Movie::toDto).collect(Collectors.toList());
     }
 
     public List<GuiDTO> getGenreMovies(final Long id) {
-        return Movie.find("genreId = :genreId and (serieId = NULL or serieId = 0)",
-            Sort.ascending("displayOrder"),
-            Parameters.with("genreId", id))
-            .list().stream().map(e -> (Movie) e).map(Movie::toDto).collect(Collectors.toList());
+        return Movie
+                .find("genreId = :genreId and (serieId = NULL or serieId = 0)", Sort.ascending("displayOrder"),
+                        Parameters.with("genreId", id))
+                .list().stream().map(e -> (Movie) e).map(Movie::toDto).collect(Collectors.toList());
     }
 
     public List<GuiDTO> getUnassignedMovies() {
-        return Movie.find("genreId = :genreId OR genreId IS NULL",
-            Sort.ascending("displayOrder"),
-            Parameters.with("genreId", Genre.ID_NONE))
-            .list().stream().map(e -> (Movie) e).map(Movie::toDto).collect(Collectors.toList());
+        return Movie
+                .find("genreId = :genreId OR genreId IS NULL", Sort.ascending("displayOrder"),
+                        Parameters.with("genreId", Genre.ID_NONE))
+                .list().stream().map(e -> (Movie) e).map(Movie::toDto).collect(Collectors.toList());
     }
 
     @GET
@@ -134,8 +133,10 @@ public class MovieUIService {
 
     @GET
     @Path("items")
-    public VaadingGridPagingResult<MovieUI> getItems(@QueryParam("page") int page, @QueryParam("pageSize") int pageSize) {
-        return new VaadingGridPagingResult<>(Movie.count(), Movie.findAll(Sort.by("displayOrder")).page(page, pageSize).stream().map(MovieUI::of).collect(Collectors.toList()));
+    public VaadingGridPagingResult<MovieUI> getItems(@QueryParam("page") int page,
+            @QueryParam("pageSize") int pageSize) {
+        return new VaadingGridPagingResult<>(Movie.count(), Movie.findAll(Sort.by("displayOrder")).page(page, pageSize)
+                .stream().map(MovieUI::of).collect(Collectors.toList()));
     }
 
     @GET
@@ -143,7 +144,8 @@ public class MovieUIService {
     public MovieDetail findDetail(@PathParam("id") @NotNull final Long id) {
         Movie entity = Movie.findById(id);
         if (null == entity) {
-            throw new WebApplicationException(Response.status(Status.GONE).entity("ID not found: " + String.valueOf(id)).build());
+            throw new WebApplicationException(
+                    Response.status(Status.NOT_FOUND).entity("ID not found: " + String.valueOf(id)).build());
         }
 
         return MovieDetail.of(entity);

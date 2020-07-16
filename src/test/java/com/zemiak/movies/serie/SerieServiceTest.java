@@ -37,13 +37,9 @@ public class SerieServiceTest {
     }
 
     private JsonObject getHelloWorldSerie() {
-        return Json.createObjectBuilder()
-        .add("name", "Hello, World")
-        .add("fileName", "hello-world.m4v")
-        .add("created", DateFormatter.format(LocalDateTime.now().minusYears(20)))
-        .add("pictureFileName", "u-a.jpg")
-        .add("genre", 0l)
-        .build();
+        return Json.createObjectBuilder().add("name", "Hello, World").add("fileName", "hello-world.m4v")
+                .add("created", DateFormatter.format(LocalDateTime.now().minusYears(20)))
+                .add("pictureFileName", "u-a.jpg").add("genre", 0l).build();
     }
 
     @Test
@@ -55,8 +51,10 @@ public class SerieServiceTest {
         Serie entity = req.get("/series/" + String.valueOf(id)).jsonPath().getObject("$", Serie.class);
         assertEquals(id, entity.id, "Serie ID must be the same as created");
         assertEquals(serie.getString("name"), entity.name, "Name must be the same as created");
-        assertEquals(serie.getString("created"), DateFormatter.format(entity.created).toString(), "created must be the same as created");
-        assertEquals(serie.getString("pictureFileName"), entity.pictureFileName, "pictureFileName must be the same as created");
+        assertEquals(serie.getString("created"), DateFormatter.format(entity.created).toString(),
+                "created must be the same as created");
+        assertEquals(serie.getString("pictureFileName"), entity.pictureFileName,
+                "pictureFileName must be the same as created");
     }
 
     @Test
@@ -74,7 +72,7 @@ public class SerieServiceTest {
         assertTrue(null != id, "Create serie returns ID");
 
         req.delete("/series/" + String.valueOf(id), Status.NO_CONTENT.getStatusCode());
-        req.get("/series/" + String.valueOf(id), Status.GONE.getStatusCode());
+        req.get("/series/" + String.valueOf(id), Status.NOT_FOUND.getStatusCode());
     }
 
     @Test
@@ -99,21 +97,18 @@ public class SerieServiceTest {
     @Test
     public void search() throws UnsupportedEncodingException {
         String text = "not";
-        List<GuiDTO> series = req.get("/series/search/" + URLEncoder.encode(text, "UTF-8")).jsonPath().getList("$", GuiDTO.class);
+        List<GuiDTO> series = req.get("/series/search/" + URLEncoder.encode(text, "UTF-8")).jsonPath().getList("$",
+                GuiDTO.class);
         assertFalse(series.isEmpty());
         assertEquals("Not defined", series.get(0).title, "One Not defined should be found");
     }
 
     @Test
     public void createMustFailIfIDIsNotEmpty() {
-        JsonObject serie = Json.createObjectBuilder()
-            .add("id", 42)
-            .add("name", "Hello, World")
-            .add("fileName", "hello-world.m4v")
-            .add("created", DateFormatter.format(LocalDateTime.now().minusYears(20)))
-            .add("pictureFileName", "u-a.jpg")
-            .add("genre", 0l)
-            .build();
+        JsonObject serie = Json.createObjectBuilder().add("id", 42).add("name", "Hello, World")
+                .add("fileName", "hello-world.m4v")
+                .add("created", DateFormatter.format(LocalDateTime.now().minusYears(20)))
+                .add("pictureFileName", "u-a.jpg").add("genre", 0l).build();
         req.post("/series", serie, Status.NOT_ACCEPTABLE.getStatusCode());
     }
 
@@ -126,40 +121,38 @@ public class SerieServiceTest {
     @Test
     public void findMustFailIfEntityDoesNotExist() {
         Long id = 42000l;
-        req.get("/series/" + String.valueOf(id), Status.GONE.getStatusCode());
+        req.get("/series/" + String.valueOf(id), Status.NOT_FOUND.getStatusCode());
     }
 
     @Test
     public void deleteMustFailIfEntityDoesNotExist() {
         Long id = 42000l;
-        req.delete("/series/" + String.valueOf(id), Status.GONE.getStatusCode());
+        req.delete("/series/" + String.valueOf(id), Status.NOT_FOUND.getStatusCode());
     }
 
     @Test
     public void updateMustFailIfEntityDoesNotExist() {
         Long id = 42000l;
-        JsonObject serie = Json.createObjectBuilder()
-            .add("id", id)
-            .add("name", "Hello, World")
-            .add("fileName", "hello-world.m4v")
-            .add("created", DateFormatter.format(LocalDateTime.now().minusYears(20)))
-            .add("pictureFileName", "u-a.jpg")
-            .add("genre", 0l)
-            .build();
-        req.put("/series", serie, Status.GONE.getStatusCode());
+        JsonObject serie = Json.createObjectBuilder().add("id", id).add("name", "Hello, World")
+                .add("fileName", "hello-world.m4v")
+                .add("created", DateFormatter.format(LocalDateTime.now().minusYears(20)))
+                .add("pictureFileName", "u-a.jpg").add("genre", 0l).build();
+        req.put("/series", serie, Status.NOT_FOUND.getStatusCode());
     }
 
     @Test
     public void searchMustReturnEmptyListOnNonExistingCriteria() throws UnsupportedEncodingException {
         String text = "Does Not Exist";
-        List<GuiDTO> series = req.get("/series/search/" + URLEncoder.encode(text, "UTF-8")).jsonPath().getList("$", GuiDTO.class);
+        List<GuiDTO> series = req.get("/series/search/" + URLEncoder.encode(text, "UTF-8")).jsonPath().getList("$",
+                GuiDTO.class);
         assertTrue(series.isEmpty());
     }
 
     // @Test
     public void removeMustFailIfMoviesWithSerieExist() {
         Long idThatIsReferencedInMovies = MovieUIServiceTest.SERIE_SCOOBYDOO;
-        List<GuiDTO> movies = req.get("/series/browse?id=" + String.valueOf(idThatIsReferencedInMovies)).jsonPath().getList("$", GuiDTO.class);
+        List<GuiDTO> movies = req.get("/series/browse?id=" + String.valueOf(idThatIsReferencedInMovies)).jsonPath()
+                .getList("$", GuiDTO.class);
         assertEquals(4, movies.size(), "ScoobyDoo contains 4 episodes");
         req.delete("/series/" + String.valueOf(idThatIsReferencedInMovies), Status.NOT_ACCEPTABLE.getStatusCode());
     }

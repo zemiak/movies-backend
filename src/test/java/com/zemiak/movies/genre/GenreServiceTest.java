@@ -48,7 +48,8 @@ public class GenreServiceTest {
         assertEquals(id, entity.id, "Genre ID must be the same as created");
         assertEquals(genre.getString("name"), entity.name, "Name must be the same as created");
         assertEquals(genre.getString("created"), actualDate, "created must be the same as created");
-        assertEquals(genre.getString("pictureFileName"), entity.pictureFileName, "pictureFileName must be the same as created");
+        assertEquals(genre.getString("pictureFileName"), entity.pictureFileName,
+                "pictureFileName must be the same as created");
     }
 
     @Test
@@ -67,16 +68,13 @@ public class GenreServiceTest {
         assertTrue(null != id, "Create genre returns ID");
 
         req.delete("/genres/" + String.valueOf(id), Status.NO_CONTENT.getStatusCode());
-        req.get("/genres/" + String.valueOf(id), Status.GONE.getStatusCode());
+        req.get("/genres/" + String.valueOf(id), Status.NOT_FOUND.getStatusCode());
     }
 
     private JsonObject getHelloWorldGenre() {
-        return Json.createObjectBuilder()
-            .add("name", "Hello, World")
-            .add("fileName", "hello-world.m4v")
-            .add("created", DateFormatter.format(LocalDateTime.now().minusYears(20)))
-            .add("pictureFileName", "hello-world.jpg")
-            .build();
+        return Json.createObjectBuilder().add("name", "Hello, World").add("fileName", "hello-world.m4v")
+                .add("created", DateFormatter.format(LocalDateTime.now().minusYears(20)))
+                .add("pictureFileName", "hello-world.jpg").build();
     }
 
     @Test
@@ -99,20 +97,18 @@ public class GenreServiceTest {
     @Test
     public void search() throws UnsupportedEncodingException {
         String text = "On";
-        List<GuiDTO> genres = req.get("/genres/search/" + URLEncoder.encode(text, "UTF-8")).jsonPath().getList("$", GuiDTO.class);
+        List<GuiDTO> genres = req.get("/genres/search/" + URLEncoder.encode(text, "UTF-8")).jsonPath().getList("$",
+                GuiDTO.class);
         assertFalse(genres.isEmpty());
         assertEquals("None", genres.get(0).title, "One None should be found");
     }
 
     @Test
     public void createMustFailIfIDIsNotEmpty() {
-        JsonObject genre = Json.createObjectBuilder()
-            .add("id", 42)
-            .add("name", "Hello, World")
-            .add("fileName", "hello-world.m4v")
-            .add("created", DateFormatter.format(LocalDateTime.now().minusYears(20)))
-            .add("pictureFileName", "hello-world.jpg")
-            .build();
+        JsonObject genre = Json.createObjectBuilder().add("id", 42).add("name", "Hello, World")
+                .add("fileName", "hello-world.m4v")
+                .add("created", DateFormatter.format(LocalDateTime.now().minusYears(20)))
+                .add("pictureFileName", "hello-world.jpg").build();
         req.post("/genres", genre, Status.NOT_ACCEPTABLE.getStatusCode());
     }
 
@@ -125,32 +121,30 @@ public class GenreServiceTest {
     @Test
     public void findMustFailIfEntityDoesNotExist() {
         Long id = 42000l;
-        req.get("/genres/" + String.valueOf(id), Status.GONE.getStatusCode());
+        req.get("/genres/" + String.valueOf(id), Status.NOT_FOUND.getStatusCode());
     }
 
     @Test
     public void deleteMustFailIfEntityDoesNotExist() {
         Long id = 42000l;
-        req.delete("/genres/" + String.valueOf(id), Status.GONE.getStatusCode());
+        req.delete("/genres/" + String.valueOf(id), Status.NOT_FOUND.getStatusCode());
     }
 
     @Test
     public void updateMustFailIfEntityDoesNotExist() {
         Long id = 42000l;
-        JsonObject genre = Json.createObjectBuilder()
-            .add("id", id)
-            .add("name", "Hello, World")
-            .add("fileName", "hello-world.m4v")
-            .add("created", DateFormatter.format(LocalDateTime.now().minusYears(20)))
-            .add("pictureFileName", "hello-world.jpg")
-            .build();
-        req.put("/genres", genre, Status.GONE.getStatusCode());
+        JsonObject genre = Json.createObjectBuilder().add("id", id).add("name", "Hello, World")
+                .add("fileName", "hello-world.m4v")
+                .add("created", DateFormatter.format(LocalDateTime.now().minusYears(20)))
+                .add("pictureFileName", "hello-world.jpg").build();
+        req.put("/genres", genre, Status.NOT_FOUND.getStatusCode());
     }
 
     @Test
     public void searchMustReturnEmptyListOnNonExistingCriteria() throws UnsupportedEncodingException {
         String text = "Does Not Exist";
-        List<GuiDTO> genres = req.get("/genres/search/" + URLEncoder.encode(text, "UTF-8")).jsonPath().getList("$", GuiDTO.class);
+        List<GuiDTO> genres = req.get("/genres/search/" + URLEncoder.encode(text, "UTF-8")).jsonPath().getList("$",
+                GuiDTO.class);
         assertTrue(genres.isEmpty());
     }
 
@@ -163,6 +157,7 @@ public class GenreServiceTest {
     @Test
     public void removeMustFailIfMoviesWithGenreExist() {
         Long idThatIsReferencedInMoviesButNotInSeries = 16l;
-        req.delete("/genres/" + String.valueOf(idThatIsReferencedInMoviesButNotInSeries), Status.NOT_ACCEPTABLE.getStatusCode());
+        req.delete("/genres/" + String.valueOf(idThatIsReferencedInMoviesButNotInSeries),
+                Status.NOT_ACCEPTABLE.getStatusCode());
     }
 }

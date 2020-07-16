@@ -52,12 +52,14 @@ public class SerieService {
     @PUT
     public void update(@Valid @NotNull Serie entity) {
         if (null == entity.id) {
-            throw new WebApplicationException(Response.status(Status.NOT_ACCEPTABLE).entity("ID not specified").build());
+            throw new WebApplicationException(
+                    Response.status(Status.NOT_ACCEPTABLE).entity("ID not specified").build());
         }
 
         Serie findEntity = Serie.findById(entity.id);
         if (null == findEntity) {
-            throw new WebApplicationException(Response.status(Status.GONE).entity("ID not found" + entity.id).build());
+            throw new WebApplicationException(
+                    Response.status(Status.NOT_FOUND).entity("ID not found" + entity.id).build());
         }
 
         Panache.getEntityManager().merge(entity);
@@ -66,10 +68,7 @@ public class SerieService {
     @GET
     @Path("by-genre/{id}")
     public List<Serie> getGenreSeries(@PathParam("id") @NotNull Long id) {
-        return Serie.find("genreId = :genreId",
-            Sort.ascending("displayOrder"),
-            Parameters.with("genreId", id))
-            .list();
+        return Serie.find("genreId = :genreId", Sort.ascending("displayOrder"), Parameters.with("genreId", id)).list();
     }
 
     @GET
@@ -77,7 +76,8 @@ public class SerieService {
     public Serie find(@PathParam("id") @NotNull final Long id) {
         Serie entity = Serie.findById(id);
         if (null == entity) {
-            throw new WebApplicationException(Response.status(Status.GONE).entity("ID not found: " + String.valueOf(id)).build());
+            throw new WebApplicationException(
+                    Response.status(Status.NOT_FOUND).entity("ID not found: " + String.valueOf(id)).build());
         }
 
         return entity;
@@ -88,11 +88,13 @@ public class SerieService {
     public void remove(@PathParam("id") @NotNull final Long id) {
         Serie entity = Serie.findById(id);
         if (null == entity) {
-            throw new WebApplicationException(Response.status(Status.GONE).entity("ID not found: " + String.valueOf(id)).build());
+            throw new WebApplicationException(
+                    Response.status(Status.NOT_FOUND).entity("ID not found: " + String.valueOf(id)).build());
         }
 
         if (Movie.find("serieId", id).count() > 0) {
-            throw new WebApplicationException(Response.status(Status.NOT_ACCEPTABLE).entity("They are movies existing with this language." + String.valueOf(id)).build());
+            throw new WebApplicationException(Response.status(Status.NOT_ACCEPTABLE)
+                    .entity("They are movies existing with this language." + String.valueOf(id)).build());
         }
 
         entity.delete();

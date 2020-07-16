@@ -52,12 +52,14 @@ public class GenreService {
     @PUT
     public void update(@Valid @NotNull Genre entity) {
         if (null == entity.id) {
-            throw new WebApplicationException(Response.status(Status.NOT_ACCEPTABLE).entity("ID not specified").build());
+            throw new WebApplicationException(
+                    Response.status(Status.NOT_ACCEPTABLE).entity("ID not specified").build());
         }
 
         Genre findEntity = Genre.findById(entity.id);
         if (null == findEntity) {
-            throw new WebApplicationException(Response.status(Status.GONE).entity("ID not found" + entity.id).build());
+            throw new WebApplicationException(
+                    Response.status(Status.NOT_FOUND).entity("ID not found" + entity.id).build());
         }
 
         Panache.getEntityManager().merge(entity);
@@ -68,7 +70,8 @@ public class GenreService {
     public Genre find(@PathParam("id") @NotNull Long id) {
         Genre entity = Genre.findById(id);
         if (null == entity) {
-            throw new WebApplicationException(Response.status(Status.GONE).entity("ID not found: " + String.valueOf(id)).build());
+            throw new WebApplicationException(
+                    Response.status(Status.NOT_FOUND).entity("ID not found: " + String.valueOf(id)).build());
         }
 
         return entity;
@@ -79,15 +82,18 @@ public class GenreService {
     public void remove(@PathParam("id") @NotNull Long id) {
         Genre entity = Genre.findById(id);
         if (null == entity) {
-            throw new WebApplicationException(Response.status(Status.GONE).entity("ID not found: " + String.valueOf(id)).build());
+            throw new WebApplicationException(
+                    Response.status(Status.NOT_FOUND).entity("ID not found: " + String.valueOf(id)).build());
         }
 
-        if (Serie.find("genreId", entity.id).count() > 0){
-            throw new WebApplicationException(Response.status(Status.NOT_ACCEPTABLE).entity("They are series existing with this genre." + String.valueOf(id)).build());
+        if (Serie.find("genreId", entity.id).count() > 0) {
+            throw new WebApplicationException(Response.status(Status.NOT_ACCEPTABLE)
+                    .entity("They are series existing with this genre." + String.valueOf(id)).build());
         }
 
         if (Movie.find("genreId", entity.id).count() > 0) {
-            throw new WebApplicationException(Response.status(Status.NOT_ACCEPTABLE).entity("They are movies existing with this genre. ID: " + String.valueOf(id)).build());
+            throw new WebApplicationException(Response.status(Status.NOT_ACCEPTABLE)
+                    .entity("They are movies existing with this genre. ID: " + String.valueOf(id)).build());
         }
 
         entity.delete();
