@@ -151,14 +151,6 @@ public class Genre extends PanacheEntityBase implements Comparable<Genre> {
         return displayOrder.compareTo(o.displayOrder);
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public static Genre getFreshGenre() {
         Genre g = new Genre();
         g.id = Genre.ID_FRESH;

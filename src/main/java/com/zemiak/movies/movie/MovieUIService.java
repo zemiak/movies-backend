@@ -3,6 +3,11 @@ package com.zemiak.movies.movie;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,6 +21,7 @@ import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -28,8 +34,11 @@ import javax.ws.rs.core.Response.Status;
 import com.zemiak.movies.config.ConfigurationProvider;
 import com.zemiak.movies.genre.Genre;
 import com.zemiak.movies.strings.Encodings;
+import com.zemiak.movies.ui.FileUploadForm;
 import com.zemiak.movies.ui.GuiDTO;
 import com.zemiak.movies.ui.VaadingGridPagingResult;
+
+import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 
 import io.quarkus.panache.common.Parameters;
 import io.quarkus.panache.common.Sort;
@@ -69,6 +78,29 @@ public class MovieUIService {
         stream.close();
 
         return res;
+    }
+
+    @POST
+    @Path("thumbnail")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public Response uploadThumbnail(@MultipartForm FileUploadForm form) throws URISyntaxException {
+        Movie entity = Movie.findById(form.getId());
+        if (null == entity) {
+            return Response.status(Status.NOT_FOUND).entity("Provided movie not found").build();
+        }
+
+        java.nio.file.Path path = Paths.get(ConfigurationProvider.getImgPath(), "movie", form.getId() + ".jpg");
+        try {
+            Files.write(path, form.getFileData());
+        } catch (IOException e) {
+            return Response.serverError().entity("Cannot write provided file").build();
+        }
+
+        entity.pictureFileName = entity.id + ".jpg";
+
+        return Response
+                .created(new URI(ConfigurationProvider.getExternalURL() + "/movies/thumbnail?id=" + form.getId()))
+                .build();
     }
 
     @GET
