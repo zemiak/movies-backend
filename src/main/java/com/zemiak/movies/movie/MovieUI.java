@@ -20,6 +20,7 @@ public class MovieUI {
     public String language;
     public String originalLanguage;
     public String subtitles;
+    public String thumbnailUrl;
 
     public static MovieUI of(PanacheEntityBase base) {
         MovieUI dto = new MovieUI();
@@ -39,6 +40,7 @@ public class MovieUI {
         dto.language = ((Language) Language.findById(entity.languageId)).name;
         dto.originalLanguage = ((Language) Language.findById(entity.originalLanguageId)).name;
         dto.subtitles = ((Language) Language.findById(entity.subtitlesId)).name;
+        dto.thumbnailUrl = entity.getThumbnailUrl();
 
         return dto;
     }

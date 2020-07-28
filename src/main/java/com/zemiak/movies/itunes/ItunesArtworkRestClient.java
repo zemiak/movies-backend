@@ -1,4 +1,4 @@
-package com.zemiak.movies.metadata;
+package com.zemiak.movies.itunes;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;

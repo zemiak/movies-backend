@@ -13,6 +13,7 @@ public class SerieUI {
     public String genre;
     public LocalDateTime created;
     public String tvShowText;
+    public String thumbnailUrl;
 
     public static void copy(SerieUI dto, PanacheEntityBase base) {
         Serie entity = (Serie) base;
@@ -22,6 +23,7 @@ public class SerieUI {
         dto.genre = ((Genre) Genre.findById(entity.genreId)).name;
         dto.created = entity.created;
         dto.tvShowText = entity.tvShow ? "Yes" : "";
+        dto.thumbnailUrl = entity.getThumbnailUrl();
     }
 
     public static SerieUI of(PanacheEntityBase base) {

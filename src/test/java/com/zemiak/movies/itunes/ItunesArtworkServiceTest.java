@@ -1,4 +1,4 @@
-package com.zemiak.movies.metadata;
+package com.zemiak.movies.itunes;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -6,8 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import javax.json.JsonArray;
 import javax.json.JsonObject;
-
-import com.zemiak.movies.scraper.ItunesArtwork;
 
 // import org.junit.jupiter.api.Test;
 
@@ -36,8 +34,8 @@ public class ItunesArtworkServiceTest {
         assertFalse(entries.isNull(0), "First result not null");
 
         ItunesArtwork first = entries.stream().map(ItunesArtwork::mapFromEntry).findFirst().get();
-        assertNotNull(first.getArtworkUrl100(), "URL must not be null");
-        assertFalse(first.getArtworkUrl100().isBlank(), "URL must not be empty");
+        assertNotNull(first.getArtworkUrl(), "URL must not be null");
+        assertFalse(first.getArtworkUrl().isBlank(), "URL must not be empty");
 
         assertNotNull(first.getTrackName(), "Track name must not be null");
         assertFalse(first.getTrackName().isBlank(), "Track name must not be empty");
@@ -51,8 +49,8 @@ public class ItunesArtworkServiceTest {
         assertFalse(entries.isNull(0), "First result not null");
 
         ItunesArtwork first = entries.stream().map(ItunesArtwork::mapFromEntry).findFirst().get();
-        assertNotNull(first.getArtworkUrl100(), "URL must not be null");
-        assertFalse(first.getArtworkUrl100().isBlank(), "URL must not be empty");
+        assertNotNull(first.getArtworkUrl(), "URL must not be null");
+        assertFalse(first.getArtworkUrl().isBlank(), "URL must not be empty");
 
         byte[] bytes = cut.getMovieArtwork(first);
         assertNotNull(bytes, "Stream must not be null");

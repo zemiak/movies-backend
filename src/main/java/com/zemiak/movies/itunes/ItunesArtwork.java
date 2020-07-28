@@ -1,4 +1,4 @@
-package com.zemiak.movies.scraper;
+package com.zemiak.movies.itunes;
 
 import java.util.Objects;
 
@@ -6,10 +6,11 @@ import javax.json.JsonObject;
 import javax.json.JsonValue;
 
 public class ItunesArtwork {
+    public static int DIMENSION = 1024;
     private String trackName;
     private Integer trackNumber;
     private Integer trackCount;
-    private String artworkUrl100;
+    private String artworkUrl;
 
     public static ItunesArtwork mapFromEntry(JsonValue value) {
         ItunesArtwork item = new ItunesArtwork();
@@ -17,7 +18,11 @@ public class ItunesArtwork {
         item.setTrackName(entry.getString("trackName", null));
         item.setTrackNumber(entry.getInt("trackNumber", -1));
         item.setTrackCount(entry.getInt("trackCount", -1));
-        item.setArtworkUrl100(entry.getString("artworkUrl100", null));
+        item.setArtworkUrl(entry.getString("artworkUrl100", null));
+
+        if (null != item.getArtworkUrl()) {
+            item.setArtworkUrl(item.getArtworkUrl().replace("100x100", String.format("%dx%d", DIMENSION, DIMENSION)));
+        }
         return item;
     }
 
@@ -45,12 +50,12 @@ public class ItunesArtwork {
         this.trackCount = trackCount;
     }
 
-    public String getArtworkUrl100() {
-        return artworkUrl100;
+    public String getArtworkUrl() {
+        return artworkUrl;
     }
 
-    public void setArtworkUrl100(String artworkUrl100) {
-        this.artworkUrl100 = artworkUrl100;
+    public void setArtworkUrl(String artworkUrl) {
+        this.artworkUrl = artworkUrl;
     }
 
     @Override
@@ -59,7 +64,7 @@ public class ItunesArtwork {
         hash = 11 * hash + Objects.hashCode(this.trackName);
         hash = 11 * hash + Objects.hashCode(this.trackNumber);
         hash = 11 * hash + Objects.hashCode(this.trackCount);
-        hash = 11 * hash + Objects.hashCode(this.artworkUrl100);
+        hash = 11 * hash + Objects.hashCode(this.artworkUrl);
         return hash;
     }
 
@@ -78,7 +83,7 @@ public class ItunesArtwork {
         if (!Objects.equals(this.trackName, other.trackName)) {
             return false;
         }
-        if (!Objects.equals(this.artworkUrl100, other.artworkUrl100)) {
+        if (!Objects.equals(this.artworkUrl, other.artworkUrl)) {
             return false;
         }
         if (!Objects.equals(this.trackNumber, other.trackNumber)) {

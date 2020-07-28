@@ -1,4 +1,4 @@
-package com.zemiak.movies.metadata;
+package com.zemiak.movies.itunes;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.enterprise.context.Dependent;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
@@ -17,10 +18,9 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
-import com.zemiak.movies.scraper.ItunesArtwork;
-
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
 
+@Dependent
 public class ItunesArtworkService {
     private static final String URL_STRING = "http://ax.itunes.apple.com";
     private static final String COUNTRY_US = "us";
@@ -62,7 +62,7 @@ public class ItunesArtworkService {
     }
 
     public byte[] getMovieArtworkWithDimension(ItunesArtwork artwork, int dimension) {
-        String url = artwork.getArtworkUrl100();
+        String url = artwork.getArtworkUrl();
         url = url.replace("100x100", String.format("%dx%d", dimension, dimension));
 
         Client client = ClientBuilder.newClient();
@@ -80,7 +80,7 @@ public class ItunesArtworkService {
         }
 
         InputStream stream = response.readEntity(InputStream.class);
-        
+
         byte[] res;
         try {
             res = stream.readAllBytes();
