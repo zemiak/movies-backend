@@ -123,7 +123,7 @@ public class MovieUIService {
 
         URL url;
         try {
-            url = new URL(String.valueOf(Base64.getDecoder().decode(body.getString("url"))));
+            url = new URL(String.valueOf(body.getString("url")));
         } catch (MalformedURLException e1) {
             return Response.status(Status.EXPECTATION_FAILED).entity("Provided url is invalid").build();
         }
