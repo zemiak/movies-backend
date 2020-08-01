@@ -1,37 +1,32 @@
-package com.zemiak.movies.scraper;
+package com.zemiak.movies.imdb;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.enterprise.context.Dependent;
 
 import com.zemiak.movies.batch.logs.BatchLogger;
-import com.zemiak.movies.movie.Movie;
+import com.zemiak.movies.scraper.JsoupUtils;
+import com.zemiak.movies.scraper.UrlDTO;
 
+import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-public class Imdb implements IWebMetadataReader {
+@Dependent
+public class Imdb {
     private static final BatchLogger LOG = BatchLogger.getLogger(Imdb.class.getName());
-    private String imageFileName;
+    private static final String SEARCH_URL = "https://www.imdb.com/find?q=";
+    private static Pattern NUMBER = Pattern.compile("\\d{4}");
 
-    private static final String URL1 = "www.imdb.com/";
-    private static final String URL2 = "http://" + URL1;
-    private static final String URL3 = "https://" + URL1;
-    private static final String SEARCH_URL = URL2 + "find?q=";
-
-    @Override
-    public boolean accepts(final Movie movie) {
-        final String url = movie.url;
-        return (null != url) && (url.startsWith(URL1) || url.startsWith(URL2) || url.startsWith(URL3));
-    }
-
-    @Override
-    public String parseDescription(final Movie movie) {
-        Document doc = JsoupUtils.getMovieDocumentFromString(movie);
+    public String parseDescription(final String webPage) {
+        Document doc = Jsoup.parse(webPage);
         if (null == doc) {
             return null;
         }
@@ -40,12 +35,6 @@ public class Imdb implements IWebMetadataReader {
         return null != description ? description.attr("content") : "";
     }
 
-    @Override
-    public String getReaderName() {
-        return "IMDB";
-    }
-
-    @Override
     public List<UrlDTO> getUrlCandidates(final String movieName) {
         List<UrlDTO> res = new ArrayList<>();
         String url;
@@ -62,46 +51,55 @@ public class Imdb implements IWebMetadataReader {
             return res;
         }
 
-        Elements results = doc.select("td[class=result_text]");
+        Elements results = doc.select("table[class=findList]");
         if (null == results) {
             return res;
         }
 
+        results = results.select("tr");
+        if (null == results || results.isEmpty()) {
+            return res;
+        }
+
         results.stream().forEach(result -> {
-            Elements result2 = result.select("a");
-            if (null == result2) {
-                return;
+            Element element = result.select("td[class=primary_photo]>a").first();
+            String detailUrl = null, imageUrl = null, description = null;
+            Integer year = null;
+            if (null != element) {
+                detailUrl = element.attributes().get("href");
+
+                element = element.select("img").first();
+                if (null != element) {
+                    imageUrl = element.attributes().get("src");
+                }
             }
 
-            Element href = result2.first();
-            res.add(new UrlDTO(href.absUrl("href"), getReaderName(), href.text(), result.text()));
+            element = result.select("td[class=result_text]").first();
+            if (null != element) {
+                Element elementHref = element.select("a").first();
+
+                if (null != elementHref) {
+                    description = element.text();
+                }
+
+                String yearText = null;
+                Matcher matcher = NUMBER.matcher(element.text().trim());
+                if (matcher.find()) {
+                    yearText = matcher.group(0);
+                    year = Integer.valueOf(yearText);
+                }
+            }
+
+            if (null != detailUrl && null != imageUrl && null != description && detailUrl.startsWith("/title")) {
+                res.add(new UrlDTO(detailUrl, description, imageUrl, year));
+            }
+
         });
 
         return res;
     }
 
-    @Override
-    public void setImageFileName(final String imageFileName) {
-        this.imageFileName = imageFileName;
-    }
-
-    @Override
-    public void processThumbnail(Movie movie) {
-        String imageUrl = getImageUrl(movie);
-        if (null == imageUrl) {
-            return;
-        }
-
-        try {
-            new Csfd().downloadFile(imageUrl, imageFileName);
-        } catch (IOException ex) {
-            LOG.log(Level.SEVERE, "Cannot fetch poster url {0} file name {1} error {2}",
-                    new Object[]{imageUrl, imageFileName, ex});
-        }
-    }
-
-    protected String getImageUrl(final Movie movie) {
-        Document doc = JsoupUtils.getMovieDocumentFromString(movie);
+    protected String getImageUrl(final Document doc) {
         if (null == doc) {
             return null;
         }
@@ -116,19 +114,7 @@ public class Imdb implements IWebMetadataReader {
         return link.attr("href");
     }
 
-    @Override
-    public String getWebPage(Movie movie) {
-        Document doc = JsoupUtils.getMovieDocument(movie);
-        if (null == doc) {
-            return null;
-        }
-
-        return doc.toString();
-    }
-
-    @Override
-    public Integer parseYear(final Movie movie) {
-        Document doc = JsoupUtils.getMovieDocumentFromString(movie);
+    public Integer getYear(Document doc) {
         if (null == doc) {
             return null;
         }

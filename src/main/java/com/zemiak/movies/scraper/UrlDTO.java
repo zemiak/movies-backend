@@ -2,52 +2,37 @@ package com.zemiak.movies.scraper;
 
 import java.util.Objects;
 
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
+
+import com.zemiak.movies.strings.NullAwareJsonObjectBuilder;
+
 public class UrlDTO {
-    private String url;
-    private String description;
-    private String dbName;
-    private String movieName;
+    String url;
+    String description;
+    String imageUrl;
+    Integer year;
 
     public UrlDTO() {
     }
 
-    public UrlDTO(final String url, final String dbName, final String movieName, final String description) {
+    public JsonObject toJson() {
+        JsonObjectBuilder builder = NullAwareJsonObjectBuilder.create()
+            .add("url", url)
+            .add("description", description)
+            .add("imageUrl", imageUrl);
+        NullAwareJsonObjectBuilder.addInteger(builder, "year", year);
+
+        return builder.build();
+    }
+
+    public UrlDTO(String url, String description, String imageUrl, Integer year) {
         this.url = url;
-        this.dbName = dbName;
-        this.movieName = movieName;
         this.description = description;
-    }
+        this.imageUrl = imageUrl;
+        this.year = year;
 
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(final String url) {
-        this.url = url;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(final String description) {
-        this.description = description;
-    }
-
-    public String getDbName() {
-        return dbName;
-    }
-
-    public void setDbName(final String dbName) {
-        this.dbName = dbName;
-    }
-
-    public String getMovieName() {
-        return movieName;
-    }
-
-    public void setMovieName(String movieName) {
-        this.movieName = movieName;
+        System.out.println(description + ":" + year);
     }
 
     @Override

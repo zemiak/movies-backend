@@ -51,7 +51,7 @@ public class CsfdTest {
     public void urlCandidatesMustReturnResultsAccordingToMovieName() {
         List<UrlDTO> candidates = cut.getUrlCandidates("Matrix");
         UrlDTO first = candidates.get(0);
-        String desc = first.getDescription();
+        String desc = first.description;
 
         assertNotNull(desc, "Description must not be null");
         assertFalse(desc.trim().isEmpty(), "Description must not be blank");

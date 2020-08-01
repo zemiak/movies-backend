@@ -84,7 +84,7 @@ public class Csfd implements IWebMetadataReader {
             final String desc = href.first().text();
             final String descUrl = href.first().absUrl("href");
 
-            res.add(new UrlDTO(descUrl, getReaderName(), href.text(), desc));
+            // res.add(new UrlDTO(descUrl, getReaderName(), href.text(), desc));
         });
 
         return res;

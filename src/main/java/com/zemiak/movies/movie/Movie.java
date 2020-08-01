@@ -18,8 +18,6 @@ import javax.validation.constraints.Size;
 import com.zemiak.movies.config.ConfigurationProvider;
 import com.zemiak.movies.genre.Genre;
 import com.zemiak.movies.language.Language;
-import com.zemiak.movies.scraper.Csfd;
-import com.zemiak.movies.scraper.Imdb;
 import com.zemiak.movies.serie.Serie;
 import com.zemiak.movies.strings.NullAwareJsonObjectBuilder;
 import com.zemiak.movies.ui.GuiDTO;
@@ -182,17 +180,6 @@ public class Movie extends PanacheEntityBase implements Comparable<Movie> {
     @JsonbTransient
     public boolean isUrlEmpty() {
         return null == url || "".equals(url.trim()) || "''".equals(url.trim());
-    }
-
-    @JsonbTransient
-    public String getUrlFlag() {
-        if (new Csfd().accepts(this)) {
-            return "CSFD";
-        } else if (new Imdb().accepts(this)) {
-            return "IMDB";
-        }
-
-        return "";
     }
 
     @JsonbTransient
