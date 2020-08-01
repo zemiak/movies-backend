@@ -11,7 +11,6 @@ public class WebMetadataReader {
 
     public WebMetadataReader(String imgPath) {
         this.readers = new IWebMetadataReader[]{
-            new Csfd()
         };
 
         this.imgPath = imgPath;

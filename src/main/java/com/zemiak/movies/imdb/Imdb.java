@@ -23,7 +23,7 @@ import org.jsoup.select.Elements;
 public class Imdb {
     private static final BatchLogger LOG = BatchLogger.getLogger(Imdb.class.getName());
     private static final String SEARCH_URL = "https://www.imdb.com/find?q=";
-    private static Pattern NUMBER = Pattern.compile("\\d{4}");
+    public static Pattern NUMBER = Pattern.compile("\\d{4}");
 
     public String parseDescription(final String webPage) {
         Document doc = Jsoup.parse(webPage);
@@ -99,7 +99,7 @@ public class Imdb {
         return res;
     }
 
-    protected String getImageUrl(final Document doc) {
+    public String getImageUrl(Document doc) {
         if (null == doc) {
             return null;
         }
