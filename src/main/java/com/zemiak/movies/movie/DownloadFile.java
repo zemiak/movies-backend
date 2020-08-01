@@ -6,11 +6,13 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import javax.enterprise.context.Dependent;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
 
+@Dependent
 public class DownloadFile {
     public Response download(URL url, Path path) {
         DownloadClient client = RestClientBuilder.newBuilder().baseUrl(url).build(DownloadClient.class);
