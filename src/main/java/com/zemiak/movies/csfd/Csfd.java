@@ -14,7 +14,6 @@ import com.zemiak.movies.imdb.Imdb;
 import com.zemiak.movies.scraper.JsoupUtils;
 import com.zemiak.movies.scraper.UrlDTO;
 
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -25,8 +24,7 @@ public class Csfd {
 
     private static String SEARCH_URL = "https://www.csfd.cz/hledat/?q=";
 
-    public String parseDescription(String webPage) {
-        Document doc = Jsoup.parse(webPage);
+    public String getDescription(Document doc) {
         if (null == doc) {
             return null;
         }

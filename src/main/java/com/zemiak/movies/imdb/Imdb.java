@@ -14,7 +14,6 @@ import com.zemiak.movies.batch.logs.BatchLogger;
 import com.zemiak.movies.scraper.JsoupUtils;
 import com.zemiak.movies.scraper.UrlDTO;
 
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -25,8 +24,7 @@ public class Imdb {
     private static final String SEARCH_URL = "https://www.imdb.com/find?q=";
     public static Pattern NUMBER = Pattern.compile("\\d{4}");
 
-    public String parseDescription(final String webPage) {
-        Document doc = Jsoup.parse(webPage);
+    public String getDescription(Document doc) {
         if (null == doc) {
             return null;
         }

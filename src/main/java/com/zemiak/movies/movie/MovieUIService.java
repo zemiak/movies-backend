@@ -4,11 +4,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -41,7 +38,6 @@ import com.zemiak.movies.ui.FileUploadForm;
 import com.zemiak.movies.ui.GuiDTO;
 import com.zemiak.movies.ui.VaadingGridPagingResult;
 
-import org.eclipse.microprofile.rest.client.RestClientBuilder;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 
 import io.quarkus.panache.common.Parameters;
@@ -104,55 +100,6 @@ public class MovieUIService {
 
         return Response
                 .created(new URI(ConfigurationProvider.getExternalURL() + "/movies/thumbnail?id=" + form.getId()))
-                .build();
-    }
-
-    @POST
-    @Path("{id}/thumbnail/url")
-    public Response uploadThumbnailUrl(@PathParam("id") Long id, JsonObject body)
-            throws URISyntaxException {
-        Movie entity = Movie.findById(id);
-        if (null == entity) {
-            return Response.status(Status.NOT_FOUND).entity("Provided movie not found").build();
-        }
-
-        if (null == body || !body.containsKey("url")) {
-            return Response.status(Status.EXPECTATION_FAILED).entity("Provide an URL").build();
-        }
-
-        URL url;
-        try {
-            url = new URL(String.valueOf(body.getString("url")));
-        } catch (MalformedURLException e1) {
-            return Response.status(Status.EXPECTATION_FAILED).entity("Provided url is invalid").build();
-        }
-
-        DownloadClient client = RestClientBuilder.newBuilder().baseUrl(url).build(DownloadClient.class);
-        Response response = client.download();
-        if (200 != response.getStatus()) {
-            return Response.status(Status.BAD_GATEWAY).entity("Provided url cannot be downloaded").build();
-        }
-
-        java.nio.file.Path path = Paths.get(ConfigurationProvider.getImgPath(), "movie", id + ".jpg");
-        InputStream stream = response.readEntity(InputStream.class);
-        try {
-            Files.write(path, stream.readAllBytes());
-        } catch (IOException e) {
-            return Response.serverError().entity("Cannot write provided file").build();
-        } finally {
-            try {
-                stream.close();
-            } catch (IOException e) {
-                // pass
-            }
-
-            response.close();
-        }
-
-        entity.pictureFileName = entity.id + ".jpg";
-
-        return Response
-                .created(new URI(ConfigurationProvider.getExternalURL() + "/movies/thumbnail?id=" + id))
                 .build();
     }
 
