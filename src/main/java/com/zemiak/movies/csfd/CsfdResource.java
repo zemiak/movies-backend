@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.json.JsonObject;
+import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -51,6 +52,7 @@ public class CsfdResource {
 
     @PUT
     @Path("{id}")
+    @Transactional
     public Response uploadThumbnailUrl(@PathParam("id") Long id, JsonObject body)
             throws URISyntaxException {
         Movie entity = Movie.findById(id);
