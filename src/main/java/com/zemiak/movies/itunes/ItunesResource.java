@@ -10,8 +10,9 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.json.JsonObject;
 import javax.validation.constraints.NotNull;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -25,8 +26,9 @@ import com.zemiak.movies.movie.Movie;
 import com.zemiak.movies.strings.Encodings;
 
 @RequestScoped
-@Path("movies")
+@Path("metadata/itunes")
 @Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
 public class ItunesResource {
     @Inject
     ItunesArtworkService service;
@@ -35,14 +37,14 @@ public class ItunesResource {
     DownloadFile downloader;
 
     @GET
-    @Path("metadata/itunes/{pattern}")
+    @Path("{pattern}")
     public Set<ItunesArtwork> getByExpression(@PathParam("pattern") @NotNull final String pattern) {
         String patternAscii = Encodings.toAscii(pattern.trim().toLowerCase());
         return service.getMovieArtworkResults(patternAscii);
     }
 
-    @POST
-    @Path("{id}/metada/itunes")
+    @PUT
+    @Path("{id}")
     public Response uploadThumbnailUrl(@PathParam("id") Long id, JsonObject body)
             throws URISyntaxException {
         Movie entity = Movie.findById(id);
@@ -71,8 +73,8 @@ public class ItunesResource {
         entity.pictureFileName = entity.id + ".jpg";
 
         return Response
-            .status(Status.SEE_OTHER)
-            .entity(ConfigurationProvider.getExternalURL() + "/movies/detail/" + id)
+            .status(Status.OK)
+            .entity(Movie.toJson(entity))
             .build();
     }
 }

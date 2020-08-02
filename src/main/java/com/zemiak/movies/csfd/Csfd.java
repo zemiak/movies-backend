@@ -67,7 +67,10 @@ public class Csfd {
             if (null == imageElement) {
                 return;
             }
-            String imageUrl = "https:" + imageElement.attributes().get("src");
+            String imageUrl = imageElement.attributes().get("src");
+            if (imageUrl.startsWith("//")) {
+                imageUrl = "https:" + imageUrl;
+            }
 
             Element yearParagraph = li.select("div > p").first();
             Integer year = null;

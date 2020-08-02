@@ -14,7 +14,7 @@ import javax.json.JsonObject;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -32,7 +32,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 @RequestScoped
-@Path("movies")
+@Path("metadata/csfd")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class CsfdResource {
@@ -43,14 +43,14 @@ public class CsfdResource {
     DownloadFile downloader;
 
     @GET
-    @Path("metadata/csfd/{pattern}")
+    @Path("{pattern}")
     public List<JsonObject> getByExpression(@PathParam("pattern") @NotNull final String pattern) {
         String patternAscii = Encodings.toAscii(pattern.trim().toLowerCase());
         return service.getUrlCandidates(patternAscii).stream().map(UrlDTO::toJson).collect(Collectors.toList());
     }
 
-    @POST
-    @Path("{id}/metada/csfd")
+    @PUT
+    @Path("{id}")
     public Response uploadThumbnailUrl(@PathParam("id") Long id, JsonObject body)
             throws URISyntaxException {
         Movie entity = Movie.findById(id);
@@ -86,7 +86,7 @@ public class CsfdResource {
         }
 
         Response response = downloader.download(imageUrl, path);
-        if (Status.Family.SUCCESSFUL.equals(response.getStatusInfo().getFamily())) {
+        if (!Status.Family.SUCCESSFUL.equals(response.getStatusInfo().getFamily())) {
             return response;
         }
 
@@ -95,8 +95,8 @@ public class CsfdResource {
         entity.year = service.getYear(doc);
 
         return Response
-            .status(Status.SEE_OTHER)
-            .entity(ConfigurationProvider.getExternalURL() + "/movies/detail/" + id)
+            .status(Status.OK)
+            .entity(Movie.toJson(entity))
             .build();
     }
 }

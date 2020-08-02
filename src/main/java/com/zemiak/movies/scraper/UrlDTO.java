@@ -31,8 +31,6 @@ public class UrlDTO {
         this.description = description;
         this.imageUrl = imageUrl;
         this.year = year;
-
-        System.out.println(description + ":" + year);
     }
 
     @Override

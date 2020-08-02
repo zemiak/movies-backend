@@ -89,7 +89,7 @@ public class Imdb {
             }
 
             if (null != detailUrl && null != imageUrl && null != description && detailUrl.startsWith("/title")) {
-                res.add(new UrlDTO(detailUrl, description, imageUrl, year));
+                res.add(new UrlDTO("https://www.imdb.com" + detailUrl, description, imageUrl, year));
             }
 
         });
