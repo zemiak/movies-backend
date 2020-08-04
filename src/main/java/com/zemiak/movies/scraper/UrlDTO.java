@@ -8,10 +8,10 @@ import javax.json.JsonObjectBuilder;
 import com.zemiak.movies.strings.NullAwareJsonObjectBuilder;
 
 public class UrlDTO {
-    String url;
-    String description;
-    String imageUrl;
-    Integer year;
+    public String url;
+    public String description;
+    public String imageUrl;
+    public Integer year;
 
     public UrlDTO() {
     }

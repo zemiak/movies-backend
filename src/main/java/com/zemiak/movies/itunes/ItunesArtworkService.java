@@ -18,6 +18,8 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
+import com.zemiak.movies.scraper.UrlDTO;
+
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
 
 @Dependent
@@ -50,7 +52,7 @@ public class ItunesArtworkService {
         return RestClientBuilder.newBuilder().baseUrl(url).build(ItunesArtworkRestClient.class);
     }
 
-    public Set<ItunesArtwork> getMovieArtworkResults(String movieName) {
+    public Set<UrlDTO> getMovieArtworkResults(String movieName) {
         JsonObject results = getMovieArtworkResultsJson(movieName);
         JsonArray entries = results.getJsonArray("results");
 
@@ -58,10 +60,10 @@ public class ItunesArtworkService {
             return Collections.emptySet();
         }
 
-        return entries.stream().map(ItunesArtwork::mapFromEntry).collect(Collectors.toSet());
+        return entries.stream().map(e -> ItunesArtwork.mapFromEntry(e)).collect(Collectors.toSet());
     }
 
-    public byte[] getMovieArtworkWithDimension(ItunesArtwork artwork, int dimension) {
+    public byte[] getMovieArtworkWithDimension(UrlDTO artwork, int dimension) {
         String url = artwork.imageUrl;
         url = url.replace("100x100", String.format("%dx%d", dimension, dimension));
 
@@ -94,7 +96,7 @@ public class ItunesArtworkService {
         return res;
     }
 
-    public byte[] getMovieArtwork(ItunesArtwork artwork) {
+    public byte[] getMovieArtwork(UrlDTO artwork) {
         return getMovieArtworkWithDimension(artwork, 1024);
     }
 }

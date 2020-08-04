@@ -7,6 +7,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 
+import com.zemiak.movies.scraper.UrlDTO;
+
 // import org.junit.jupiter.api.Test;
 
 public class ItunesArtworkServiceTest {
@@ -33,7 +35,7 @@ public class ItunesArtworkServiceTest {
         assertFalse(entries.isEmpty(), "Results not empty");
         assertFalse(entries.isNull(0), "First result not null");
 
-        ItunesArtwork first = entries.stream().map(ItunesArtwork::mapFromEntry).findFirst().get();
+        UrlDTO first = entries.stream().map(e -> ItunesArtwork.mapFromEntry(e)).findFirst().get();
         assertNotNull(first.imageUrl, "URL must not be null");
         assertFalse(first.imageUrl.isBlank(), "URL must not be empty");
 
@@ -48,7 +50,7 @@ public class ItunesArtworkServiceTest {
         assertFalse(entries.isEmpty(), "Results not empty");
         assertFalse(entries.isNull(0), "First result not null");
 
-        ItunesArtwork first = entries.stream().map(ItunesArtwork::mapFromEntry).findFirst().get();
+        UrlDTO first = entries.stream().map(e -> ItunesArtwork.mapFromEntry(e)).findFirst().get();
         assertNotNull(first.imageUrl, "URL must not be null");
         assertFalse(first.imageUrl.isBlank(), "URL must not be empty");
 

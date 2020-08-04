@@ -24,6 +24,7 @@ import javax.ws.rs.core.Response.Status;
 import com.zemiak.movies.config.ConfigurationProvider;
 import com.zemiak.movies.movie.DownloadFile;
 import com.zemiak.movies.movie.Movie;
+import com.zemiak.movies.scraper.UrlDTO;
 import com.zemiak.movies.strings.Encodings;
 
 @RequestScoped
@@ -39,7 +40,7 @@ public class ItunesResource {
 
     @GET
     @Path("{pattern}")
-    public Set<ItunesArtwork> getByExpression(@PathParam("pattern") @NotNull final String pattern) {
+    public Set<UrlDTO> getByExpression(@PathParam("pattern") @NotNull final String pattern) {
         String patternAscii = Encodings.toAscii(pattern.trim().toLowerCase());
         return service.getMovieArtworkResults(patternAscii);
     }
