@@ -62,7 +62,7 @@ public class ItunesArtworkService {
     }
 
     public byte[] getMovieArtworkWithDimension(ItunesArtwork artwork, int dimension) {
-        String url = artwork.getArtworkUrl();
+        String url = artwork.imageUrl;
         url = url.replace("100x100", String.format("%dx%d", dimension, dimension));
 
         Client client = ClientBuilder.newClient();

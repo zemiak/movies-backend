@@ -34,11 +34,11 @@ public class ItunesArtworkServiceTest {
         assertFalse(entries.isNull(0), "First result not null");
 
         ItunesArtwork first = entries.stream().map(ItunesArtwork::mapFromEntry).findFirst().get();
-        assertNotNull(first.getArtworkUrl(), "URL must not be null");
-        assertFalse(first.getArtworkUrl().isBlank(), "URL must not be empty");
+        assertNotNull(first.imageUrl, "URL must not be null");
+        assertFalse(first.imageUrl.isBlank(), "URL must not be empty");
 
-        assertNotNull(first.getTrackName(), "Track name must not be null");
-        assertFalse(first.getTrackName().isBlank(), "Track name must not be empty");
+        assertNotNull(first.description, "Track name must not be null");
+        assertFalse(first.description.isBlank(), "Track name must not be empty");
     }
 
     // @Test
@@ -49,8 +49,8 @@ public class ItunesArtworkServiceTest {
         assertFalse(entries.isNull(0), "First result not null");
 
         ItunesArtwork first = entries.stream().map(ItunesArtwork::mapFromEntry).findFirst().get();
-        assertNotNull(first.getArtworkUrl(), "URL must not be null");
-        assertFalse(first.getArtworkUrl().isBlank(), "URL must not be empty");
+        assertNotNull(first.imageUrl, "URL must not be null");
+        assertFalse(first.imageUrl.isBlank(), "URL must not be empty");
 
         byte[] bytes = cut.getMovieArtwork(first);
         assertNotNull(bytes, "Stream must not be null");
