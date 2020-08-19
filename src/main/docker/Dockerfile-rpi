@@ -10,7 +10,7 @@ EXPOSE ${QUARKUS_HTTP_PORT}
 VOLUME ["/data"]
 
 HEALTHCHECK --interval=15s --timeout=2s \
- CMD curl --fail http://localhost:${QUARKUS_HTTP_PORT} || exit 1
+ CMD curl --fail http://localhost:${QUARKUS_HTTP_PORT}/health/ready || exit 1
 
 RUN adduser --system --force-badname --no-create-home --disabled-login --uid 1001 u1001 && \
     mkdir -p ${AUTODEPLOY_FOLDER} && \
