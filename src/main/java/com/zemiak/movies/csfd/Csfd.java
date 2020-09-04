@@ -139,6 +139,15 @@ public class Csfd {
             return null;
         }
 
-        return Integer.valueOf(originData[1].trim());
+        Integer year;
+
+        try {
+            year = Integer.valueOf(originData[1].trim());
+        } catch (java.lang.NumberFormatException ex) {
+            year = null;
+        }
+
+
+        return year;
     }
 }

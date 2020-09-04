@@ -129,6 +129,15 @@ public class Imdb {
             return null;
         }
 
-        return Integer.valueOf(dateText);
+        Integer year;
+
+        try {
+            year = Integer.valueOf(dateText);
+        } catch (java.lang.NumberFormatException ex) {
+            year = null;
+        }
+
+
+        return year;
     }
 }
