@@ -29,8 +29,8 @@ public class LanguageServiceTest {
     }
 
     @Test
-    public void all() {
-        List<Language> languages = req.get("/languages/all").jsonPath().getList("$", Language.class);
+    public void exists() {
+        List<Language> languages = req.get("/languages/paged?page=0&pageSize=10").jsonPath().getList("$", Language.class);
         assertFalse(languages.isEmpty(), "Languages are not empty");
     }
 

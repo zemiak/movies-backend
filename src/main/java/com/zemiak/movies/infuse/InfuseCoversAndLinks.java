@@ -16,6 +16,8 @@ import com.zemiak.movies.movie.MovieService;
 import com.zemiak.movies.serie.Serie;
 import com.zemiak.movies.strings.Encodings;
 
+import io.quarkus.panache.common.Sort;
+
 @Dependent
 public class InfuseCoversAndLinks {
     private static final Logger LOG = Logger.getLogger(InfuseCoversAndLinks.class.getName());
@@ -34,7 +36,7 @@ public class InfuseCoversAndLinks {
     InfuseMetadataWriter metadata;
 
     public void createGenreAndSerieCovers() {
-        service.all().stream().forEach(movie -> {
+        Movie.traverse(Sort.ascending("id"), movie -> {
             if (null != movie.genreId) {
                 createGenreCover(movie);
             }

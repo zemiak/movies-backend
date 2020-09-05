@@ -30,8 +30,8 @@ public class GenreServiceTest {
     }
 
     @Test
-    public void all() {
-        List<Genre> genres = req.get("/genres/all").jsonPath().getList("$", Genre.class);
+    public void exists() {
+        List<Genre> genres = req.get("/genres/paged?page=0&pageSize=10").jsonPath().getList("$", Genre.class);
         assertFalse(genres.isEmpty(), "Genres are not empty");
     }
 

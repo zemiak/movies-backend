@@ -2,6 +2,7 @@ package com.zemiak.movies.movie;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
@@ -23,6 +24,7 @@ import com.zemiak.movies.strings.NullAwareJsonObjectBuilder;
 import com.zemiak.movies.ui.GuiDTO;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import io.quarkus.panache.common.Sort;
 
 @Entity
 @JsonbNillable
@@ -282,5 +284,16 @@ public class Movie extends PanacheEntityBase implements Comparable<Movie> {
 
     public void setThumbnailUrl(String url) {
         // pass - so the JSONB does not complain
+    }
+
+    public static void traverse(Sort sort, Consumer<Movie> action) {
+        long count = count();
+        int pageSize = 10;
+        long pageCount = count / pageSize + (count % pageSize > 0 ? 1 : 0);
+        int pageIndex = 0;
+        while (pageIndex < pageCount) {
+            findAll(sort).page(pageIndex, pageSize).stream().map(e -> (Movie) e).forEach(action);
+            pageIndex++;
+        }
     }
 }

@@ -18,6 +18,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -36,9 +37,9 @@ import io.quarkus.panache.common.Sort;
 @Transactional
 public class MovieService {
     @GET
-    @Path("all")
-    public List<Movie> all() {
-        return Movie.listAll(Sort.ascending("displayOrder"));
+    @Path("paged")
+    public List<Movie> all(@QueryParam("page") int page, @QueryParam("pageSize") int pageSize) {
+        return Movie.findAll(Sort.by("displayOrder")).page(page, pageSize).list();
     }
 
     @POST
@@ -152,8 +153,7 @@ public class MovieService {
     public List<Movie> getNewReleases(int year) {
         List<Movie> movies = new ArrayList<>();
 
-        // TODO: limit to 50 results
-        Movie.findAll(Sort.ascending("genreId", "serieId", "displayOrder")).stream().map(e -> (Movie) e)
+        Movie.findAll(Sort.ascending("genreId", "serieId", "displayOrder")).page(0, 50).stream().map(e -> (Movie) e)
                 .filter((movie) -> (null != movie.year && movie.year >= (year - 3))).forEach((movie) -> {
                     movies.add(movie);
                 });

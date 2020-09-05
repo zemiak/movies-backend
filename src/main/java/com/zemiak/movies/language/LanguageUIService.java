@@ -26,12 +26,6 @@ import io.quarkus.panache.common.Sort;
 @Transactional
 public class LanguageUIService {
     @GET
-    @Path("all")
-    public List<Language> all() {
-        return Language.listAll(Sort.by("displayOrder"));
-    }
-
-    @GET
     @Path("count")
     public JsonObject count() {
         long count = Language.count();

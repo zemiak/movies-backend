@@ -30,8 +30,8 @@ public class MovieServiceTest {
     }
 
     @Test
-    public void all() {
-        List<Movie> movies = req.get("/movies/all").jsonPath().getList("$", Movie.class);
+    public void exists() {
+        List<Movie> movies = req.get("/movies/paged?page=0&pageSize=10").jsonPath().getList("$", Movie.class);
         assertFalse(movies.isEmpty(), "Movies are not empty");
     }
 

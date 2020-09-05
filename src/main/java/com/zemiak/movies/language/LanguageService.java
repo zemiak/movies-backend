@@ -15,6 +15,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -33,9 +34,9 @@ import io.quarkus.panache.common.Sort;
 @Transactional
 public class LanguageService {
     @GET
-    @Path("all")
-    public List<Language> all() {
-        return Language.listAll(Sort.by("displayOrder"));
+    @Path("paged")
+    public List<Language> all(@QueryParam("page") int page, @QueryParam("pageSize") int pageSize) {
+        return Language.findAll(Sort.by("displayOrder")).page(page, pageSize).list();
     }
 
     @POST

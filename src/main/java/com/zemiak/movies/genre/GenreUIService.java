@@ -59,7 +59,9 @@ public class GenreUIService {
     MovieUIService movies;
 
     public List<GuiDTO> getRootItems() {
-        List<GuiDTO> root = genres.all().stream().map(Genre::toDto).collect(Collectors.toList());
+        var root = new ArrayList<GuiDTO>();
+        Genre.traverse(Sort.ascending("id"), e -> {root.add(e.toDto());});
+        
         root.add(Genre.getFreshGenre().toDto());
         root.add(Genre.getRecentlyAddedGenre().toDto());
         root.add(Genre.getUnassignedGenre().toDto());

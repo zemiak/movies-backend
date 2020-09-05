@@ -31,8 +31,8 @@ public class SerieServiceTest {
     }
 
     @Test
-    public void all() {
-        List<Serie> series = req.get("/series/all").jsonPath().getList("$", Serie.class);
+    public void exists() {
+        List<Serie> series = req.get("/series/paged?page=0&pageSize=10").jsonPath().getList("$", Serie.class);
         assertFalse(series.isEmpty(), "Series are not empty");
     }
 
