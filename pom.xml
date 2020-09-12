@@ -3,7 +3,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.zemiak</groupId>
-  <artifactId>movies</artifactId>
+  <artifactId>movies-backend</artifactId>
   <version>1.0-SNAPSHOT</version>
   <properties>
     <compiler-plugin.version>3.8.1</compiler-plugin.version>
@@ -101,8 +101,13 @@
       <version>1.1</version>
       <scope>compile</scope>
     </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-container-image-jib</artifactId>
+    </dependency>
   </dependencies>
   <build>
+    <finalName>movies</finalName>
     <plugins>
       <plugin>
         <groupId>io.quarkus</groupId>
