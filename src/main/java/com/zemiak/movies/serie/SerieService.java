@@ -3,7 +3,6 @@ package com.zemiak.movies.serie;
 import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
-import javax.enterprise.event.Observes;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -21,7 +20,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import com.zemiak.movies.batch.CacheClearEvent;
 import com.zemiak.movies.movie.Movie;
 
 import io.quarkus.hibernate.orm.panache.Panache;
@@ -99,9 +97,5 @@ public class SerieService {
         }
 
         entity.delete();
-    }
-
-    public void clearCache(@Observes final CacheClearEvent event) {
-        Panache.getEntityManager().getEntityManagerFactory().getCache().evictAll();
     }
 }

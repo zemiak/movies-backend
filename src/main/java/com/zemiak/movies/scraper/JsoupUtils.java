@@ -2,15 +2,15 @@ package com.zemiak.movies.scraper;
 
 import java.io.IOException;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import com.zemiak.movies.batch.logs.BatchLogger;
 import com.zemiak.movies.movie.Movie;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 public final class JsoupUtils {
-    private static final BatchLogger LOG = BatchLogger.getLogger(JsoupUtils.class.getName());
+    private static final Logger LOG = Logger.getLogger(JsoupUtils.class.getName());
 
     private JsoupUtils() {
     }

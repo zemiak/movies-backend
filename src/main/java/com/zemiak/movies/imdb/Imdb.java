@@ -5,12 +5,12 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.enterprise.context.Dependent;
 
-import com.zemiak.movies.batch.logs.BatchLogger;
 import com.zemiak.movies.scraper.JsoupUtils;
 import com.zemiak.movies.scraper.UrlDTO;
 
@@ -20,7 +20,7 @@ import org.jsoup.select.Elements;
 
 @Dependent
 public class Imdb {
-    private static final BatchLogger LOG = BatchLogger.getLogger(Imdb.class.getName());
+    private static final Logger LOG = Logger.getLogger(Imdb.class.getName());
     private static final String SEARCH_URL = "https://www.imdb.com/find?q=";
     public static Pattern NUMBER = Pattern.compile("\\d{4}");
 
@@ -105,7 +105,7 @@ public class Imdb {
         // <link rel='image_src' href="https://m.media-amazon.com/images/M/MV5BNzQzOTk3OTAtNDQ0Zi00ZTVkLWI0MTEtMDllZjNkYzNjNTc4L2ltYWdlXkEyXkFqcGdeQXVyNjU0OTQ0OTY@._V1_UY1200_CR84,0,630,1200_AL_.jpg">
         Element link = doc.select("link[rel=image_src]").first();
         if (null == link) {
-            LOG.log(Level.SEVERE, "Cannot read link", null);
+            LOG.log(Level.SEVERE, "Cannot read link");
             return null;
         }
 
@@ -119,7 +119,7 @@ public class Imdb {
 
         Element datePublished = doc.select("span[id=titleYear]>a").first();
         if (null == datePublished) {
-            LOG.log(Level.SEVERE, "Cannot read origin", null);
+            LOG.log(Level.SEVERE, "Cannot read origin");
             return null;
         }
 

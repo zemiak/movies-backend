@@ -3,7 +3,6 @@ package com.zemiak.movies.genre;
 import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
-import javax.enterprise.event.Observes;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -21,7 +20,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import com.zemiak.movies.batch.CacheClearEvent;
 import com.zemiak.movies.movie.Movie;
 import com.zemiak.movies.serie.Serie;
 
@@ -98,9 +96,5 @@ public class GenreService {
         }
 
         entity.delete();
-    }
-
-    public void clearCache(@Observes CacheClearEvent event) {
-        Panache.getEntityManager().getEntityManagerFactory().getCache().evictAll();
     }
 }

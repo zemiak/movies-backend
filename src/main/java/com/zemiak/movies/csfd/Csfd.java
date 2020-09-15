@@ -5,11 +5,11 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 
 import javax.enterprise.context.Dependent;
 
-import com.zemiak.movies.batch.logs.BatchLogger;
 import com.zemiak.movies.imdb.Imdb;
 import com.zemiak.movies.scraper.JsoupUtils;
 import com.zemiak.movies.scraper.UrlDTO;
@@ -20,7 +20,7 @@ import org.jsoup.select.Elements;
 
 @Dependent
 public class Csfd {
-    private static BatchLogger LOG = BatchLogger.getLogger(Csfd.class.getName());
+    private static Logger LOG = Logger.getLogger(Csfd.class.getName());
 
     private static String SEARCH_URL = "https://www.csfd.cz/hledat/?q=";
 
@@ -99,7 +99,7 @@ public class Csfd {
 
         Element poster = doc.select("img[class=film-poster]").first();
         if (null == poster) {
-            LOG.log(Level.SEVERE, "Cannot read poster", null);
+            LOG.log(Level.SEVERE, "Cannot read poster");
             return null;
         }
 
@@ -123,7 +123,7 @@ public class Csfd {
 
         Element origin = doc.select("p[class=origin]").first();
         if (null == origin) {
-            LOG.log(Level.SEVERE, "Cannot read origin", null);
+            LOG.log(Level.SEVERE, "Cannot read origin");
             return null;
         }
 
