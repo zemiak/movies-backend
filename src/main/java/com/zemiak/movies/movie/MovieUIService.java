@@ -115,7 +115,7 @@ public class MovieUIService {
     }
 
     public List<GuiDTO> getRecentlyAddedMovies() {
-        return Movie.findAll(Sort.descending("id")).page(0, 50).list().stream().map(e -> (Movie) e).map(Movie::toDto)
+        return movies.getRecentlyAdded().stream().map(e -> (Movie) e).map(Movie::toDto)
                 .collect(Collectors.toList());
     }
 

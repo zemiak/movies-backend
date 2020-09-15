@@ -1,10 +1,13 @@
 package com.zemiak.movies.movie;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoField;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
@@ -27,6 +30,9 @@ import io.quarkus.panache.common.Sort;
 @Produces(MediaType.APPLICATION_JSON)
 @Transactional
 public class MovieBatchService {
+    @Inject
+    MovieService movies;
+
     @Path("filternew")
     @POST
     public List<String> searchByFilename(List<String> data) {
@@ -56,5 +62,20 @@ public class MovieBatchService {
     @Path("ui/paged")
     public List<MovieUI> all(@QueryParam("page") int page, @QueryParam("pageSize") int pageSize) {
         return Movie.findAll(Sort.by("displayOrder")).page(page, pageSize).stream().map(MovieUI::of).collect(Collectors.toList());
+    }
+
+    @GET
+    @Path("ui/recent")
+    public List<MovieUI> getRecentlyAddedMovies() {
+        return movies.getRecentlyAdded().stream().map(e -> MovieUI.of(e))
+                .collect(Collectors.toList());
+    }
+
+    @GET
+    @Path("ui/new")
+    public List<MovieUI> getNewReleases() {
+        int year = LocalDateTime.now().get(ChronoField.YEAR);
+        return movies.getNewReleases(year).stream().map(e -> MovieUI.of(e))
+                .collect(Collectors.toList());
     }
 }
