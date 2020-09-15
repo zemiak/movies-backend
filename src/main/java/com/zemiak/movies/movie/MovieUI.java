@@ -21,6 +21,12 @@ public class MovieUI {
     public String originalLanguage;
     public String subtitles;
     public String thumbnailUrl;
+    public String seriePictureFileName;
+    public String genrePictureFileName;
+    public String moviePictureFileName;
+    public String fileName;
+    public String description;
+    public String originalName;
 
     public static MovieUI of(PanacheEntityBase base) {
         MovieUI dto = new MovieUI();
@@ -30,17 +36,26 @@ public class MovieUI {
 
     public static MovieUI copy(MovieUI dto, PanacheEntityBase base) {
         Movie entity = (Movie) base;
+        Genre genre = Genre.findById(entity.genreId);
+        Serie serie = Serie.findById(entity.serieId);
+
         dto.id = entity.id;
         dto.name = entity.name;
         dto.displayOrder = entity.displayOrder;
-        dto.genre = ((Genre) Genre.findById(entity.genreId)).name;
+        dto.genre = genre.name;
         dto.created = entity.created;
-        dto.serie = ((Serie) Serie.findById(entity.serieId)).name;
+        dto.serie = serie.name;
         dto.year = entity.year;
         dto.language = ((Language) Language.findById(entity.languageId)).name;
         dto.originalLanguage = ((Language) Language.findById(entity.originalLanguageId)).name;
         dto.subtitles = ((Language) Language.findById(entity.subtitlesId)).name;
         dto.thumbnailUrl = entity.getThumbnailUrl();
+        dto.seriePictureFileName = serie.pictureFileName;
+        dto.genrePictureFileName = genre.pictureFileName;
+        dto.moviePictureFileName = entity.pictureFileName;
+        dto.fileName = entity.fileName;
+        dto.originalName = entity.originalName;
+        dto.description = entity.description;
 
         return dto;
     }

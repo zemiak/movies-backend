@@ -103,6 +103,9 @@ public class MovieService {
         return (list.isEmpty() || list.size() > 1) ? null : list.get(0);
     }
 
+    @POST
+    @Path("filename")
+    @Consumes(MediaType.TEXT_PLAIN)
     public Movie create(String newFile) {
         final Movie movie = new Movie();
         final String baseFileName = new File(newFile).getName();
