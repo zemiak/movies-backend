@@ -1,7 +1,6 @@
 package com.zemiak.movies.movie;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 
@@ -47,5 +46,11 @@ public class MovieBatchServiceTest {
         var movies = Json.createArrayBuilder().add("3200/HelloWorld.mp9").build();
         List<MovieUI> newMovies = req.post("/movies/fetch", movies).jsonPath().getList("$", MovieUI.class);
         assertTrue(newMovies.isEmpty(), "No movies in the provided list");
+    }
+
+    @Test
+    public void newReleases() {
+        List<MovieUI> newMovies = req.get("/movies/ui/new").jsonPath().getList("$", MovieUI.class);
+        assertFalse(newMovies.isEmpty(), "Returned some new movies");
     }
 }
