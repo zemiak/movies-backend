@@ -26,11 +26,6 @@ import io.quarkus.panache.common.Sort;
 @Entity
 @JsonbNillable
 public class Genre extends PanacheEntityBase implements Comparable<Genre> {
-    public static final Long ID_NONE = 0L;
-    public static final Long ID_FRESH = -1L;
-    public static final Long ID_UNASSIGNED = -2L;
-    public static final Long ID_RECENTLY_ADDED = -3L;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
@@ -155,7 +150,7 @@ public class Genre extends PanacheEntityBase implements Comparable<Genre> {
 
     public static Genre getFreshGenre() {
         Genre g = new Genre();
-        g.id = Genre.ID_FRESH;
+        g.id = GenreIds.ID_FRESH;
         g.name = "Fresh";
         g.pictureFileName = "notdefined.png";
         return g;
@@ -163,7 +158,7 @@ public class Genre extends PanacheEntityBase implements Comparable<Genre> {
 
     public static Genre getUnassignedGenre() {
         Genre g = new Genre();
-        g.id = Genre.ID_UNASSIGNED;
+        g.id = GenreIds.ID_UNASSIGNED;
         g.name = "Unassigned";
         g.pictureFileName = "notdefined.png";
         return g;
@@ -171,26 +166,26 @@ public class Genre extends PanacheEntityBase implements Comparable<Genre> {
 
     public static Genre getRecentlyAddedGenre() {
         Genre g = new Genre();
-        g.id = Genre.ID_RECENTLY_ADDED;
+        g.id = GenreIds.ID_RECENTLY_ADDED;
         g.name = "New";
         g.pictureFileName = "notdefined.png";
         return g;
     }
 
     public static boolean isArtificial(Long id) {
-        return ID_FRESH.equals(id) || ID_RECENTLY_ADDED.equals(id) || ID_UNASSIGNED.equals(id);
+        return GenreIds.ID_FRESH.equals(id) || GenreIds.ID_RECENTLY_ADDED.equals(id) || GenreIds.ID_UNASSIGNED.equals(id);
     }
 
     public static Genre findArtificial(Long id) {
-        if (ID_FRESH.equals(id)) {
+        if (GenreIds.ID_FRESH.equals(id)) {
             return getFreshGenre();
         }
 
-        if (ID_UNASSIGNED.equals(id)) {
+        if (GenreIds.ID_UNASSIGNED.equals(id)) {
             return getUnassignedGenre();
         }
 
-        if (ID_RECENTLY_ADDED.equals(id)) {
+        if (GenreIds.ID_RECENTLY_ADDED.equals(id)) {
             return getRecentlyAddedGenre();
         }
 

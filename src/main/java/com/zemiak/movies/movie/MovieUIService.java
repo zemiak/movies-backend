@@ -31,7 +31,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import com.zemiak.movies.config.ConfigurationProvider;
-import com.zemiak.movies.genre.Genre;
+import com.zemiak.movies.genre.GenreIds;
 import com.zemiak.movies.strings.Encodings;
 import com.zemiak.movies.ui.FileUploadForm;
 import com.zemiak.movies.ui.GuiDTO;
@@ -138,7 +138,7 @@ public class MovieUIService {
     public List<GuiDTO> getUnassignedMovies() {
         return Movie
                 .find("genreId = :genreId OR genreId IS NULL", Sort.ascending("displayOrder"),
-                        Parameters.with("genreId", Genre.ID_NONE))
+                        Parameters.with("genreId", GenreIds.ID_NONE))
                 .list().stream().map(e -> (Movie) e).map(Movie::toDto).collect(Collectors.toList());
     }
 

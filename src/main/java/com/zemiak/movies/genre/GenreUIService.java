@@ -61,7 +61,7 @@ public class GenreUIService {
     public List<GuiDTO> getRootItems() {
         var root = new ArrayList<GuiDTO>();
         Genre.traverse(Sort.ascending("id"), e -> {root.add(e.toDto());});
-        
+
         root.add(Genre.getFreshGenre().toDto());
         root.add(Genre.getRecentlyAddedGenre().toDto());
         root.add(Genre.getUnassignedGenre().toDto());
@@ -128,15 +128,15 @@ public class GenreUIService {
     @GET
     @Path("browse")
     public List<GuiDTO> getItemsForUI(@NotNull @QueryParam("id") final Long id) {
-        if (Genre.ID_FRESH.equals(id)) {
+        if (GenreIds.ID_FRESH.equals(id)) {
             return getFreshMovies();
         }
 
-        if (Genre.ID_UNASSIGNED.equals(id)) {
+        if (GenreIds.ID_UNASSIGNED.equals(id)) {
             return getUnassignedMovies();
         }
 
-        if (Genre.ID_RECENTLY_ADDED.equals(id)) {
+        if (GenreIds.ID_RECENTLY_ADDED.equals(id)) {
             return getRecentlyAddedMovies();
         }
 
