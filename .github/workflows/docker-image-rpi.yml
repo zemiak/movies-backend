@@ -22,7 +22,7 @@ jobs:
       with:
         java-version: 1.11
     - name: Package
-      run: mvn package --file pom.xml
+      run: mvn package -DskipTests -Dmaven.test.skip=true --file pom.xml
     - name: Set up Docker Buildx
       uses: crazy-max/ghaction-docker-buildx@v1
       with:
@@ -44,5 +44,6 @@ jobs:
         docker buildx build \
                 --platform ${{ steps.prepare.outputs.docker_platform }} \
                 --tag ${{ steps.prepare.outputs.docker_image }}:${{ steps.prepare.outputs.version }}-rpi \
+                --tag ${{ steps.prepare.outputs.docker_image }}:latest-rpi \
                 --file ./src/main/docker/Dockerfile.rpi \
                 --output type=image,push=true .
