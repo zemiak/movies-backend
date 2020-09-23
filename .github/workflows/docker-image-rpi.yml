@@ -1,7 +1,10 @@
 name: Docker Build & Push rpi Image
 on:
   push:
-    branches: [ master ]
+    branches:
+      - master
+      - develop
+
 jobs:
   build:
     runs-on: ubuntu-18.04
