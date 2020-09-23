@@ -19,8 +19,11 @@ RUN adduser --system --force-badname --no-create-home --disabled-login --uid 100
     chown -R u1001:root ${AUTODEPLOY_FOLDER} && \
     mkdir -p /data
 
-COPY target/lib/* ${AUTODEPLOY_FOLDER}/lib/
-COPY target/*-runner.jar ${AUTODEPLOY_FOLDER}/app.jar
+# We make four distinct layers so if there are application changes the library layers can be re-used
+COPY --chown=1001 target/quarkus-app/lib/ ${AUTODEPLOY_FOLDER}/lib/
+COPY --chown=1001 target/quarkus-app/*.jar ${AUTODEPLOY_FOLDER}/
+COPY --chown=1001 target/quarkus-app/app/ ${AUTODEPLOY_FOLDER}/app/
+COPY --chown=1001 target/quarkus-app/quarkus/ ${AUTODEPLOY_FOLDER}/quarkus/
 
 WORKDIR ${AUTODEPLOY_FOLDER}
 USER u1001
