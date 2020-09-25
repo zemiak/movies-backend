@@ -10,7 +10,7 @@ Environment=IMAGE=quay.io/zemiak/movies-backend:latest-rpi
 Environment=QUARKUS_PROFILE=prod
 Environment=QUARKUS_HTTP_PORT=8081
 Environment=PORTMAP=8081:8081
-Environment=VOLUME=/mnt/media/Movies:/data
+Environment=VOLUME=/mnt/movies:/data
 Environment=MEMORY=256m
 ExecStartPre=-/usr/bin/docker pull ${IMAGE}
 ExecStart=/usr/bin/docker run $DOPTS -m ${MEMORY} --name ${CONTAINERNAME} -p ${PORTMAP} -e MEMORY_LIMIT=200 -e QUARKUS_PROFILE=${QUARKUS_PROFILE} -e QUARKUS_PROFILE=${QUARKUS_PROFILE} -e QUARKUS_HTTP_PORT=${QUARKUS_HTTP_PORT} -v ${VOLUME} ${IMAGE}
