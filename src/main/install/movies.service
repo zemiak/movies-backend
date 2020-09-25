@@ -6,11 +6,12 @@ After=docker.service
 [Service]
 Environment=DOPTS="--restart=always"
 Environment=CONTAINERNAME=movies
-Environment=IMAGE=movies
+Environment=IMAGE=quay.io/zemiak/movies-backend:latest-rpi
 Environment=QUARKUS_PROFILE=prod
 Environment=QUARKUS_HTTP_PORT=8081
 Environment=VOLUME=/mnt/media/Movies:/data
 Environment=MEMORY=256m
+ExecStartPre=-/usr/bin/docker pull ${IMAGE}
 ExecStart=/usr/bin/docker run $DOPTS -m ${MEMORY} --name ${CONTAINERNAME} -p ${PORTMAP} -e MEMORY_LIMIT=200 -e QUARKUS_PROFILE=${QUARKUS_PROFILE} -e QUARKUS_PROFILE=${QUARKUS_PROFILE} -e QUARKUS_HTTP_PORT=${QUARKUS_HTTP_PORT} -v ${VOLUME} ${IMAGE}
 ExecStop=/usr/bin/docker stop -t 10 ${CONTAINERNAME}
 ExecStopPost=/usr/bin/docker rm -f ${CONTAINERNAME}
