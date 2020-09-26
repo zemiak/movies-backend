@@ -8,7 +8,7 @@ import com.zemiak.movies.config.ConfigurationProvider;
 public class ProvideConfiguration {
     public static void init() {
         var conf = new HashMap<String, String>();
-        conf.put(ConfigurationProvider.MEDIA_PATH, Paths.get("", "src", "test", "resources", "media").toAbsolutePath().toString());
+        conf.put(ConfigurationProvider.MEDIA_PATH, Paths.get("", "src", "test", "resources", "movies").toAbsolutePath().toString());
         conf.put("system.name", "test");
         conf.put("mail.to", "none@npreply");
         conf.put("external.url", "http://localhost:8081");
