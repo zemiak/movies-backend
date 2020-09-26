@@ -44,43 +44,19 @@ public final class ConfigurationProvider {
         return devMediaPath;
     }
 
-    public static String getPhotoPath() {
-        return Paths.get(getBasePath().toString(), "Pictures").toString();
-    }
-
     public static String getInfuseLinkPath() {
-        return Paths.get(getBasePath().toString(), "infuse").toString();
+        return Paths.get(getBasePath().toString(), "infuse", "Metadata").toString();
     }
 
     public static String getImgPath() {
-        return Paths.get(getBasePath().toString(), "Pictures", "Movies").toString();
+        return Paths.get(getBasePath().toString(), "infuse", "Pictures").toString();
     }
 
     public static String getPath() {
         return Paths.get(getBasePath().toString(), "Movies").toString();
     }
 
-    public static String getMusicPath() {
-        return Paths.get(getBasePath().toString(), "Music").toString();
-    }
-
     public static String getExternalURL() {
         return get("external.url");
-    }
-
-    public static String getMailTo() {
-        return get("mail.to");
-    }
-
-    public static String getSystemName() {
-        return get("system.name");
-    }
-
-    public static boolean isDevelopmentSystem() {
-        return !"prod".equalsIgnoreCase(getSystemName());
-    }
-
-    public static String getPlexLinkPath() {
-        return Paths.get(getBasePath().toString(), "plex").toString();
     }
 }
