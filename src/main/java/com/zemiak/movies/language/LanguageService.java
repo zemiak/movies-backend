@@ -38,9 +38,9 @@ public class LanguageService {
     }
 
     @POST
-    public Long create(@Valid @NotNull Language entity) {
-        if (null != entity.id) {
-            throw new WebApplicationException(Response.status(Status.NOT_ACCEPTABLE).entity("ID specified").build());
+    public String create(@Valid @NotNull Language entity) {
+        if (null != Language.findById(entity.id)) {
+            throw new WebApplicationException(Response.status(Status.NOT_ACCEPTABLE).entity("ID exists already: " + entity.id).build());
         }
 
         entity.persist();
@@ -57,7 +57,7 @@ public class LanguageService {
         Language findEntity = Language.findById(entity.id);
         if (null == findEntity) {
             throw new WebApplicationException(
-                    Response.status(Status.NOT_FOUND).entity("ID not found" + entity.id).build());
+                    Response.status(Status.NOT_FOUND).entity("ID not found: " + entity.id).build());
         }
 
         Panache.getEntityManager().merge(entity);
@@ -65,7 +65,7 @@ public class LanguageService {
 
     @GET
     @Path("{id}")
-    public Language find(@PathParam("id") @NotNull Long id) {
+    public Language find(@PathParam("id") @NotNull String id) {
         Language entity = Language.findById(id);
         if (null == entity) {
             throw new WebApplicationException(
@@ -77,14 +77,14 @@ public class LanguageService {
 
     @DELETE
     @Path("{id}")
-    public void remove(@PathParam("id") @NotNull Long id) {
+    public void remove(@PathParam("id") @NotNull String id) {
         Language entity = Language.findById(id);
         if (null == entity) {
             throw new WebApplicationException(
                     Response.status(Status.NOT_FOUND).entity("ID not found: " + String.valueOf(id)).build());
         }
 
-        String code = entity.code;
+        String code = entity.id;
 
         if (Movie.find("languageCode", code).count() > 0 || Movie.find("originalLanguageCode", code).count() > 0
                 || Movie.find("subtitlesLanguageCode", code).count() > 0) {
@@ -93,17 +93,5 @@ public class LanguageService {
         }
 
         entity.delete();
-    }
-
-    @GET
-    @Path("{code}/code")
-    public Language findByCode(@PathParam("code") @NotNull String code) {
-        Language entity = Language.find("code", code).firstResult();
-        if (null == entity) {
-            throw new WebApplicationException(
-                    Response.status(Status.NOT_FOUND).entity("Code not found: " + String.valueOf(code)).build());
-        }
-
-        return entity;
     }
 }

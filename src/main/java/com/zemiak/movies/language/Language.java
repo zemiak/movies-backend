@@ -9,8 +9,6 @@ import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -23,14 +21,12 @@ import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 @Entity
 @JsonbNillable
 public class Language extends PanacheEntityBase {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long id;
-
     @Basic(optional = false)
     @NotNull
-    @Column(name = "code")
-    public String code;
+    @Column(name = "id")
+    @Size(min = 2, max = 2)
+    @Id
+    public String id;
 
     @Basic(optional = false)
     @NotNull
@@ -51,7 +47,6 @@ public class Language extends PanacheEntityBase {
     public JsonObject toJson() {
         JsonObjectBuilder builder = NullAwareJsonObjectBuilder.create()
             .add("id", this.id)
-            .add("code", this.code)
             .add("name", this.name)
             .add("pictureFileName", this.pictureFileName)
             .add("displayOrder", this.displayOrder);
@@ -63,7 +58,7 @@ public class Language extends PanacheEntityBase {
     public Language() {
     }
 
-    public Language(Long id) {
+    public Language(String id) {
         this();
         this.id = id;
     }
@@ -75,7 +70,7 @@ public class Language extends PanacheEntityBase {
         this.pictureFileName = entity.pictureFileName;
     }
 
-    public Language(Long id, String name) {
+    public Language(String id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -106,7 +101,7 @@ public class Language extends PanacheEntityBase {
 
     @JsonbTransient
     public boolean isNone() {
-        return "  ".equals(code);
+        return "  ".equals(id);
     }
 
     public static Language create() {
@@ -115,14 +110,6 @@ public class Language extends PanacheEntityBase {
         lang.displayOrder = 9000;
 
         return lang;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getThumbnailUrl() {

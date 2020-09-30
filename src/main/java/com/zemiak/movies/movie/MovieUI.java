@@ -46,9 +46,9 @@ public class MovieUI {
         dto.created = entity.created;
         dto.serie = serie.name;
         dto.year = entity.year;
-        dto.language = null == entity.languageCode ? "" : ((Language) Language.find("code", entity.languageCode).firstResult()).name;
-        dto.originalLanguage =  null == entity.originalLanguageCode ? "" : ((Language) Language.find("code", entity.originalLanguageCode).firstResult()).name;
-        dto.subtitles = null == entity.subtitlesLanguageCode ? "" : ((Language) Language.find("code", entity.subtitlesLanguageCode).firstResult()).name;
+        dto.language = findLanguageName(entity.languageCode);
+        dto.originalLanguage =  findLanguageName(entity.originalLanguageCode);
+        dto.subtitles = findLanguageName(entity.subtitlesLanguageCode);
         dto.thumbnailUrl = entity.getThumbnailUrl();
         dto.seriePictureFileName = serie.pictureFileName;
         dto.genrePictureFileName = genre.pictureFileName;
@@ -58,5 +58,18 @@ public class MovieUI {
         dto.description = entity.description;
 
         return dto;
+    }
+
+    private static String findLanguageName(String languageCode) {
+        if (null == languageCode) {
+            return null;
+        }
+
+        Language entity = (Language) Language.findById(languageCode);
+        if (null == entity) {
+            return null;
+        }
+
+        return entity.name;
     }
 }

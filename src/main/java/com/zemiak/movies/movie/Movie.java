@@ -255,7 +255,7 @@ public class Movie extends PanacheEntityBase implements Comparable<Movie> {
             return "None";
         }
 
-        Language lang = Language.find("code", this.languageCode).firstResult();
+        Language lang = Language.findById(this.languageCode);
         return null == lang ? "None" : lang.name;
     }
 
@@ -265,7 +265,7 @@ public class Movie extends PanacheEntityBase implements Comparable<Movie> {
             return "None";
         }
 
-        Language lang = Language.find("code", this.originalLanguageCode).firstResult();
+        Language lang = Language.findById(this.originalLanguageCode);
         return null == lang ? "None" : lang.name;
     }
 

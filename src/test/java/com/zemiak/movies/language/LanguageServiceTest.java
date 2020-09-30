@@ -35,18 +35,21 @@ public class LanguageServiceTest {
     }
 
     private JsonObject getHelloWorldLanguage() {
-        return Json.createObjectBuilder().add("name", "Hello, World").add("fileName", "hello-world.m4v")
-                .add("code", "ua").add("created", DateFormatter.format(LocalDateTime.now().minusYears(20)).toString())
+        return Json.createObjectBuilder()
+                .add("name", "Hello, World")
+                .add("displayOrder", 90)
+                .add("id", "ua")
+                .add("created", DateFormatter.format(LocalDateTime.now().minusYears(20)).toString())
                 .add("pictureFileName", "u-a.jpg").build();
     }
 
     @Test
     public void create() {
         JsonObject language = getHelloWorldLanguage();
-        Long id = req.post("/languages", language).as(Long.class);
+        String id = req.post("/languages", language).asString();
         assertTrue(null != id, "Create language returns ID");
 
-        Language entity = req.get("/languages/" + String.valueOf(id)).jsonPath().getObject("$", Language.class);
+        Language entity = req.get("/languages/" + id).jsonPath().getObject("$", Language.class);
         assertEquals(id, entity.id, "Language ID must be the same as created");
         assertEquals(language.getString("name"), entity.name, "Name must be the same as created");
         assertEquals(language.getString("created"), DateFormatter.format(entity.created),
@@ -57,8 +60,8 @@ public class LanguageServiceTest {
 
     @Test
     public void find() {
-        Long id = 0l;
-        Language entity = req.get("/languages/" + String.valueOf(id)).jsonPath().getObject("$", Language.class);
+        String id = "en";
+        Language entity = req.get("/languages/" + id).jsonPath().getObject("$", Language.class);
         assertEquals(id, entity.id, "Language ID must be the same as specified");
         assertEquals("English", entity.name, "Name must be English");
     }
@@ -66,17 +69,20 @@ public class LanguageServiceTest {
     @Test
     public void remove() {
         JsonObject language = getHelloWorldLanguage();
-        Long id = req.post("/languages", language).as(Long.class);
-        assertTrue(null != id, "Create language returns ID");
+        String id = language.getString("id");
 
-        req.delete("/languages/" + String.valueOf(id), Status.NO_CONTENT.getStatusCode());
-        req.get("/languages/" + String.valueOf(id), Status.NOT_FOUND.getStatusCode());
+        if (404 == req.get("/languages/" + id).getStatusCode()) {
+            req.post("/languages", language).asString();
+        }
+
+        req.delete("/languages/" + id, Status.NO_CONTENT.getStatusCode());
+        req.get("/languages/" + id, Status.NOT_FOUND.getStatusCode());
     }
 
     @Test
     public void update() {
-        Long id = 0l;
-        Language entity = req.get("/languages/" + String.valueOf(id)).jsonPath().getObject("$", Language.class);
+        String id = "en";
+        Language entity = req.get("/languages/" + id).jsonPath().getObject("$", Language.class);
         assertEquals(id, entity.id, "Language ID must be the same as specified");
         assertEquals("English", entity.name, "Name must be English");
 
@@ -85,7 +91,7 @@ public class LanguageServiceTest {
 
         req.put("/languages", json, Status.NO_CONTENT.getStatusCode());
 
-        entity = req.get("/languages/" + String.valueOf(id)).jsonPath().getObject("$", Language.class);
+        entity = req.get("/languages/" + id).jsonPath().getObject("$", Language.class);
         assertEquals("Some", entity.name, "Updated name must be: Some");
 
         entity.name = "English";
@@ -102,36 +108,31 @@ public class LanguageServiceTest {
     }
 
     @Test
-    public void createMustFailIfIDIsNotEmpty() {
-        JsonObject language = Json.createObjectBuilder().add("id", 42).add("code", "ua").add("name", "Hello, World")
+    public void updateMustFailIfIDIsEmpty() {
+        JsonObject language = Json.createObjectBuilder().addNull("id").add("name", "Hello, World")
                 .add("fileName", "hello-world.m4v")
                 .add("created", DateFormatter.format(LocalDateTime.now().minusYears(20)))
                 .add("pictureFileName", "u-a.jpg").build();
-        req.post("/languages", language, Status.NOT_ACCEPTABLE.getStatusCode());
-    }
 
-    @Test
-    public void updateMustFailIfIDIsEmpty() {
-        JsonObject language = getHelloWorldLanguage();
         req.put("/languages", language, Status.NOT_ACCEPTABLE.getStatusCode());
     }
 
     @Test
     public void findMustFailIfEntityDoesNotExist() {
-        Long id = 42000l;
-        req.get("/languages/" + String.valueOf(id), Status.NOT_FOUND.getStatusCode());
+        String id = "he";
+        req.get("/languages/" + id, Status.NOT_FOUND.getStatusCode());
     }
 
     @Test
     public void deleteMustFailIfEntityDoesNotExist() {
-        Long id = 42000l;
-        req.delete("/languages/" + String.valueOf(id), Status.NOT_FOUND.getStatusCode());
+        String id = "he";
+        req.delete("/languages/" + id, Status.NOT_FOUND.getStatusCode());
     }
 
     @Test
     public void updateMustFailIfEntityDoesNotExist() {
-        Long id = 42000l;
-        JsonObject language = Json.createObjectBuilder().add("id", id).add("code", "ua").add("name", "Hello, World")
+        String id = "he";
+        JsonObject language = Json.createObjectBuilder().add("id", id).add("name", "Hello, World")
                 .add("fileName", "hello-world.m4v")
                 .add("created", DateFormatter.format(LocalDateTime.now().minusYears(20)))
                 .add("pictureFileName", "u-a.jpg").build();
@@ -148,29 +149,14 @@ public class LanguageServiceTest {
 
     @Test
     public void removeMustFailIfSeriesWithLanguageExist() {
-        Long idThatIsReferencedInSeries = 0l;
-        req.delete("/languages/" + String.valueOf(idThatIsReferencedInSeries), Status.NOT_ACCEPTABLE.getStatusCode());
+        String idThatIsReferencedInSeries = "en";
+        req.delete("/languages/" + idThatIsReferencedInSeries, Status.NOT_ACCEPTABLE.getStatusCode());
     }
 
     @Test
     public void removeMustFailIfMoviesWithLanguageExist() {
-        Long idThatIsReferencedInMoviesButNotInSeries = 13l;
-        req.delete("/languages/" + String.valueOf(idThatIsReferencedInMoviesButNotInSeries),
+        String idThatIsReferencedInMoviesButNotInSeries = "no";
+        req.delete("/languages/" + idThatIsReferencedInMoviesButNotInSeries,
                 Status.NOT_ACCEPTABLE.getStatusCode());
-    }
-
-    @Test
-    public void findByCode() {
-        String code = "en";
-        Language entity = req.get("/languages/" + String.valueOf(code) + "/code").jsonPath().getObject("$",
-                Language.class);
-        assertEquals(code, entity.code, "Language Code must be the same as specified");
-        assertEquals("English", entity.name, "Name must be English");
-    }
-
-    @Test
-    public void findByCodeMustFailIfEntityDoesNotExist() {
-        String code = "xy";
-        req.get("/languages/" + String.valueOf(code) + "/code", Status.NOT_FOUND.getStatusCode());
     }
 }
