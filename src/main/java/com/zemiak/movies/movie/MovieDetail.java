@@ -18,10 +18,10 @@ public class MovieDetail extends MovieUI  {
     public Map<Long, String> series;
     public Map<Long, Long> serieGenres;
 
-    public Long languageId;
-    public Long originalLanguageId;
-    public Long subtitlesId;
-    public Map<Long, String> languages;
+    public String languageCode;
+    public String originalLanguageCode;
+    public String subtitlesLanguageCode;
+    public Map<String, String> languages;
 
     public String originalName;
     public String fileName;
@@ -53,7 +53,7 @@ public class MovieDetail extends MovieUI  {
         Language.streamAll(Sort.by("displayOrder"))
             .map(languageBase -> {return (Language) languageBase;})
             .forEach(language -> {
-                dto.languages.put(language.id, language.name);
+                dto.languages.put(language.code, language.name);
             });
 
         return dto;
@@ -66,9 +66,9 @@ public class MovieDetail extends MovieUI  {
         Movie entity = (Movie) base;
         dto.genreId = entity.genreId;
         dto.serieId = entity.serieId;
-        dto.languageId = entity.languageId;
-        dto.originalLanguageId = entity.originalLanguageId;
-        dto.subtitlesId = entity.subtitlesId;
+        dto.languageCode = entity.languageCode;
+        dto.originalLanguageCode = entity.originalLanguageCode;
+        dto.subtitlesLanguageCode = entity.subtitlesLanguageCode;
         dto.originalName = entity.originalName;
         dto.description = entity.description;
         dto.fileName = entity.fileName;

@@ -46,9 +46,9 @@ public class MovieUI {
         dto.created = entity.created;
         dto.serie = serie.name;
         dto.year = entity.year;
-        dto.language = null == entity.languageId ? "" : ((Language) Language.findById(entity.languageId)).name;
-        dto.originalLanguage =  null == entity.originalLanguageId ? "" : ((Language) Language.findById(entity.originalLanguageId)).name;
-        dto.subtitles = null == entity.subtitlesId ? "" : ((Language) Language.findById(entity.subtitlesId)).name;
+        dto.language = null == entity.languageCode ? "" : ((Language) Language.find("code", entity.languageCode).firstResult()).name;
+        dto.originalLanguage =  null == entity.originalLanguageCode ? "" : ((Language) Language.find("code", entity.originalLanguageCode).firstResult()).name;
+        dto.subtitles = null == entity.subtitlesLanguageCode ? "" : ((Language) Language.find("code", entity.subtitlesLanguageCode).firstResult()).name;
         dto.thumbnailUrl = entity.getThumbnailUrl();
         dto.seriePictureFileName = serie.pictureFileName;
         dto.genrePictureFileName = genre.pictureFileName;

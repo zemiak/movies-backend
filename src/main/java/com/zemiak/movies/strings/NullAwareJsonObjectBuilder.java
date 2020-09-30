@@ -151,6 +151,12 @@ public class NullAwareJsonObjectBuilder implements JsonObjectBuilder {
         }
     }
 
+    public static void addString(JsonObjectBuilder builder2, String name, String value) {
+        if (null != value) {
+            builder2.add(name, value);
+        }
+    }
+
     public static void addBoolean(JsonObjectBuilder builder2, String name, Boolean value) {
         if (null != value) {
             builder2.add(name, value);
