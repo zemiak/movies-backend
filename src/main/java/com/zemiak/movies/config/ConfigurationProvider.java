@@ -12,7 +12,6 @@ import org.eclipse.microprofile.config.ConfigProvider;
  * MEDIA_PATH
  * EXTERNAL_URL
  * SYSTEM_NAME
- * MAIL_TO
  */
 public final class ConfigurationProvider {
     public static final String MEDIA_PATH = "media.path";

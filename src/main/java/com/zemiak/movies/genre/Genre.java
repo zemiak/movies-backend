@@ -53,6 +53,7 @@ public class Genre extends PanacheEntityBase implements Comparable<Genre> {
         Genre genre = new Genre();
         genre.created = LocalDateTime.now();
         genre.displayOrder = 9000l;
+        genre.protectedGenre = 0l;
 
         return genre;
     }

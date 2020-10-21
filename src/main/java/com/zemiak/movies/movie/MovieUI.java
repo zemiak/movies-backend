@@ -36,22 +36,23 @@ public class MovieUI {
 
     public static MovieUI copy(MovieUI dto, PanacheEntityBase base) {
         Movie entity = (Movie) base;
-        Genre genre = Genre.findById(entity.genreId);
-        Serie serie = Serie.findById(entity.serieId);
+
+        Genre genre = null == entity.genreId ? null : Genre.findById(entity.genreId);
+        Serie serie = null == entity.serieId ? null : Serie.findById(entity.serieId);
 
         dto.id = entity.id;
         dto.name = entity.name;
         dto.displayOrder = entity.displayOrder;
-        dto.genre = genre.name;
+        dto.genre = null == genre ? null : genre.name;
         dto.created = entity.created;
-        dto.serie = serie.name;
+        dto.serie = null == serie ? null : serie.name;
         dto.year = entity.year;
         dto.language = findLanguageName(entity.languageCode);
         dto.originalLanguage =  findLanguageName(entity.originalLanguageCode);
         dto.subtitles = findLanguageName(entity.subtitlesLanguageCode);
         dto.thumbnailUrl = entity.getThumbnailUrl();
-        dto.seriePictureFileName = serie.pictureFileName;
-        dto.genrePictureFileName = genre.pictureFileName;
+        dto.seriePictureFileName = null == serie ? null : serie.pictureFileName;
+        dto.genrePictureFileName = null == genre ? null : genre.pictureFileName;
         dto.moviePictureFileName = entity.pictureFileName;
         dto.fileName = entity.fileName;
         dto.originalName = entity.originalName;

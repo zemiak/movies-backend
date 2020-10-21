@@ -64,6 +64,12 @@ public class AssuredRequests {
         return post(endpoint, body, 200);
     }
 
+    public Response post(String endpoint, String body) {
+        return  given().headers("Content-Type", ContentType.TEXT, "Accept", ContentType.JSON).
+                when().body(body.toString()).post(endpoint).
+                then().statusCode(200).extract().response();
+    }
+
     public Response put(String endpoint, JsonValue body) {
         return put(endpoint, body, 200);
     }

@@ -53,7 +53,7 @@ public class MovieDetail extends MovieUI  {
         Language.streamAll(Sort.by("displayOrder"))
             .map(languageBase -> {return (Language) languageBase;})
             .forEach(language -> {
-                dto.languages.put(language.id, language.name);
+                dto.languages.put(language.code, language.name);
             });
 
         return dto;

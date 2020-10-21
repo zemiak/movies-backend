@@ -2,6 +2,7 @@ package com.zemiak.movies.movie;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.UnsupportedEncodingException;
@@ -152,5 +153,13 @@ public class MovieServiceTest {
         List<GuiDTO> movies = req.get("/movies/search/" + URLEncoder.encode(text, "UTF-8")).jsonPath().getList("$",
                 GuiDTO.class);
         assertTrue(movies.isEmpty());
+    }
+
+    @Test
+    public void fileNameCreationMustReturnMovie() {
+        String fileName = "202004-marvel/01-captain-america-1-the-first-avenger-2011-1940.mp4";
+        Movie entity = req.post("/movies/filename", fileName).jsonPath().getObject("$", Movie.class);
+        assertNotNull(entity.id, "Created movie must have an ID");
+        assertEquals(fileName, entity.fileName, "Filename must be the same");
     }
 }

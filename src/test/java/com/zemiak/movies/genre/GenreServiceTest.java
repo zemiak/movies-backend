@@ -74,6 +74,7 @@ public class GenreServiceTest {
     private JsonObject getHelloWorldGenre() {
         return Json.createObjectBuilder().add("name", "Hello, World").add("fileName", "hello-world.m4v")
                 .add("created", DateFormatter.format(LocalDateTime.now().minusYears(20)))
+                .add("protectedGenre", 0l)
                 .add("pictureFileName", "hello-world.jpg").build();
     }
 

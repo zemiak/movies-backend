@@ -35,7 +35,7 @@ public class NullAwareJsonObjectBuilderTest {
     @Test
     public void testLanguageWithNulls() {
         Language entity = Language.create();
-        entity.id = "en";
+        entity.code = "en";
         entity.name = "English";
         entity.created = LocalDateTime.now();
         entity.displayOrder = 1;
@@ -56,7 +56,7 @@ public class NullAwareJsonObjectBuilderTest {
     @Test
     public void testLanguageWithNullsToJsonMethod() {
         Language entity = Language.create();
-        entity.id = "en";
+        entity.code = "en";
         entity.name = "English";
         entity.created = LocalDateTime.now();
         entity.displayOrder = 1;

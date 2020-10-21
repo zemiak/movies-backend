@@ -45,6 +45,7 @@ public class MovieService {
             throw new WebApplicationException(Response.status(Status.NOT_ACCEPTABLE).entity("ID specified").build());
         }
 
+        // entity.id = seq.getNextValue();
         entity.persist();
         return entity.id;
     }
@@ -100,7 +101,7 @@ public class MovieService {
     @Path("filename")
     @Consumes(MediaType.TEXT_PLAIN)
     public Movie create(String newFile) {
-        final Movie movie = new Movie();
+        final Movie movie = Movie.create();
         final String baseFileName = new File(newFile).getName();
         final String name = baseFileName.substring(0, baseFileName.lastIndexOf("."));
 

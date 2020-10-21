@@ -9,6 +9,8 @@ import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -21,12 +23,14 @@ import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 @Entity
 @JsonbNillable
 public class Language extends PanacheEntityBase {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public Long id;
+
     @Basic(optional = false)
     @NotNull
-    @Column(name = "id")
     @Size(min = 2, max = 2)
-    @Id
-    public String id;
+    public String code;
 
     @Basic(optional = false)
     @NotNull
@@ -58,7 +62,7 @@ public class Language extends PanacheEntityBase {
     public Language() {
     }
 
-    public Language(String id) {
+    public Language(Long id) {
         this();
         this.id = id;
     }
@@ -70,7 +74,7 @@ public class Language extends PanacheEntityBase {
         this.pictureFileName = entity.pictureFileName;
     }
 
-    public Language(String id, String name) {
+    public Language(Long id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -101,7 +105,7 @@ public class Language extends PanacheEntityBase {
 
     @JsonbTransient
     public boolean isNone() {
-        return "  ".equals(id);
+        return "  ".equals(code);
     }
 
     public static Language create() {
