@@ -22,5 +22,17 @@ then
     exit 30
 fi
 
+cd ../movies-backend
+mvn clean package -q
+if [ $? -ne 0 ]
+then
+    echo "$0 error packaging main app"
+    exit 30
+fi
+
+java -jar -Dquarkus.profile=integrationtests target/quarkus-app/quarkus-run.jar &
+
 cd movies-st
 mvn clean package -q
+
+killall java
