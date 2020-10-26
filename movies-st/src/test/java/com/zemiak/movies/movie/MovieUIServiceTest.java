@@ -20,14 +20,16 @@ import com.zemiak.movies.serie.Serie;
 import com.zemiak.movies.ui.GuiDTO;
 
 import org.junit.jupiter.api.Test;
+import io.quarkus.test.junit.QuarkusTest;
 
+@QuarkusTest
 public class MovieUIServiceTest {
     private static int TESTING_YEAR = 2020;
     private static String FRESH_2020 = "Patalie s Lochneskou";
     private static String FRESH_2019 = "Kde vezi ten vlkodlak";
     private static String RECENT_2020 = "Riddick: Dark Fury 3";
     private static String RECENT_2019 = "Riddick: Dark Fury 2";
-    public static Long SERIE_SCOOBYDOO = 30010l;
+    private static Long SERIE_SCOOBYDOO = 30010l;
     private static Long GENRE_SF = 4l;
     private static Long GENRE_CHILDREN = 3l;
     private static Long NON_EXISTING_ID = -42l;
@@ -36,24 +38,6 @@ public class MovieUIServiceTest {
 
     public MovieUIServiceTest() {
         req = new AssuredRequests();
-    }
-
-    @Test
-    public void getFreshMoviesContainsTwoRecentMovies() {
-        List<GuiDTO> movies = cut.getFreshMovies(TESTING_YEAR);
-        assertNotNull(movies, "Movies must not be null");
-        assertEquals(2, movies.size(), "Fresh movie list contains 2 items");
-        assertEquals(FRESH_2020, movies.get(0).title, "The first movie is from 2020");
-        assertEquals(FRESH_2019, movies.get(1).title, "The first movie is from 2019");
-    }
-
-    @Test
-    public void getRecentlyAddedMoviesContainsTwoRecentlyAdded() {
-        List<GuiDTO> movies = cut.getRecentlyAddedMovies();
-        assertNotNull(movies, "Movies must not be null");
-        assertTrue(movies.size() > 1, "Fresh movie list contains 2 items");
-        assertEquals(RECENT_2020, movies.get(0).title, "The first movie is from 2020");
-        assertEquals(RECENT_2019, movies.get(1).title, "The first movie is from 2019");
     }
 
     @Test
@@ -71,56 +55,5 @@ public class MovieUIServiceTest {
             .filter(m -> null != m.serieId && m.serieId != Serie.ID_NONE)
             .findAny()
             .isPresent(), "Movie with a serie does not belong to a genre list");
-    }
-
-    @Test
-    public void getSerieMoviesForUnknownContains0Episodes() {
-        List<GuiDTO> movies = cut.getSerieMovies(NON_EXISTING_ID);
-        assertNotNull(movies, "Movies must not be null");
-        assertEquals(0, movies.size(), "Unknown contains 0 episodes");
-    }
-
-    @Test
-    public void getGenreMoviesForSFContains2Movies() {
-        List<GuiDTO> movies = cut.getGenreMovies(GENRE_SF);
-        assertNotNull(movies, "Movies must not be null");
-        assertTrue(2 <= movies.size(), "SF contains 2 movies");
-    }
-
-    @Test
-    public void getGenreMoviesForUnknownContains0Episodes() {
-        List<GuiDTO> movies = cut.getGenreMovies(NON_EXISTING_ID);
-        assertNotNull(movies, "Movies must not be null");
-        assertEquals(0, movies.size(), "Unknown contains 0 movies");
-    }
-
-    @Test
-    public void getUnassignedMoviesForUnknownContains1Episode() {
-        List<GuiDTO> movies = cut.getUnassignedMovies();
-        assertNotNull(movies, "Movies must not be null");
-        assertEquals(1, movies.size(), "Unknown contains 0 movies");
-        assertEquals(RECENT_2020, movies.get(0).title, "New Riddick is still unassigned");
-    }
-
-    @Test
-    public void getThumbnail() throws IOException {
-        var e = new Movie();
-        e.name = "Test";
-        e.pictureFileName = "none.jpg";
-        ForbiddenJpg.write(e.pictureFileName);
-
-        MovieUIService svc = mock(MovieUIService.class);
-        when(svc.find(0l)).thenReturn(e);
-        when(svc.getThumbnail(0l)).thenCallRealMethod();
-
-        ProvideConfiguration.init();
-
-        Response r = svc.getThumbnail(0l);
-        assertEquals(200, r.getStatus(), "Reply must be 200 OK, but is " + r.getStatus() + " - " + r.getEntity());
-
-        FileInputStream stream = (FileInputStream) r.getEntity();
-        assertNotNull(stream, "Stream must not be null");
-
-        assertTrue(ForbiddenJpg.equalsTo(new String(stream.readAllBytes()), e.pictureFileName), "Must return our thumbnail data");
     }
 }

@@ -10,8 +10,6 @@ import com.zemiak.movies.AssuredRequests;
 
 import org.junit.jupiter.api.Test;
 
-import io.quarkus.test.junit.QuarkusTest;
-
 public class MovieBatchServiceTest {
     AssuredRequests req;
 

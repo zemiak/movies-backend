@@ -46,26 +46,4 @@ public class GenreUIServiceTest {
         List<GuiDTO> res = req.get("/ui/search").jsonPath().getList("$", GuiDTO.class);
         assertEquals(1, res.size(), "There is None genre");
     }
-
-    @Test
-    public void getThumbnail() throws IOException {
-        var e = new Genre();
-        e.name = "Test";
-        e.pictureFileName = "none.jpg";
-        ForbiddenJpg.write(e.pictureFileName);
-
-        GenreUIService svc = mock(GenreUIService.class);
-        when(svc.find(0l)).thenReturn(e);
-        when(svc.getThumbnail(0l)).thenCallRealMethod();
-
-        ProvideConfiguration.init();
-
-        Response r = svc.getThumbnail(0l);
-        assertEquals(200, r.getStatus(), "Reply must be 200 OK, but is " + r.getStatus() + " - " + r.getEntity());
-
-        FileInputStream stream = (FileInputStream) r.getEntity();
-        assertNotNull(stream, "Stream must not be null");
-
-        assertTrue(ForbiddenJpg.equalsTo(new String(stream.readAllBytes()), e.pictureFileName), "Must return our thumbnail data");
-    }
 }

@@ -14,13 +14,14 @@ import javax.json.JsonObject;
 import javax.ws.rs.core.Response.Status;
 
 import com.zemiak.movies.AssuredRequests;
-import com.zemiak.movies.movie.MovieUIServiceTest;
 import com.zemiak.movies.strings.DateFormatter;
 import com.zemiak.movies.ui.GuiDTO;
 
 import org.junit.jupiter.api.Test;
 
 public class SerieServiceTest {
+    private static Long SERIE_SCOOBYDOO = 30010l;
+
     AssuredRequests req;
 
     public SerieServiceTest() {
@@ -147,7 +148,7 @@ public class SerieServiceTest {
 
     // @Test
     public void removeMustFailIfMoviesWithSerieExist() {
-        Long idThatIsReferencedInMovies = MovieUIServiceTest.SERIE_SCOOBYDOO;
+        Long idThatIsReferencedInMovies = SERIE_SCOOBYDOO;
         List<GuiDTO> movies = req.get("/series/browse?id=" + String.valueOf(idThatIsReferencedInMovies)).jsonPath()
                 .getList("$", GuiDTO.class);
         assertEquals(4, movies.size(), "ScoobyDoo contains 4 episodes");
