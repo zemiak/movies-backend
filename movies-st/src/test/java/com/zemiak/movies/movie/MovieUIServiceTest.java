@@ -21,9 +21,6 @@ import com.zemiak.movies.ui.GuiDTO;
 
 import org.junit.jupiter.api.Test;
 
-import io.quarkus.test.junit.QuarkusTest;
-
-@QuarkusTest
 public class MovieUIServiceTest {
     private static int TESTING_YEAR = 2020;
     private static String FRESH_2020 = "Patalie s Lochneskou";
@@ -36,9 +33,6 @@ public class MovieUIServiceTest {
     private static Long NON_EXISTING_ID = -42l;
 
     AssuredRequests req;
-
-    @Inject
-    MovieUIService cut;
 
     public MovieUIServiceTest() {
         req = new AssuredRequests();

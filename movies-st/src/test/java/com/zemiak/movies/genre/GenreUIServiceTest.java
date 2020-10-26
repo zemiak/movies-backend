@@ -21,15 +21,8 @@ import com.zemiak.movies.ui.GuiDTO;
 
 import org.junit.jupiter.api.Test;
 
-import io.quarkus.test.junit.QuarkusTest;
-
-
-@QuarkusTest
 public class GenreUIServiceTest {
     AssuredRequests req;
-
-    @Inject
-    GenreUIService cut;
 
     public GenreUIServiceTest() {
         req = new AssuredRequests();
@@ -50,7 +43,7 @@ public class GenreUIServiceTest {
 
     @Test
     public void getByExpression() {
-        List<GuiDTO> res = cut.getByExpression("one");
+        List<GuiDTO> res = req.get("/ui/search").jsonPath().getList("$", GuiDTO.class);
         assertEquals(1, res.size(), "There is None genre");
     }
 

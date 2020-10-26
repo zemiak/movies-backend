@@ -13,9 +13,6 @@ import com.zemiak.movies.AssuredRequests;
 
 import org.junit.jupiter.api.Test;
 
-import io.quarkus.test.junit.QuarkusTest;
-
-@QuarkusTest
 public class ConfigServiceTest {
     AssuredRequests req;
 
@@ -23,7 +20,7 @@ public class ConfigServiceTest {
         req = new AssuredRequests();
     }
 
-   @Test
+    @Test
     public void thereIsPortInConfig() {
         String body = req.get("/config").body().asString();
 
