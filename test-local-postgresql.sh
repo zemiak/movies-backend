@@ -7,7 +7,7 @@ then
     exit 10
 fi
 
-curl 127.0.0.1:5432 2>/dev/null >/dev/mull
+curl 127.0.0.1:5432 2>/dev/null >/dev/null
 if [ $? -ne 52 ]
 then
     echo "$0 Local postgresql is not running"
@@ -23,7 +23,7 @@ then
 fi
 
 cd ../movies-backend
-mvn clean package -q
+mvn package
 if [ $? -ne 0 ]
 then
     echo "$0 error packaging main app"
@@ -31,6 +31,15 @@ then
 fi
 
 java -jar -Dquarkus.profile=integrationtests target/quarkus-app/quarkus-run.jar &
+while true
+do
+    sleep 2s
+    curl 127.0.0.1:8081 2>/dev/null >/dev/null
+    if [ $? -eq 0 ]
+    then
+        break
+    fi
+done
 
 cd movies-st
 mvn clean package -q
