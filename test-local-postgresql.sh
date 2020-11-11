@@ -14,16 +14,18 @@ then
     exit 20
 fi
 
+echo Restoring database...
 cd ../database
-sh restore-local.sh
+sh restore-local.sh >/dev/null
 if [ $? -ne 0 ]
 then
     echo "$0 error restoring local database"
     exit 30
 fi
 
+echo Packaging the app...
 cd ../movies-backend
-mvn package
+mvn package -q
 if [ $? -ne 0 ]
 then
     echo "$0 error packaging main app"
@@ -42,6 +44,6 @@ do
 done
 
 cd movies-st
-mvn clean package -q
+mvn package -q
 
 killall java

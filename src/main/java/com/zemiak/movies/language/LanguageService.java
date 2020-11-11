@@ -39,8 +39,8 @@ public class LanguageService {
 
     @POST
     public Long create(@Valid @NotNull Language entity) {
-        if (null != Language.findById(entity.id)) {
-            throw new WebApplicationException(Response.status(Status.NOT_ACCEPTABLE).entity("ID exists already: " + entity.id).build());
+        if (Language.find("code", entity.code).singleResultOptional().isPresent()) {
+            throw new WebApplicationException(Response.status(Status.NOT_ACCEPTABLE).entity("code exists already: " + entity.code).build());
         }
 
         entity.persist();

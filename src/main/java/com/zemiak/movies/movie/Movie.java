@@ -100,7 +100,6 @@ public class Movie extends PanacheEntityBase implements Comparable<Movie> {
         Movie entity = (Movie) baseEntity;
 
         JsonObjectBuilder builder = NullAwareJsonObjectBuilder.create()
-            .add("id", entity.id)
             .add("fileName", entity.fileName)
             .add("name", entity.name)
             .add("originalName", entity.originalName)
@@ -109,6 +108,7 @@ public class Movie extends PanacheEntityBase implements Comparable<Movie> {
             .add("description", entity.description)
             .add("webPage", entity.webPage);
 
+        NullAwareJsonObjectBuilder.addLong(builder, "id", entity.id);
         NullAwareJsonObjectBuilder.addInteger(builder, "displayOrder", entity.displayOrder);
         NullAwareJsonObjectBuilder.addLong(builder, "serieId", entity.serieId);
         NullAwareJsonObjectBuilder.addString(builder, "subtitlesId", entity.subtitlesLanguageCode);

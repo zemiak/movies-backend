@@ -50,11 +50,11 @@ public class Language extends PanacheEntityBase {
 
     public JsonObject toJson() {
         JsonObjectBuilder builder = NullAwareJsonObjectBuilder.create()
-            .add("id", this.id)
             .add("name", this.name)
             .add("pictureFileName", this.pictureFileName)
             .add("displayOrder", this.displayOrder);
         NullAwareJsonObjectBuilder.addDate(builder, "created", this.created);
+        NullAwareJsonObjectBuilder.addLong(builder, "id", this.id);
 
         return builder.build();
     }

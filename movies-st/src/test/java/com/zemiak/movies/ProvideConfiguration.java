@@ -10,7 +10,7 @@ public class ProvideConfiguration {
         var conf = new HashMap<String, String>();
         conf.put(ConfigurationProvider.MEDIA_PATH, Paths.get("", "src", "test", "resources", "movies").toAbsolutePath().toString());
         conf.put("system.name", "test");
-        conf.put("external.url", "http://localhost:8081");
+        conf.put("external.url", "http://127.0.0.1:8081");
         ConfigurationProvider.setProvidedConfig(conf);
     }
 }

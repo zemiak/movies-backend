@@ -60,7 +60,6 @@ public class Serie extends PanacheEntityBase implements Comparable<Serie> {
         Serie entity = (Serie) baseEntity;
 
         JsonObjectBuilder builder = NullAwareJsonObjectBuilder.create()
-            .add("id", entity.id)
             .add("name", entity.name)
             .add("pictureFileName", entity.pictureFileName);
 
@@ -68,6 +67,7 @@ public class Serie extends PanacheEntityBase implements Comparable<Serie> {
         NullAwareJsonObjectBuilder.addInteger(builder, "displayOrder", entity.displayOrder);
         NullAwareJsonObjectBuilder.addBoolean(builder, "tvShow", entity.tvShow);
         NullAwareJsonObjectBuilder.addDate(builder, "created", entity.created);
+        NullAwareJsonObjectBuilder.addLong(builder, "id", entity.id);
 
         return builder.build();
     }

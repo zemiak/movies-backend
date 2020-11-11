@@ -24,55 +24,60 @@ public class AssuredRequests {
 
     public Response delete(String endpoint, int expectedCode) {
         return  given().headers("Content-Type", ContentType.JSON, "Accept", ContentType.JSON).
-                when().delete(BASE + endpoint).
+                baseUri(BASE).
+                when().delete(endpoint).
                 then().statusCode(expectedCode).extract().response();
     }
 
     public Response get(String endpoint, int expectedCode) {
         return  given().headers("Content-Type", ContentType.JSON, "Accept", ContentType.JSON).
-                when().get(BASE + endpoint).
+                baseUri(BASE).
+                when().get(endpoint).
                 then().statusCode(expectedCode).extract().response();
     }
 
     public Response post(String endpoint, JsonValue body, int expectedCode) {
         return  given().headers("Content-Type", ContentType.JSON, "Accept", ContentType.JSON).
-                when().body(body.toString()).post(BASE + endpoint).
+                baseUri(BASE).
+                when().body(body.toString()).post(endpoint).
                 then().statusCode(expectedCode).extract().response();
     }
 
     public Response put(String endpoint, JsonValue body, int expectedCode) {
         return  given().headers("Content-Type", ContentType.JSON, "Accept", ContentType.JSON).
-                when().body(body.toString()).put(BASE + endpoint).
+                baseUri(BASE).
+                when().body(body.toString()).put(endpoint).
                 then().statusCode(expectedCode).extract().response();
     }
 
     public Response get(String endpoint) {
-        return get(BASE + endpoint, 200);
+        return get(endpoint, 200);
     }
 
     public JsonArray getArray(String endpoint) {
-        return Json.createReader(new StringReader(get(BASE + endpoint).body().asString())).readArray();
+        return Json.createReader(new StringReader(get(endpoint).body().asString())).readArray();
     }
 
     public JsonObject getObject(String endpoint) {
-        return Json.createReader(new StringReader(get(BASE + endpoint).body().asString())).readObject();
+        return Json.createReader(new StringReader(get(endpoint).body().asString())).readObject();
     }
 
     public Response delete(String endpoint) {
-        return delete(BASE + endpoint, 200);
+        return delete(endpoint, 200);
     }
 
     public Response post(String endpoint, JsonValue body) {
-        return post(BASE + endpoint, body, 200);
+        return post(endpoint, body, 200);
     }
 
     public Response post(String endpoint, String body) {
         return  given().headers("Content-Type", ContentType.TEXT, "Accept", ContentType.JSON).
-                when().body(body.toString()).post(BASE + endpoint).
+                baseUri(BASE).
+                when().body(body.toString()).post(endpoint).
                 then().statusCode(200).extract().response();
     }
 
     public Response put(String endpoint, JsonValue body) {
-        return put(BASE + endpoint, body, 200);
+        return put(endpoint, body, 200);
     }
 }

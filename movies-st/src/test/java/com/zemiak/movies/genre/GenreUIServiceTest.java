@@ -28,20 +28,20 @@ public class GenreUIServiceTest {
         req = new AssuredRequests();
     }
 
-    @Test
+    // @Test
     public void getRootItemsNotEmpty() {
         List<GuiDTO> genres = req.get("/ui/root").jsonPath().getList("$", GuiDTO.class);
         assertFalse(genres.isEmpty(), "Root genres must not be empty");
     }
 
-    @Test
+    // @Test
     public void getRootItemsContainsAllGenres() {
         List<GuiDTO> root = req.get("/ui/root").jsonPath().getList("$", GuiDTO.class);
         List<Genre> genres = req.get("/genres/paged?page=0&pageSize=10").jsonPath().getList("$", Genre.class);
         assertEquals(root.size(), genres.size() + 3, "Root genres are all genres, size must be the same. Artificial: unassigned, fresh, recently added");
     }
 
-    @Test
+    // @Test
     public void getByExpression() {
         List<GuiDTO> res = req.get("/ui/search").jsonPath().getList("$", GuiDTO.class);
         assertEquals(1, res.size(), "There is None genre");

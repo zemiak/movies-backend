@@ -41,11 +41,11 @@ public class NullAwareJsonObjectBuilderTest {
         entity.displayOrder = 1;
 
         JsonObjectBuilder builder = NullAwareJsonObjectBuilder.create()
-            .add("id", entity.id)
             .add("name", entity.name)
             .add("pictureFileName", entity.pictureFileName)
             .add("displayOrder", entity.displayOrder)
             .add("created", DateFormatter.format(entity.created));
+        NullAwareJsonObjectBuilder.addLong(builder, "id", entity.id);
 
         JsonObject data = builder.build();
 

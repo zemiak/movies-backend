@@ -109,13 +109,13 @@ public class Genre extends PanacheEntityBase implements Comparable<Genre> {
 
     public JsonObject toJson() {
         JsonObjectBuilder builder = NullAwareJsonObjectBuilder.create()
-            .add("id", this.id)
             .add("name", this.name)
             .add("pictureFileName", this.pictureFileName);
 
         NullAwareJsonObjectBuilder.addLong(builder, "displayOrder", this.displayOrder);
         NullAwareJsonObjectBuilder.addLong(builder, "protectedGenre", this.protectedGenre);
         NullAwareJsonObjectBuilder.addDate(builder, "created", this.created);
+        NullAwareJsonObjectBuilder.addLong(builder, "id", this.id);
 
         return builder.build();
     }

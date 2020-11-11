@@ -26,13 +26,13 @@ public class GenreServiceTest {
         req = new AssuredRequests();
     }
 
-    @Test
+    // @Test
     public void exists() {
         List<Genre> genres = req.get("/genres/paged?page=0&pageSize=10").jsonPath().getList("$", Genre.class);
         assertFalse(genres.isEmpty(), "Genres are not empty");
     }
 
-    @Test
+    // @Test
     public void create() {
         JsonObject genre = getHelloWorldGenre();
         Long id = req.post("/genres", genre).as(Long.class);
@@ -49,7 +49,7 @@ public class GenreServiceTest {
                 "pictureFileName must be the same as created");
     }
 
-    @Test
+    // @Test
     public void find() {
         Long id = 0l;
         Genre entity = req.get("/genres/" + String.valueOf(id)).jsonPath().getObject("$", Genre.class);
@@ -57,7 +57,7 @@ public class GenreServiceTest {
         assertEquals("None", entity.name, "Name must be None");
     }
 
-    @Test
+    // @Test
     public void remove() {
         JsonObject genre = getHelloWorldGenre();
 
@@ -75,7 +75,7 @@ public class GenreServiceTest {
                 .add("pictureFileName", "hello-world.jpg").build();
     }
 
-    @Test
+    // @Test
     public void update() {
         Long id = 0l;
         Genre entity = req.get("/genres/" + String.valueOf(id)).jsonPath().getObject("$", Genre.class);
@@ -92,7 +92,7 @@ public class GenreServiceTest {
         req.put("/genres", entity.toJson(), Status.NO_CONTENT.getStatusCode());
     }
 
-    @Test
+    // @Test
     public void search() throws UnsupportedEncodingException {
         String text = "On";
         List<GuiDTO> genres = req.get("/genres/search/" + URLEncoder.encode(text, "UTF-8")).jsonPath().getList("$",
@@ -101,7 +101,7 @@ public class GenreServiceTest {
         assertEquals("None", genres.get(0).title, "One None should be found");
     }
 
-    @Test
+    // @Test
     public void createMustFailIfIDIsNotEmpty() {
         JsonObject genre = Json.createObjectBuilder().add("id", 42).add("name", "Hello, World")
                 .add("fileName", "hello-world.m4v")
@@ -110,25 +110,25 @@ public class GenreServiceTest {
         req.post("/genres", genre, Status.NOT_ACCEPTABLE.getStatusCode());
     }
 
-    @Test
+    // @Test
     public void updateMustFailIfIDIsEmpty() {
         JsonObject genre = getHelloWorldGenre();
         req.put("/genres", genre, Status.NOT_ACCEPTABLE.getStatusCode());
     }
 
-    @Test
+    // @Test
     public void findMustFailIfEntityDoesNotExist() {
         Long id = 42000l;
         req.get("/genres/" + String.valueOf(id), Status.NOT_FOUND.getStatusCode());
     }
 
-    @Test
+    // @Test
     public void deleteMustFailIfEntityDoesNotExist() {
         Long id = 42000l;
         req.delete("/genres/" + String.valueOf(id), Status.NOT_FOUND.getStatusCode());
     }
 
-    @Test
+    // @Test
     public void updateMustFailIfEntityDoesNotExist() {
         Long id = 42000l;
         JsonObject genre = Json.createObjectBuilder().add("id", id).add("name", "Hello, World")
@@ -138,7 +138,7 @@ public class GenreServiceTest {
         req.put("/genres", genre, Status.NOT_FOUND.getStatusCode());
     }
 
-    @Test
+    // @Test
     public void searchMustReturnEmptyListOnNonExistingCriteria() throws UnsupportedEncodingException {
         String text = "Does Not Exist";
         List<GuiDTO> genres = req.get("/genres/search/" + URLEncoder.encode(text, "UTF-8")).jsonPath().getList("$",
@@ -146,13 +146,13 @@ public class GenreServiceTest {
         assertTrue(genres.isEmpty());
     }
 
-    @Test
+    // @Test
     public void removeMustFailIfSeriesWithGenreExist() {
         Long idThatIsReferencedInSeries = 0l;
         req.delete("/genres/" + String.valueOf(idThatIsReferencedInSeries), Status.NOT_ACCEPTABLE.getStatusCode());
     }
 
-    @Test
+    // @Test
     public void removeMustFailIfMoviesWithGenreExist() {
         Long idThatIsReferencedInMoviesButNotInSeries = 16l;
         req.delete("/genres/" + String.valueOf(idThatIsReferencedInMoviesButNotInSeries),
