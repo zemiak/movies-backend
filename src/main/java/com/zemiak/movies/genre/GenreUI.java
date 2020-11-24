@@ -2,7 +2,7 @@ package com.zemiak.movies.genre;
 
 import java.time.LocalDateTime;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import io.quarkus.hibernate.orm.panache.PanacheEntity;
 
 public class GenreUI {
     public Long id;
@@ -11,7 +11,7 @@ public class GenreUI {
     public LocalDateTime created;
     public String protectedGenre;
 
-    public static GenreUI of(PanacheEntityBase base) {
+    public static GenreUI of(PanacheEntity base) {
         Genre entity = (Genre) base;
         GenreUI dto = new GenreUI();
         dto.id = entity.id;

@@ -7,7 +7,7 @@ import com.zemiak.movies.genre.Genre;
 import com.zemiak.movies.language.Language;
 import com.zemiak.movies.serie.Serie;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import io.quarkus.panache.common.Sort;
 
 public class MovieDetail extends MovieUI  {
@@ -59,7 +59,7 @@ public class MovieDetail extends MovieUI  {
         return dto;
     }
 
-	public static MovieDetail of(PanacheEntityBase base) {
+	public static MovieDetail of(PanacheEntity base) {
         MovieDetail dto = forNew();
         MovieUI.copy(dto, base);
 

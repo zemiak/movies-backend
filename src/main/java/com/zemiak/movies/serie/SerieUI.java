@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 import com.zemiak.movies.genre.Genre;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import io.quarkus.hibernate.orm.panache.PanacheEntity;
 
 public class SerieUI {
     public Long id;
@@ -15,7 +15,7 @@ public class SerieUI {
     public String tvShowText;
     public String thumbnailUrl;
 
-    public static void copy(SerieUI dto, PanacheEntityBase base) {
+    public static void copy(SerieUI dto, PanacheEntity base) {
         Serie entity = (Serie) base;
         dto.id = entity.id;
         dto.name = entity.name;
@@ -26,7 +26,7 @@ public class SerieUI {
         dto.thumbnailUrl = entity.getThumbnailUrl();
     }
 
-    public static SerieUI of(PanacheEntityBase base) {
+    public static SerieUI of(PanacheEntity base) {
         SerieUI dto = new SerieUI();
         SerieUI.copy(dto, base);
         return dto;

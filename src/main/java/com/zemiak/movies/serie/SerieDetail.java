@@ -5,7 +5,7 @@ import java.util.Map;
 
 import com.zemiak.movies.genre.Genre;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import io.quarkus.panache.common.Sort;
 
 public class SerieDetail extends SerieUI  {
@@ -26,7 +26,7 @@ public class SerieDetail extends SerieUI  {
         return dto;
     }
 
-	public static SerieDetail of(PanacheEntityBase base) {
+	public static SerieDetail of(PanacheEntity base) {
         SerieDetail dto = forNew();
         SerieUI.copy(dto, base);
 

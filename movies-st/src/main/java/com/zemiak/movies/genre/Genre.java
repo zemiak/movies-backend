@@ -20,15 +20,13 @@ import com.zemiak.movies.config.ConfigurationProvider;
 import com.zemiak.movies.strings.NullAwareJsonObjectBuilder;
 import com.zemiak.movies.ui.GuiDTO;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import io.quarkus.panache.common.Sort;
 
 @Entity
 @JsonbNillable
-public class Genre extends PanacheEntityBase implements Comparable<Genre> {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long id;
+public class Genre extends PanacheEntity implements Comparable<Genre> {
+    public static final Long EMPTY = 9l;
 
     @Basic(optional = false)
     @NotNull
@@ -99,7 +97,7 @@ public class Genre extends PanacheEntityBase implements Comparable<Genre> {
 
     @JsonbTransient
     public boolean isEmpty() {
-        return id == 0;
+        return id == EMPTY;
     }
 
     @Override

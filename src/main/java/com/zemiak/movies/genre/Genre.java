@@ -10,9 +10,6 @@ import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -20,15 +17,13 @@ import com.zemiak.movies.config.ConfigurationProvider;
 import com.zemiak.movies.strings.NullAwareJsonObjectBuilder;
 import com.zemiak.movies.ui.GuiDTO;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import io.quarkus.panache.common.Sort;
 
 @Entity
 @JsonbNillable
-public class Genre extends PanacheEntityBase implements Comparable<Genre> {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long id;
+public class Genre extends PanacheEntity implements Comparable<Genre> {
+    public static final Long EMPTY = 9l;
 
     @Basic(optional = false)
     @NotNull
@@ -99,7 +94,7 @@ public class Genre extends PanacheEntityBase implements Comparable<Genre> {
 
     @JsonbTransient
     public boolean isEmpty() {
-        return id == 0;
+        return id == EMPTY;
     }
 
     @Override

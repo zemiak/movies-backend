@@ -24,16 +24,12 @@ import com.zemiak.movies.serie.Serie;
 import com.zemiak.movies.strings.NullAwareJsonObjectBuilder;
 import com.zemiak.movies.ui.GuiDTO;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import io.quarkus.panache.common.Sort;
 
 @Entity
 @JsonbNillable
-public class Movie extends PanacheEntityBase implements Comparable<Movie> {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long id;
-
+public class Movie extends PanacheEntity implements Comparable<Movie> {
     @Size(max = 512)
     @Column(name = "file_name")
     public String fileName;
@@ -95,7 +91,7 @@ public class Movie extends PanacheEntityBase implements Comparable<Movie> {
         this.id = id;
     }
 
-    public static JsonObject toJson(PanacheEntityBase baseEntity) {
+    public static JsonObject toJson(PanacheEntity baseEntity) {
         Objects.requireNonNull(baseEntity);
         Movie entity = (Movie) baseEntity;
 

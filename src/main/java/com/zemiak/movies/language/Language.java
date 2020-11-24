@@ -9,24 +9,17 @@ import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.zemiak.movies.config.ConfigurationProvider;
 import com.zemiak.movies.strings.NullAwareJsonObjectBuilder;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import io.quarkus.hibernate.orm.panache.PanacheEntity;
 
 @Entity
 @JsonbNillable
-public class Language extends PanacheEntityBase {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long id;
-
+public class Language extends PanacheEntity {
     @Basic(optional = false)
     @NotNull
     @Size(min = 2, max = 2)

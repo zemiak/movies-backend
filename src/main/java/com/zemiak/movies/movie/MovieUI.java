@@ -6,7 +6,7 @@ import com.zemiak.movies.genre.Genre;
 import com.zemiak.movies.language.Language;
 import com.zemiak.movies.serie.Serie;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import io.quarkus.hibernate.orm.panache.PanacheEntity;
 
 public class MovieUI {
     public Long id;
@@ -28,13 +28,13 @@ public class MovieUI {
     public String description;
     public String originalName;
 
-    public static MovieUI of(PanacheEntityBase base) {
+    public static MovieUI of(PanacheEntity base) {
         MovieUI dto = new MovieUI();
         MovieUI.copy(dto, base);
         return dto;
     }
 
-    public static MovieUI copy(MovieUI dto, PanacheEntityBase base) {
+    public static MovieUI copy(MovieUI dto, PanacheEntity base) {
         Movie entity = (Movie) base;
 
         Genre genre = null == entity.genreId ? null : Genre.findById(entity.genreId);

@@ -64,9 +64,9 @@ public class LanguageService {
     }
 
     @GET
-    @Path("{id}")
-    public Language find(@PathParam("id") @NotNull String id) {
-        Language entity = Language.findById(id);
+    @Path("{code}")
+    public Language find(@PathParam("code") @NotNull String code) {
+        Language entity = Language.find("code", code).firstResult();
         if (null == entity) {
             throw new WebApplicationException(
                     Response.status(Status.NOT_FOUND).entity("ID not found: " + String.valueOf(id)).build());

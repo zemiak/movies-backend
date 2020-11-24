@@ -10,9 +10,6 @@ import javax.json.bind.annotation.JsonbNillable;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -20,17 +17,13 @@ import com.zemiak.movies.config.ConfigurationProvider;
 import com.zemiak.movies.strings.NullAwareJsonObjectBuilder;
 import com.zemiak.movies.ui.GuiDTO;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import io.quarkus.panache.common.Sort;
 
 @Entity
 @JsonbNillable
-public class Serie extends PanacheEntityBase implements Comparable<Serie> {
-    public static final Long ID_NONE = 0l;
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long id;
+public class Serie extends PanacheEntity implements Comparable<Serie> {
+    public static final Long ID_NONE = 176l;
 
     @Size(max = 128, min = 1)
     @Column(name = "name")
@@ -55,7 +48,7 @@ public class Serie extends PanacheEntityBase implements Comparable<Serie> {
     @Column(name = "tv_show")
     public Boolean tvShow;
 
-    public static JsonObject toJson(PanacheEntityBase baseEntity) {
+    public static JsonObject toJson(PanacheEntity baseEntity) {
         Objects.requireNonNull(baseEntity);
         Serie entity = (Serie) baseEntity;
 
@@ -141,7 +134,7 @@ public class Serie extends PanacheEntityBase implements Comparable<Serie> {
 
     @JsonbTransient
     public boolean isEmpty() {
-        return 0 == id;
+        return ID_NONE == id;
     }
 
     public static Serie create() {
