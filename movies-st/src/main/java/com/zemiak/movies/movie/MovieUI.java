@@ -6,7 +6,7 @@ import com.zemiak.movies.genre.Genre;
 import com.zemiak.movies.language.Language;
 import com.zemiak.movies.serie.Serie;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
 public class MovieUI {
     public Long id;
@@ -28,13 +28,13 @@ public class MovieUI {
     public String description;
     public String originalName;
 
-    public static MovieUI of(PanacheEntity base) {
+    public static MovieUI of(PanacheEntityBase base) {
         MovieUI dto = new MovieUI();
         MovieUI.copy(dto, base);
         return dto;
     }
 
-    public static MovieUI copy(MovieUI dto, PanacheEntity base) {
+    public static MovieUI copy(MovieUI dto, PanacheEntityBase base) {
         Movie entity = (Movie) base;
 
         Genre genre = null == entity.genreId ? null : Genre.findById(entity.genreId);
@@ -47,9 +47,9 @@ public class MovieUI {
         dto.created = entity.created;
         dto.serie = null == serie ? null : serie.name;
         dto.year = entity.year;
-        dto.language = findLanguageName(entity.languageCode);
-        dto.originalLanguage =  findLanguageName(entity.originalLanguageCode);
-        dto.subtitles = findLanguageName(entity.subtitlesLanguageCode);
+        dto.language = findLanguageName(entity.language);
+        dto.originalLanguage =  findLanguageName(entity.originalLanguage);
+        dto.subtitles = findLanguageName(entity.subtitlesLanguage);
         dto.thumbnailUrl = entity.getThumbnailUrl();
         dto.seriePictureFileName = null == serie ? null : serie.pictureFileName;
         dto.genrePictureFileName = null == genre ? null : genre.pictureFileName;
@@ -61,12 +61,12 @@ public class MovieUI {
         return dto;
     }
 
-    private static String findLanguageName(String languageCode) {
-        if (null == languageCode) {
+    private static String findLanguageName(Long language) {
+        if (null == language) {
             return null;
         }
 
-        Language entity = (Language) Language.findById(languageCode);
+        Language entity = (Language) Language.findById(language);
         if (null == entity) {
             return null;
         }

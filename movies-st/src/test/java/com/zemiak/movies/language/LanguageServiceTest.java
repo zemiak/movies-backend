@@ -32,22 +32,23 @@ public class LanguageServiceTest {
         assertFalse(languages.isEmpty(), "Languages are not empty");
     }
 
-    private JsonObject getHelloWorldLanguage() {
+    private JsonObject getHelloWorldLanguage(String code) {
         return Json.createObjectBuilder()
                 .add("name", "Hello, World")
                 .add("displayOrder", 90)
-                .add("code", "ua")
+                .add("code", code)
                 .add("created", DateFormatter.format(LocalDateTime.now().minusYears(20)).toString())
                 .add("pictureFileName", "u-a.jpg").build();
     }
 
     @Test
     public void create() {
-        JsonObject language = getHelloWorldLanguage();
+        String code = "ua";
+        JsonObject language = getHelloWorldLanguage(code);
         Long id = Long.valueOf(req.post("/languages", language).asString());
         assertTrue(null != id, "Create language returns ID");
 
-        Language entity = req.get("/languages/" + id).jsonPath().getObject("$", Language.class);
+        Language entity = req.get("/languages/" + code).jsonPath().getObject("$", Language.class);
         assertEquals(id, entity.id, "Language ID must be the same as created");
         assertEquals(language.getString("name"), entity.name, "Name must be the same as created");
         assertEquals(language.getString("created"), DateFormatter.format(entity.created),
@@ -66,16 +67,12 @@ public class LanguageServiceTest {
 
     @Test
     public void remove() {
-        JsonObject language = getHelloWorldLanguage();
+        JsonObject language = getHelloWorldLanguage("xx");
         String code = language.getString("code");
 
-        if (404 == req.get("/languages/" + code).getStatusCode()) {
-            req.post("/languages", language).asString();
-        }
-
-        Long id = Long.valueOf(language.getInt("id"));
-        req.delete("/languages/" + id, Status.NO_CONTENT.getStatusCode());
-        req.get("/languages/" + id, Status.NOT_FOUND.getStatusCode());
+        req.post("/languages", language).asString();
+        req.delete("/languages/" + code, Status.NO_CONTENT.getStatusCode());
+        req.get("/languages/" + code, Status.NOT_FOUND.getStatusCode());
     }
 
     @Test
@@ -87,6 +84,8 @@ public class LanguageServiceTest {
 
         entity.name = "Some";
         JsonObject json = entity.toJson();
+
+        System.err.println("json:" + json.toString());
 
         req.put("/languages", json, Status.NO_CONTENT.getStatusCode());
 
@@ -103,7 +102,7 @@ public class LanguageServiceTest {
         List<Language> languages = req.get("/languages/search/" + URLEncoder.encode(text, "UTF-8")).jsonPath()
                 .getList("$", Language.class);
         assertFalse(languages.isEmpty());
-        assertEquals("None", languages.get(0).name, "One None should be found");
+        assertEquals("(None)", languages.get(0).name, "One None should be found");
     }
 
     @Test

@@ -47,6 +47,7 @@ public class Language extends PanacheEntity {
     public JsonObject toJson() {
         JsonObjectBuilder builder = NullAwareJsonObjectBuilder.create()
             .add("name", this.name)
+            .add("code", this.code)
             .add("pictureFileName", this.pictureFileName)
             .add("displayOrder", this.displayOrder);
         NullAwareJsonObjectBuilder.addDate(builder, "created", this.created);

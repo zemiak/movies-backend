@@ -69,7 +69,7 @@ public class LanguageService {
         Language entity = Language.find("code", code).firstResult();
         if (null == entity) {
             throw new WebApplicationException(
-                    Response.status(Status.NOT_FOUND).entity("ID not found: " + String.valueOf(id)).build());
+                    Response.status(Status.NOT_FOUND).entity("Code not found: " + String.valueOf(code)).build());
         }
 
         return entity;
@@ -78,14 +78,14 @@ public class LanguageService {
     @DELETE
     @Path("{code}")
     public void remove(@PathParam("code") @NotNull String code) {
-        Language entity = Language.find("code = :code", code).firstResult();
+        Language entity = Language.find("code", code).firstResult();
         if (null == entity) {
             throw new WebApplicationException(
                     Response.status(Status.NOT_FOUND).entity("Code not found: " + String.valueOf(code)).build());
         }
 
-        if (Movie.find("languageCode", code).count() > 0 || Movie.find("originalLanguageCode", code).count() > 0
-                || Movie.find("subtitlesLanguageCode", code).count() > 0) {
+        if (Movie.find("language", entity.id).count() > 0 || Movie.find("originalLanguage", entity.id).count() > 0
+                || Movie.find("subtitlesLanguage", entity.id).count() > 0) {
             throw new WebApplicationException(Response.status(Status.NOT_ACCEPTABLE)
                     .entity("They are movies existing with this language." + String.valueOf(code)).build());
         }

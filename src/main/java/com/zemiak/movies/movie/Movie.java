@@ -59,13 +59,13 @@ public class Movie extends PanacheEntity implements Comparable<Movie> {
     public Long serieId;
 
     @Column(name = "subtitles")
-    public String subtitlesLanguageCode;
+    public Long subtitlesLanguage;
 
     @Column(name = "original_language")
-    public String originalLanguageCode;
+    public Long originalLanguage;
 
     @Column(name = "language")
-    public String languageCode;
+    public Long language;
 
     @NotNull
     @Column(name = "genre_id")
@@ -104,9 +104,9 @@ public class Movie extends PanacheEntity implements Comparable<Movie> {
         NullAwareJsonObjectBuilder.addLong(builder, "id", entity.id);
         NullAwareJsonObjectBuilder.addInteger(builder, "displayOrder", entity.displayOrder);
         NullAwareJsonObjectBuilder.addLong(builder, "serieId", entity.serieId);
-        NullAwareJsonObjectBuilder.addString(builder, "subtitlesId", entity.subtitlesLanguageCode);
-        NullAwareJsonObjectBuilder.addString(builder, "originalLanguageId", entity.originalLanguageCode);
-        NullAwareJsonObjectBuilder.addString(builder, "languageId", entity.languageCode);
+        NullAwareJsonObjectBuilder.addLong(builder, "subtitlesId", entity.subtitlesLanguage);
+        NullAwareJsonObjectBuilder.addLong(builder, "originalLanguageId", entity.originalLanguage);
+        NullAwareJsonObjectBuilder.addLong(builder, "languageId", entity.language);
         NullAwareJsonObjectBuilder.addLong(builder, "genreId", entity.genreId);
         NullAwareJsonObjectBuilder.addInteger(builder, "year", entity.year);
         NullAwareJsonObjectBuilder.addDate(builder, "created", entity.created);
@@ -135,11 +135,11 @@ public class Movie extends PanacheEntity implements Comparable<Movie> {
         this.description = entity.description;
         this.fileName = entity.fileName;
         this.genreId = entity.genreId;
-        this.languageCode = entity.languageCode;
-        this.originalLanguageCode = entity.originalLanguageCode;
+        this.language = entity.language;
+        this.originalLanguage = entity.originalLanguage;
         this.originalName = entity.originalName;
         this.serieId = entity.serieId;
-        this.subtitlesLanguageCode = entity.subtitlesLanguageCode;
+        this.subtitlesLanguage = entity.subtitlesLanguage;
         this.url = entity.url;
         this.year = entity.year;
     }
@@ -244,31 +244,31 @@ public class Movie extends PanacheEntity implements Comparable<Movie> {
 
     @JsonbTransient
     public String getLanguageName() {
-        if (null == this.languageCode) {
+        if (null == this.language) {
             return "None";
         }
 
-        Language lang = Language.findById(this.languageCode);
+        Language lang = Language.findById(this.language);
         return null == lang ? "None" : lang.name;
     }
 
     @JsonbTransient
     public String getOriginalLanguageName() {
-        if (null == this.originalLanguageCode) {
+        if (null == this.originalLanguage) {
             return "None";
         }
 
-        Language lang = Language.findById(this.originalLanguageCode);
+        Language lang = Language.findById(this.originalLanguage);
         return null == lang ? "None" : lang.name;
     }
 
     @JsonbTransient
     public String getSubtitlesName() {
-        if (null == this.subtitlesLanguageCode) {
+        if (null == this.subtitlesLanguage) {
             return "None";
         }
 
-        Language lang = Language.find(this.subtitlesLanguageCode).firstResult();
+        Language lang = Language.findById(this.subtitlesLanguage);
         return null == lang ? "None" : lang.name;
     }
 
