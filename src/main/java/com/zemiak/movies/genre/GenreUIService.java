@@ -41,6 +41,8 @@ import com.zemiak.movies.ui.VaadingGridPagingResult;
 
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.panache.common.Sort;
 
 @RequestScoped
@@ -72,8 +74,11 @@ public class GenreUIService {
     @GET
     @Path("search/{pattern}")
     public List<GuiDTO> getByExpression(@PathParam("pattern") @NotNull final String pattern) {
-        return Genre.find("UPPER(name) LIKE ?1", "%" + pattern.toUpperCase() + "%").list().stream().map(e -> (Genre) e)
-                .map(Genre::toDto).collect(Collectors.toList());
+        System.out.println("Pattern: " + pattern);
+        PanacheQuery<PanacheEntityBase> find = Genre.find("UPPER(name) LIKE ?1", "%" + pattern.toUpperCase() + "%");
+        List<PanacheEntityBase> list = find.list();
+
+        return list.stream().map(e -> (Genre) e).map(Genre::toDto).collect(Collectors.toList());
     }
 
     @POST
