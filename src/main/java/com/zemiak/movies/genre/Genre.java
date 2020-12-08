@@ -23,8 +23,6 @@ import io.quarkus.panache.common.Sort;
 @Entity
 @JsonbNillable
 public class Genre extends PanacheEntity implements Comparable<Genre> {
-    public static final Long EMPTY = 9l;
-
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 128)
@@ -48,7 +46,7 @@ public class Genre extends PanacheEntity implements Comparable<Genre> {
         Genre genre = new Genre();
         genre.created = LocalDateTime.now();
         genre.displayOrder = 9000l;
-        genre.protectedGenre = 0l;
+        genre.protectedGenre = GenreIds.ID_NONE;
 
         return genre;
     }
@@ -94,7 +92,7 @@ public class Genre extends PanacheEntity implements Comparable<Genre> {
 
     @JsonbTransient
     public boolean isEmpty() {
-        return id == EMPTY;
+        return id == GenreIds.ID_NONE;
     }
 
     @Override

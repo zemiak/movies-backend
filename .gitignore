@@ -32,11 +32,3 @@ target
 .DS_Store
 .mvn
 .factorypath
-
-movies-st/target
-movies-st/.vscode
-movies-st/.classpath
-movies-st/.project
-movies-st/.settings
-movies-st/.mvn
-movies-st/.factorypath

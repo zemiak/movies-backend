@@ -14,6 +14,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.zemiak.movies.config.ConfigurationProvider;
+import com.zemiak.movies.genre.GenreIds;
 import com.zemiak.movies.strings.NullAwareJsonObjectBuilder;
 import com.zemiak.movies.ui.GuiDTO;
 
@@ -23,8 +24,6 @@ import io.quarkus.panache.common.Sort;
 @Entity
 @JsonbNillable
 public class Serie extends PanacheEntity implements Comparable<Serie> {
-    public static final Long ID_NONE = 176l;
-
     @Size(max = 128, min = 1)
     @Column(name = "name")
     @NotNull
@@ -134,14 +133,14 @@ public class Serie extends PanacheEntity implements Comparable<Serie> {
 
     @JsonbTransient
     public boolean isEmpty() {
-        return ID_NONE == id;
+        return SerieIds.ID_NONE == id;
     }
 
     public static Serie create() {
         Serie serie = new Serie();
         serie.created = LocalDateTime.now();
         serie.displayOrder = 9000;
-        serie.genreId = 0l;
+        serie.genreId = GenreIds.ID_NONE;
 
         return serie;
     }

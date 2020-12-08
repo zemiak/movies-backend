@@ -18,6 +18,7 @@ import com.zemiak.movies.genre.Genre;
 import com.zemiak.movies.genre.GenreIds;
 import com.zemiak.movies.language.Language;
 import com.zemiak.movies.serie.Serie;
+import com.zemiak.movies.serie.SerieIds;
 import com.zemiak.movies.strings.NullAwareJsonObjectBuilder;
 import com.zemiak.movies.ui.GuiDTO;
 
@@ -180,7 +181,7 @@ public class Movie extends PanacheEntity implements Comparable<Movie> {
 
     @JsonbTransient
     public boolean isEmptySerie() {
-        return null == serieId || serieId == Serie.ID_NONE;
+        return null == serieId || serieId == SerieIds.ID_NONE;
     }
 
     @JsonbTransient

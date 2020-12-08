@@ -23,6 +23,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import com.zemiak.movies.genre.GenreIds;
+import com.zemiak.movies.serie.SerieIds;
+
 import io.quarkus.hibernate.orm.panache.Panache;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.panache.common.Sort;
@@ -33,6 +36,8 @@ import io.quarkus.panache.common.Sort;
 @Produces(MediaType.APPLICATION_JSON)
 @Transactional
 public class MovieService {
+    private static final int RECENT_PAGE_SIZE = 64;
+
     @GET
     @Path("paged")
     public List<Movie> all(@QueryParam("page") int page, @QueryParam("pageSize") int pageSize) {
@@ -106,8 +111,8 @@ public class MovieService {
         final String name = baseFileName.substring(0, baseFileName.lastIndexOf("."));
 
         movie.fileName = newFile;
-        movie.genreId = 0l;
-        movie.serieId = 0l;
+        movie.genreId = GenreIds.ID_NONE;
+        movie.serieId = SerieIds.ID_NONE;
         movie.name = name;
         movie.pictureFileName = name + ".jpg";
         movie.displayOrder = 0;
@@ -140,7 +145,7 @@ public class MovieService {
     }
 
     public List<Movie> getRecentlyAdded() {
-        return Movie.findAll(Sort.descending("id")).page(0, 64).list();
+        return Movie.findAll(Sort.descending("id")).page(0, RECENT_PAGE_SIZE).list();
     }
 
     public static String removeFileSeparatorFromStartIfNeeded(String relative) {
@@ -150,10 +155,14 @@ public class MovieService {
     public List<Movie> getNewReleases(int year) {
         List<Movie> movies = new ArrayList<>();
 
-        Movie.findAll(Sort.ascending("genreId", "serieId", "displayOrder")).page(0, 50).stream().map(e -> (Movie) e)
-                .filter((movie) -> (null != movie.year && movie.year >= (year - 3))).forEach((movie) -> {
+        Movie.traverse(Sort.ascending("genreId", "serieId", "displayOrder"), movie -> {
+            if (movies.size() < RECENT_PAGE_SIZE) {
+                if (null != movie.year && movie.year >= (year - 3)) {
                     movies.add(movie);
-                });
+                }
+            }
+        });
+
         Collections.sort(movies, (Movie o1, Movie o2) -> o1.year.compareTo(o2.year) * -1);
 
         return movies;
