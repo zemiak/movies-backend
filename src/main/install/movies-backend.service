@@ -1,11 +1,11 @@
 [Unit]
-Description=movies
+Description=movies-backend
 Requires=docker.service
 After=docker.service
 
 [Service]
 Environment=DOPTS="--restart=always"
-Environment=CONTAINERNAME=movies
+Environment=CONTAINERNAME=movies-backend
 Environment=IMAGE=quay.io/zemiak/movies-backend:latest-rpi
 Environment=QUARKUS_PROFILE=prod
 Environment=QUARKUS_HTTP_PORT=8081

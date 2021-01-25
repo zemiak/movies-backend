@@ -1,6 +1,6 @@
 #!/bin/sh
 
-svc=movies
+svc=movies-backend
 
 which systemctl
 if [ $? -ne 0 ]
