@@ -10,10 +10,10 @@ Environment=IMAGE=quay.io/zemiak/movies-backend:latest-rpi
 Environment=QUARKUS_PROFILE=prod
 Environment=QUARKUS_HTTP_PORT=8081
 Environment=PORTMAP=8081:8081
-Environment=VOLUME=/mnt/movies/movies/Movies:/data
+Environment=VOLUME=/mnt/media/movies/Movies:/data
 Environment=MEMORY=256m
 ExecStartPre=-/usr/bin/docker rm -f ${CONTAINERNAME}
-ExecStart=/usr/bin/docker run $DOPTS -m ${MEMORY} --name ${CONTAINERNAME} -p ${PORTMAP} -e MEMORY_LIMIT=200 -e QUARKUS_PROFILE=${QUARKUS_PROFILE} -e QUARKUS_PROFILE=${QUARKUS_PROFILE} -e QUARKUS_HTTP_PORT=${QUARKUS_HTTP_PORT} -v ${VOLUME} ${IMAGE}
+ExecStart=/usr/bin/docker run $DOPTS -m ${MEMORY} --name ${CONTAINERNAME} -p ${PORTMAP} -e MEMORY_LIMIT=200 -e QUARKUS_PROFILE=${QUARKUS_PROFILE} -e QUARKUS_HTTP_PORT=${QUARKUS_HTTP_PORT} -v ${VOLUME} ${IMAGE}
 ExecStop=/usr/bin/docker stop -t 10 ${CONTAINERNAME}
 ExecStopPost=/usr/bin/docker rm -f ${CONTAINERNAME}
 ExecReload=/usr/bin/docker exec -t ${CONTAINERNAME} kill -HUP 1

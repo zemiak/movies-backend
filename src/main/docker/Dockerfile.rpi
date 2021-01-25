@@ -27,4 +27,4 @@ COPY --chown=1001 target/quarkus-app/quarkus/ ${AUTODEPLOY_FOLDER}/quarkus/
 
 WORKDIR ${AUTODEPLOY_FOLDER}
 USER u1001
-ENTRYPOINT [ "sh", "-c", "exec java -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=${QUARKUS_HTTP_PORT} -Djava.util.logging.manager=org.jboss.logmanager.LogManager -Xms32m -Xmx${MEMORY_LIMIT}m -jar app.jar" ]
+ENTRYPOINT [ "sh", "-c", "exec java -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=${QUARKUS_HTTP_PORT} -Djava.util.logging.manager=org.jboss.logmanager.LogManager -Xms32m -Xmx${MEMORY_LIMIT}m -jar ${AUTODEPLOY_FOLDER}/quarkus-run.jar" ]
